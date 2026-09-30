@@ -1,0 +1,147 @@
+/* ══════
+   EcoMetric – Apple "iOS Liquid Glass" theme
+   Tailwind CSS v4 (CSS-first config)
+   ══════ */
+
+/* 1. Nạp Tailwind v4. Dòng này CHỈ hoạt động khi vite.config.js
+      đã có plugin `@tailwindcss/vite` (hoặc @tailwindcss/postcss). */
+@import "tailwindcss";
+
+/* 2. Khai báo nguồn class Tailwind cần quét (thay cho `content` của v3). */
+@source "./**/*.{js,jsx,ts,tsx}";
+@source "../index.html";
+
+/* ══════
+   3. DESIGN TOKENS  →  sinh ra utility: bg-*, text-*, border-*, ...
+   ══════ */
+@theme {
+  /* Font */
+  --font-sans: "Inter", "SF Pro Text", ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", sans-serif;
+
+  /* Màu thương hiệu EcoMetric */
+  --color-eco-emerald: #10b981;
+  --color-eco-emerald-dark: #059669;
+  --color-eco-blue: #3b82f6;
+  --color-eco-amber: #f59e0b;
+  --color-eco-red: #ef4444;
+  --color-eco-violet: #8b5cf6;
+
+  /* Màu nền / chữ */
+  --color-ink: #0f172a;
+  --color-slate-soft: #64748b;
+  --color-muted-soft: #94a3b8;
+  --color-line-soft: #e2e8f0;
+
+  /* Bán kính kiểu iOS */
+  --radius-glass: 22px;
+  --radius-glass-sm: 14px;
+
+  /* Đổ bóng nhiều lớp – tạo cảm giác khối kính nổi */
+  --shadow-glass: 0 1px 1px rgba(255, 255, 255, 0.9) inset,
+    0 8px 24px -6px rgba(15, 23, 42, 0.14), 0 2px 6px -2px rgba(15, 23, 42, 0.08);
+  --shadow-glass-lg: 0 1px 1px rgba(255, 255, 255, 0.95) inset,
+    0 20px 48px -12px rgba(15, 23, 42, 0.22),
+    0 4px 12px -4px rgba(15, 23, 42, 0.1);
+
+  /* Nhịp động học kiểu Apple */
+  --ease-glass: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ══════
+   4. NỀN GRADIENT NẰM SAU LỚP KÍNH
+      Kính chỉ "trong suốt" khi phía sau nó CÓ thứ để nhìn xuyên qua.
+   ══════ */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100svh;
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    /* nền pastel loang màu – "chất liệu" cho lớp kính khúc xạ */
+    background-color: #eef2f7;
+    background-image:
+      radial-gradient(1100px 600px at 12% -8%, rgba(16, 185, 129, 0.34), transparent 60%),
+      radial-gradient(900px 520px at 92% 4%, rgba(59, 130, 246, 0.28), transparent 62%),
+      radial-gradient(760px 480px at 76% 98%, rgba(139, 92, 246, 0.22), transparent 60%),
+      radial-gradient(680px 420px at 8% 82%, rgba(245, 158, 11, 0.18), transparent 62%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Ảnh không bao giờ được tràn khỏi khung chứa */
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Thanh cuộn mảnh, bo tròn cho hợp tông kính */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: content-box;
+    background-color: rgba(15, 23, 42, 0.22);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(15, 23, 42, 0.34);
+  }
+}
+
+/* ══════
+   5. UTILITY "LIQUID GLASS" – dùng được như class Tailwind thường
+   ══════ */
+@utility glass {
+  background-color: rgba(255, 255, 255, 0.62);
+  background-image: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.86) 0%,
+    rgba(255, 255, 255, 0.46) 46%,
+    rgba(255, 255, 255, 0.68) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  border-radius: var(--radius-glass);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(26px) saturate(180%);
+  -webkit-backdrop-filter: blur(26px) saturate(180%);
+}
+
+/* Bề mặt kính mỏng: dùng cho toolbar, sidebar */
+@utility glass-thin {
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* Nút kính có phản hồi khi nhấn */
+@utility glass-press {
+  transition: transform 0.24s var(--ease-glass),
+    box-shadow 0.24s var(--ease-glass), background-color 0.24s var(--ease-glass);
+}
+@utility glass-press-active {
+  transform: scale(0.972);
+}
+
+/* Tôn trọng thiết lập giảm chuyển động của hệ điều hành */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
