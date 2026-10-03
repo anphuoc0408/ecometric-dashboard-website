@@ -18,6 +18,7 @@ import {
   ClipboardList,
   CloudUpload,
   Cpu,
+  Check,
   Database,
   Download,
   Droplet,
@@ -42,6 +43,7 @@ import CarbonEmissions from "./CarbonEmissions.jsx";
 import AIRecommendations from "./AIRecommendations.jsx";
 import ESGReporting from "./ESGReporting.jsx";
 import Settings from "./Settings.jsx";
+import QRCodeButton from "./QRCodeCard.jsx";
 
 /* ────────────────────────────────────────────────────────────────
    0. HÀM ĐỊNH DẠNG DÙNG CHUNG
@@ -297,8 +299,10 @@ function Topbar() {
         />
       </label>
 
-      {/* Thông báo + tài khoản */}
+      {/* Thông báo + QR + tài khoản */}
       <div className="flex items-center gap-4">
+        <QRCodeButton />
+
         <button
           type="button"
           aria-label="Thông báo"
