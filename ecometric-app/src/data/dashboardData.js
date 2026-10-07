@@ -19,10 +19,23 @@ import {
 import { COLOR, fmtMoney } from "../lib/format.js";
 
 /* ── Avatar & tiêu đề trang ─────────────────────────────────────── */
-// Ảnh avatar xuất từ Figma – link Figma chỉ sống 7 ngày.
-// Tải ảnh về, đặt vào /public/avatar.png rồi đổi thành "/avatar.png".
+// Ảnh đại diện dự phòng dạng SVG (data-URI) – luôn hiển thị được,
+// không phụ thuộc mạng nên không bao giờ bị "ảnh vỡ".
+// Chữ cái & màu nền đồng bộ với UI-Avatars của các tài khoản khác.
+export const AVATAR_FALLBACK = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
+     <rect width="96" height="96" rx="48" fill="#10b981"/>
+     <text x="48" y="49" text-anchor="middle" dominant-baseline="central"
+           font-family="Inter, Segoe UI, sans-serif" font-size="36" font-weight="700"
+           fill="#ffffff">NA</text>
+   </svg>`,
+)}`;
+
+// Ảnh avatar chính. Link Figma cũ đã hỏng (chỉ sống 7 ngày) nên thay bằng
+// ảnh đại diện sinh từ tên qua UI-Avatars. Khi có ảnh thật, tải về /public
+// rồi đổi giá trị này thành "/avatar.png".
 export const AVATAR_URL =
-  "https://www.figma.com/api/mcp/asset/4fb0518d-0993-430d-9de3-66a58a0a179a.png";
+  "https://ui-avatars.com/api/?name=Nguyen+Van+A&background=10b981&color=fff";
 
 export const PAGE_TITLE = "CANVAS MẪU THIẾT KẾ WEB ECOMETRIC";
 export const PAGE_SUBTITLE =
@@ -31,20 +44,22 @@ export const PAGE_SUBTITLE =
 /* ── Điều hướng ─────────────────────────────────────────────────── */
 export const NAV_ITEMS = [
   { id: "overview", label: "Tổng quan", icon: PanelsTopLeft },
-  { id: "operations", label: "Dữ liệu vận hành", icon: Database },
-  { id: "carbon", label: "Phát thải carbon", icon: Activity },
-  { id: "ai", label: "Khuyến nghị AI", icon: Cpu },
-  { id: "esg", label: "Báo cáo ESG", icon: FileText },
+  { id: "operations", label: "Dữ liệu vận hành", bottomLabel: "Vận hành", icon: Database },
+  { id: "carbon", label: "Phát thải carbon", bottomLabel: "Carbon", icon: Activity },
+  { id: "ai", label: "Khuyến nghị AI", bottomLabel: "AI", icon: Cpu },
+  { id: "esg", label: "Báo cáo ESG", bottomLabel: "ESG", icon: FileText },
   { id: "settings", label: "Cài đặt", icon: SettingsIcon },
 ];
 
 /**
- * Bottom navigation mobile: chỉ 5 mục để vừa chiều rộng màn hình.
- * `settings` là mục cuối, không đưa vào bottom bar.
+ * Bottom navigation mobile: đủ 6 mục (bao gồm Cài đặt).
+ * Nhãn ngắn `bottomLabel` + class điều chỉnh cỡ chữ giúp 6 tab vẫn hiển thị
+ * trọn vẹn trên màn hình 390px mà không bị đè hay tràn chữ.
  */
-export const BOTTOM_NAV_ITEMS = NAV_ITEMS.filter(
-  (item) => item.id !== "settings",
-);
+export const BOTTOM_NAV_ITEMS = NAV_ITEMS.map((item) => ({
+  ...item,
+  navLabel: item.bottomLabel ?? item.label,
+}));
 
 /* ── Kịch bản LED Xưởng 1 – bộ số chuẩn (nguồn: AIRecommendations.jsx) ── */
 export const LED_RETROFIT_CASE = {

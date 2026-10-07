@@ -6,7 +6,7 @@
  */
 import { Bell, Leaf, Search } from "lucide-react";
 import { COLOR, FOCUS } from "../lib/format.js";
-import { AVATAR_URL } from "../data/dashboardData.js";
+import { AVATAR_FALLBACK, AVATAR_URL } from "../data/dashboardData.js";
 import QRCodeButton from "../QRCodeCard.jsx";
 
 export default function Topbar() {
@@ -53,8 +53,18 @@ export default function Topbar() {
         <div className="flex items-center gap-2">
           <img
             src={AVATAR_URL}
-            alt="Ảnh đại diện"
-            className="h-9 w-9 shrink-0 rounded-full object-cover"
+            alt="Ảnh đại diện của Nguyễn Văn A"
+            width={36}
+            height={36}
+            loading="lazy"
+            decoding="async"
+            onError={(e) => {
+              // Nếu ảnh ngoài không tải được, chuyển sang SVG dự phòng (không vỡ ảnh).
+              if (e.currentTarget.src !== AVATAR_FALLBACK) {
+                e.currentTarget.src = AVATAR_FALLBACK;
+              }
+            }}
+            className="h-9 w-9 shrink-0 rounded-full border border-white/70 bg-[#10b981]/12 object-cover"
           />
           {/* Tên + chức danh chỉ hiện từ md trở lên */}
           <div className="hidden flex-col gap-[2px] whitespace-nowrap md:flex">

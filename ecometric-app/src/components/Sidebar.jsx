@@ -14,6 +14,8 @@ export default function Sidebar({ active, onChange }) {
       <nav className="flex flex-col gap-1">
         {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
           const isActive = id === active;
+          // Sidebar rộng rãi nên luôn dùng nhãn đầy đủ.
+          const text = label;
           const cls = isActive
             ? "bg-[#10b981]/10 font-semibold text-[#059669]"
             : "bg-transparent font-medium text-[#64748b] hover:bg-[#f8fafc]";
@@ -27,7 +29,7 @@ export default function Sidebar({ active, onChange }) {
               className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-[14px] transition-all active:scale-[0.98] ${FOCUS} ${cls}`}
             >
               <Icon size={20} strokeWidth={2} className="shrink-0" />
-              <span className="flex-1">{label}</span>
+              <span className="flex-1">{text}</span>
               {isActive && (
                 <span className="h-4 w-1 rounded-[2px] bg-[#10b981]" />
               )}

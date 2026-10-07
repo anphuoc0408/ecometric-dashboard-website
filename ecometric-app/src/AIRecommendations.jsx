@@ -11,6 +11,7 @@
  *   5. Panel phụ: cách AI xếp hạng ưu tiên + tiến độ xử lý khuyến nghị
  */
 import { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   ArrowRight,
   BadgeCheck,
@@ -395,7 +396,7 @@ const normalizeItem = (raw) => {
 /* ── Dải chỉ số tổng hợp tiềm năng ──────────────────────────── */
 function SummaryCard({ icon: Icon, label, value, unit, accent, note }) {
   return (
-    <article className={`${GLASS} relative flex min-w-0 flex-col gap-3 overflow-hidden p-5`}>
+    <article className={`${GLASS} relative flex min-w-0 flex-col gap-3 overflow-hidden p-4 sm:p-5`}>
       <span className="absolute bottom-0 left-0 top-0 w-1" style={{ backgroundColor: accent }} />
       <div className="flex items-center justify-between gap-3">
         <p className="text-[13px] font-medium text-[#64748b]">{label}</p>
@@ -523,7 +524,7 @@ function SolutionCard({ item, onApply, onPlan, onOpenPlan }) {
   const hasPlan = Boolean(item.steps?.length);
 
   return (
-    <article className={`${GLASS} relative flex flex-col gap-4 overflow-hidden p-5`}>
+    <article className={`${GLASS} relative flex flex-col gap-4 overflow-hidden p-4 sm:p-5`}>
       {/* Vệt màu nhận diện mức ưu tiên */}
       <span className="absolute bottom-0 left-0 top-0 w-1" style={{ backgroundColor: priority.color }} />
 
@@ -679,7 +680,17 @@ function SolutionCard({ item, onApply, onPlan, onOpenPlan }) {
   );
 }
 
-/* ── Modal Action Plan: quy trình 5 bước + so sánh KPI ─────────── */
+/* ── Modal Action Plan: quy trình 5 bước + so sánh KPI ───────────
+   Căn giữa an toàn: hộp thoại được render qua `createPortal` vào
+   `document.body`. Modal nằm trong <main> – mà tổ tiên của <main> có dùng
+   `backdrop-filter`, phần tử mang backdrop-filter sẽ trở thành CONTAINING
+   BLOCK cho mọi `position: fixed` bên trong nó, khiến `fixed inset-0` bị
+   neo vào ancestor đó thay vì toàn màn hình (modal dồn lên mép trên).
+   Portal đưa modal ra ngoài mọi ancestor nên `inset-0` luôn phủ đúng
+   viewport.
+   Việc căn giữa dùng lớp `min-h-full` + `flex items-center` (KHÔNG dùng
+   `items-center` trực tiếp trên hộp cuộn, vì flex item cao hơn vùng cuộn
+   sẽ bị cắt ở mép trên và không cuộn tới được). */
 function ActionPlanModal({ item, onClose, onApply, onPlan }) {
   if (!item) return null;
 
@@ -688,18 +699,22 @@ function ActionPlanModal({ item, onClose, onApply, onPlan }) {
   const doneCount = steps.filter((s) => s.status === "done").length;
   const progress = steps.length ? Math.round((doneCount / steps.length) * 100) : 0;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-[#0f172a]/35 p-4 backdrop-blur-[6px] sm:p-6"
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/50 p-4 backdrop-blur-sm sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-labelledby="action-plan-title"
       onClick={onClose}
     >
-      <div
-        className="glass my-auto flex w-full max-w-[900px] flex-col gap-5 p-6 shadow-[0_28px_70px_-20px_rgba(15,23,42,0.45)]"
-        onClick={(e) => e.stopPropagation()}
-      >
+      {/* Lớp căn giữa: `min-h-full` + `flex items-center` buộc thẻ nằm giữa
+          chiều cao màn hình; khi thẻ cao hơn màn hình thì lớp này tự cao
+          theo nội dung nên vẫn cuộn xem được trọn vẹn từ trên xuống. */}
+      <div className="flex min-h-full items-center justify-center">
+        <div
+          className="glass flex w-full max-w-[900px] flex-col gap-4 p-4 shadow-[0_28px_70px_-20px_rgba(15,23,42,0.45)] sm:gap-5 sm:p-6"
+          onClick={(e) => e.stopPropagation()}
+        >
         {/* Đầu modal */}
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="flex min-w-0 flex-1 flex-col gap-[6px]">
@@ -873,9 +888,11 @@ function ActionPlanModal({ item, onClose, onApply, onPlan }) {
               Áp dụng ngay
             </button>
           </div>
+          </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -902,7 +919,7 @@ function InsightPanel({ items, onReset }) {
   const totalReduction = RECOMMENDATIONS.reduce((s, r) => s + num(r.reductionYear ?? r.reduction), 0);
 
   return (
-    <section className={`${GLASS} flex w-full shrink-0 flex-col gap-5 p-5 xl:w-[400px]`}>
+    <section className={`${GLASS} flex w-full shrink-0 flex-col gap-5 p-4 sm:p-5 xl:w-[400px]`}>
       <div className="flex items-center gap-2">
         <Cpu size={18} strokeWidth={2.2} color={COLOR.emeraldDark} />
         <h2 className="text-[15px] font-bold text-[#0f172a]">AI xếp hạng ưu tiên như thế nào?</h2>
@@ -1086,12 +1103,12 @@ export default function AIRecommendations() {
   const focusItem = items.find((r) => r.patience === 1);
 
   return (
-    <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-6 p-6">
+    <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
       {/* Tiêu đề trang + thông báo hành động */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-col gap-[6px]">
-          <h1 className="text-[24px] font-extrabold text-[#0f172a]">Khuyến nghị AI</h1>
-          <p className="text-[14px] text-[#64748b]">
+          <h1 className="text-[20px] font-extrabold leading-tight text-[#0f172a] sm:text-[24px]">Khuyến nghị AI</h1>
+          <p className="text-[13px] leading-snug text-[#64748b] sm:text-[14px]">
             Giải pháp tối ưu năng lượng &amp; phát thải do mô hình đề xuất · Xếp hạng theo mức độ ưu tiên, chi phí và ROI
           </p>
         </div>
@@ -1106,7 +1123,7 @@ export default function AIRecommendations() {
 
       {/* Nút mở Action Plan của giải pháp trọng tâm (ƯU TIÊN 01) */}
       {focusItem?.steps?.length > 0 && (
-        <div className={`${GLASS} flex flex-wrap items-center justify-between gap-3 p-5`}>
+        <div className={`${GLASS} flex flex-wrap items-center justify-between gap-3 p-4 sm:p-5`}>
           <div className="flex min-w-0 flex-1 flex-col gap-[4px]">
             <span className="inline-flex items-center gap-[6px] text-[13px] font-bold text-[#0f172a]">
               <Lightbulb size={15} strokeWidth={2.4} color={COLOR.emeraldDark} />
@@ -1158,7 +1175,7 @@ export default function AIRecommendations() {
       </div>
 
       {/* Bộ lọc mức ưu tiên + lĩnh vực */}
-      <div className={`${GLASS} flex flex-col gap-4 p-5`}>
+      <div className={`${GLASS} flex flex-col gap-4 p-4 sm:p-5`}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <span className={LABEL}>
             <Droplets size={13} strokeWidth={2.4} /> Mức độ ưu tiên
@@ -1202,7 +1219,7 @@ export default function AIRecommendations() {
 
           {/* Dòng gợi ý mở rộng */}
           {sorted.length > 0 && (
-            <div className={`${GLASS} flex flex-wrap items-center justify-between gap-3 p-5`}>
+            <div className={`${GLASS} flex flex-wrap items-center justify-between gap-3 p-4 sm:p-5`}>
               <p className="text-[12px] text-[#64748b]">
                 AI cập nhật khuyến nghị mỗi khi có dữ liệu vận hành mới · Lần phân tích gần nhất: 24/10/2025 06:30
               </p>

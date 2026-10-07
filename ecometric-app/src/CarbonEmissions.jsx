@@ -45,7 +45,8 @@ const COLOR = {
 const GLASS = "glass glass-press";
 const FOCUS =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#10b981]";
-const LABEL = "flex items-center gap-[6px] text-[12px] font-semibold text-[#64748b]";
+const LABEL =
+  "flex items-center gap-[6px] text-[12px] font-semibold text-[#64748b]";
 
 /* ────────────────────────────────
    2. DỮ LIỆU MẪU (thay bằng API sau này)
@@ -87,7 +88,11 @@ const PERIOD_OPTIONS = [
 ];
 
 const PERIOD_LABEL = {
-  month: { title: "Tháng 10/2025", compare: "so với tháng 09/2025", unitStep: 1 },
+  month: {
+    title: "Tháng 10/2025",
+    compare: "so với tháng 09/2025",
+    unitStep: 1,
+  },
   quarter: { title: "Quý 4/2025", compare: "so với Quý 3/2025", unitStep: 3 },
   year: { title: "Năm 2025", compare: "so với năm 2024", unitStep: 12 },
 };
@@ -132,12 +137,48 @@ const TREND_DATA = {
 
 /* — Phân bổ CO2e theo nhà xưởng / chi nhánh — */
 const SITES = [
-  { id: "a", name: "Nhà máy A – Dệt nhuộm", kind: "Nhà xưởng", region: "Bình Dương", icon: Factory },
-  { id: "b", name: "Nhà máy B – May mặc", kind: "Nhà xưởng", region: "Đồng Nai", icon: Factory },
-  { id: "c", name: "Nhà máy C – Xử lý nước", kind: "Nhà xưởng", region: "Long An", icon: Factory },
-  { id: "d", name: "Kho trung tâm – Logistics", kind: "Chi nhánh", region: "TP.HCM", icon: Package },
-  { id: "e", name: "Chi nhánh Hà Nội", kind: "Chi nhánh", region: "Hà Nội", icon: Building2 },
-  { id: "f", name: "Chi nhánh Đà Nẵng", kind: "Chi nhánh", region: "Đà Nẵng", icon: Building2 },
+  {
+    id: "a",
+    name: "Nhà máy A – Dệt nhuộm",
+    kind: "Nhà xưởng",
+    region: "Bình Dương",
+    icon: Factory,
+  },
+  {
+    id: "b",
+    name: "Nhà máy B – May mặc",
+    kind: "Nhà xưởng",
+    region: "Đồng Nai",
+    icon: Factory,
+  },
+  {
+    id: "c",
+    name: "Nhà máy C – Xử lý nước",
+    kind: "Nhà xưởng",
+    region: "Long An",
+    icon: Factory,
+  },
+  {
+    id: "d",
+    name: "Kho trung tâm – Logistics",
+    kind: "Chi nhánh",
+    region: "TP.HCM",
+    icon: Package,
+  },
+  {
+    id: "e",
+    name: "Chi nhánh Hà Nội",
+    kind: "Chi nhánh",
+    region: "Hà Nội",
+    icon: Building2,
+  },
+  {
+    id: "f",
+    name: "Chi nhánh Đà Nẵng",
+    kind: "Chi nhánh",
+    region: "Đà Nẵng",
+    icon: Building2,
+  },
 ];
 
 /* Lượng phát thải theo từng địa điểm × từng Scope (tấn CO2e) */
@@ -186,7 +227,10 @@ const NET_ZERO = {
    3. HÀM TIỆN ÍCH
    ──────────────────────────────── */
 const fmt = (n, digits = 1) =>
-  n.toLocaleString("vi-VN", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+  n.toLocaleString("vi-VN", {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
 
 const pctDelta = (value, prev) => ((value - prev) / prev) * 100;
 
@@ -235,9 +279,14 @@ function ScopeCard({ scope, value, prev, target }) {
   const overBudget = value > target;
 
   return (
-    <article className={`${GLASS} relative flex flex-col gap-4 overflow-hidden p-5`}>
+    <article
+      className={`${GLASS} relative flex flex-col gap-4 overflow-hidden p-4 sm:p-5`}
+    >
       {/* Vệt màu nhận diện Scope */}
-      <span className="absolute bottom-0 left-0 top-0 w-1" style={{ backgroundColor: scope.color }} />
+      <span
+        className="absolute bottom-0 left-0 top-0 w-1"
+        style={{ backgroundColor: scope.color }}
+      />
 
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
@@ -248,17 +297,25 @@ function ScopeCard({ scope, value, prev, target }) {
             <Icon size={19} strokeWidth={2.2} color={scope.color} />
           </span>
           <div className="flex flex-col">
-            <h3 className="text-[15px] font-bold text-[#0f172a]">{scope.name}</h3>
+            <h3 className="text-[15px] font-bold text-[#0f172a]">
+              {scope.name}
+            </h3>
             <span className="text-[12px] text-[#64748b]">{scope.subtitle}</span>
           </div>
         </div>
 
         <span
           className={`inline-flex items-center gap-[5px] rounded-full px-[10px] py-[4px] text-[12px] font-semibold ${
-            up ? "bg-[#fee2e2] text-[#991b1b]" : "bg-[#10b981]/12 text-[#059669]"
+            up
+              ? "bg-[#fee2e2] text-[#991b1b]"
+              : "bg-[#10b981]/12 text-[#059669]"
           }`}
         >
-          {up ? <TrendingUp size={13} strokeWidth={2.6} /> : <TrendingDown size={13} strokeWidth={2.6} />}
+          {up ? (
+            <TrendingUp size={13} strokeWidth={2.6} />
+          ) : (
+            <TrendingDown size={13} strokeWidth={2.6} />
+          )}
           {up ? "+" : ""}
           {fmt(delta)}%
         </span>
@@ -266,7 +323,10 @@ function ScopeCard({ scope, value, prev, target }) {
 
       <div className="flex flex-col gap-[2px]">
         <p className="text-[26px] font-extrabold leading-tight text-[#0f172a]">
-          {fmt(value)} <span className="text-[13px] font-semibold text-[#64748b]">tấn CO2e</span>
+          {fmt(value)}{" "}
+          <span className="text-[13px] font-semibold text-[#64748b]">
+            tấn CO2e
+          </span>
         </p>
         <p className="text-[11px] text-[#94a3b8]">{scope.hint}</p>
       </div>
@@ -274,7 +334,9 @@ function ScopeCard({ scope, value, prev, target }) {
       {/* Thanh tiến độ so với hạn mức Net Zero */}
       <div className="flex flex-col gap-[6px]">
         <div className="flex items-center justify-between text-[11px] font-semibold">
-          <span className="text-[#64748b]">Hạn mức kỳ này: {fmt(target, 0)} tấn</span>
+          <span className="text-[#64748b]">
+            Hạn mức kỳ này: {fmt(target, 0)} tấn
+          </span>
           <span className={overBudget ? "text-[#b45309]" : "text-[#059669]"}>
             {ratio}%{overBudget ? " · vượt hạn mức" : " · trong hạn mức"}
           </span>
@@ -316,31 +378,43 @@ function EmissionsTrendChart({ period }) {
 
   const actualPts = actual.map((v, i) => [toX(i), toY(v)]);
   const planPts = plan.map((v, i) => [toX(i), toY(v)]);
-  const line = (pts) => pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+  const line = (pts) =>
+    pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
   const area =
     `${line(actualPts)} L${actualPts[actualPts.length - 1][0].toFixed(1)},${(PAD.top + plotH).toFixed(1)} ` +
     `L${actualPts[0][0].toFixed(1)},${(PAD.top + plotH).toFixed(1)} Z`;
 
   const yTicks = 5;
-  const yGrid = Array.from({ length: yTicks + 1 }, (_, i) => yMin + ((yMax - yMin) * i) / yTicks).reverse();
+  const yGrid = Array.from(
+    { length: yTicks + 1 },
+    (_, i) => yMin + ((yMax - yMin) * i) / yTicks,
+  ).reverse();
 
   const last = actual[actual.length - 1];
   const lastPlan = plan[plan.length - 1];
   const gapPct = ((last - lastPlan) / lastPlan) * 100;
 
   return (
-    <section className={`${GLASS} flex min-w-0 flex-1 flex-col gap-4 p-5`}>
+    <section
+      className={`${GLASS} flex min-w-0 flex-1 flex-col gap-4 p-4 sm:p-5`}
+    >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
-          <h2 className="text-[16px] font-bold text-[#0f172a]">Xu hướng phát thải vs Mục tiêu Net Zero</h2>
+          <h2 className="text-[16px] font-bold text-[#0f172a]">
+            Xu hướng phát thải vs Mục tiêu Net Zero
+          </h2>
           <p className="text-[12px] text-[#64748b]">
-            Đường thực tế so với quỹ đạo cần thiết để đạt Net Zero vào {NET_ZERO.targetYear}
+            Đường thực tế so với quỹ đạo cần thiết để đạt Net Zero vào{" "}
+            {NET_ZERO.targetYear}
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-[6px] text-[12px] font-semibold text-[#64748b]">
-            <span className="h-[3px] w-5 rounded-full" style={{ backgroundColor: COLOR.emerald }} />
+            <span
+              className="h-[3px] w-5 rounded-full"
+              style={{ backgroundColor: COLOR.emerald }}
+            />
             Thực tế
           </span>
           <span className="inline-flex items-center gap-[6px] text-[12px] font-semibold text-[#64748b]">
@@ -373,8 +447,22 @@ function EmissionsTrendChart({ period }) {
           const y = PAD.top + (plotH * i) / yTicks;
           return (
             <g key={v}>
-              <line x1={PAD.left} x2={W - PAD.right} y1={y} y2={y} stroke={COLOR.line} strokeWidth="1" />
-              <text x={PAD.left - 10} y={y} textAnchor="end" dominantBaseline="central" fontSize="11" fill={COLOR.muted}>
+              <line
+                x1={PAD.left}
+                x2={W - PAD.right}
+                y1={y}
+                y2={y}
+                stroke={COLOR.line}
+                strokeWidth="1"
+              />
+              <text
+                x={PAD.left - 10}
+                y={y}
+                textAnchor="end"
+                dominantBaseline="central"
+                fontSize="11"
+                fill={COLOR.muted}
+              >
                 {v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v.toFixed(0)}
               </text>
             </g>
@@ -426,7 +514,9 @@ function EmissionsTrendChart({ period }) {
             key={label}
             x={toX(i)}
             y={H - 10}
-            textAnchor={i === 0 ? "start" : i === xLabels.length - 1 ? "end" : "middle"}
+            textAnchor={
+              i === 0 ? "start" : i === xLabels.length - 1 ? "end" : "middle"
+            }
             dominantBaseline="central"
             fontSize="11"
             fill={COLOR.muted}
@@ -444,7 +534,9 @@ function EmissionsTrendChart({ period }) {
         </p>
         <p
           className={`inline-flex items-center gap-2 rounded-[12px] px-3 py-[8px] text-[12px] font-semibold ${
-            last > lastPlan ? "bg-[#fef3c7] text-[#b45309]" : "bg-[#10b981]/12 text-[#059669]"
+            last > lastPlan
+              ? "bg-[#fef3c7] text-[#b45309]"
+              : "bg-[#10b981]/12 text-[#059669]"
           }`}
         >
           <Info size={14} strokeWidth={2.4} />
@@ -505,7 +597,9 @@ function HeatmapCard({ period }) {
   };
 
   const modeTotal = (row) =>
-    mode === "total" ? row.total : row.cells.find((c) => c.scopeId === mode).value;
+    mode === "total"
+      ? row.total
+      : row.cells.find((c) => c.scopeId === mode).value;
 
   const grandTotalForMode =
     mode === "total" ? totalAll : rows.reduce((s, r) => s + modeTotal(r), 0);
@@ -513,12 +607,17 @@ function HeatmapCard({ period }) {
   const maxForBar = Math.max(...rows.map((r) => modeTotal(r))) || 1;
 
   return (
-    <section className={`${GLASS} flex min-w-0 flex-1 flex-col gap-4 p-5`}>
+    <section
+      className={`${GLASS} flex min-w-0 flex-1 flex-col gap-4 p-4 sm:p-5`}
+    >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-col gap-1">
-          <h2 className="text-[16px] font-bold text-[#0f172a]">Bản đồ nhiệt phân bổ CO2e</h2>
+          <h2 className="text-[16px] font-bold text-[#0f172a]">
+            Bản đồ nhiệt phân bổ CO2e
+          </h2>
           <p className="text-[12px] text-[#64748b]">
-            Mức phát thải theo từng nhà xưởng / chi nhánh – {PERIOD_LABEL[period].title}
+            Mức phát thải theo từng nhà xưởng / chi nhánh –{" "}
+            {PERIOD_LABEL[period].title}
           </p>
         </div>
 
@@ -532,7 +631,9 @@ function HeatmapCard({ period }) {
                 onClick={() => setMode(id)}
                 aria-pressed={active}
                 className={`rounded-full px-[12px] py-[5px] text-[12px] font-semibold transition-all ${FOCUS} ${
-                  active ? "bg-white text-[#0f172a] shadow-[0_2px_6px_-2px_rgba(15,23,42,0.25)]" : "text-[#64748b] hover:text-[#0f172a]"
+                  active
+                    ? "bg-white text-[#0f172a] shadow-[0_2px_6px_-2px_rgba(15,23,42,0.25)]"
+                    : "text-[#64748b] hover:text-[#0f172a]"
                 }`}
               >
                 {label}
@@ -560,7 +661,9 @@ function HeatmapCard({ period }) {
           {rows.map(({ site, cells, total }, idx) => {
             const Icon = site.icon;
             const rowVal = modeTotal({ site, cells, total });
-            const share = grandTotalForMode ? (rowVal / grandTotalForMode) * 100 : 0;
+            const share = grandTotalForMode
+              ? (rowVal / grandTotalForMode) * 100
+              : 0;
             return (
               <div
                 key={site.id}
@@ -571,10 +674,16 @@ function HeatmapCard({ period }) {
                 {/* Tên địa điểm */}
                 <div className="flex w-[240px] shrink-0 items-center gap-3">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-white/70">
-                    <Icon size={15} strokeWidth={2.2} color={COLOR.emeraldDark} />
+                    <Icon
+                      size={15}
+                      strokeWidth={2.2}
+                      color={COLOR.emeraldDark}
+                    />
                   </span>
                   <div className="flex min-w-0 flex-col">
-                    <span className="truncate text-[13px] font-semibold text-[#0f172a]">{site.name}</span>
+                    <span className="truncate text-[13px] font-semibold text-[#0f172a]">
+                      {site.name}
+                    </span>
                     <span className="text-[11px] text-[#94a3b8]">
                       {site.kind} · {site.region}
                     </span>
@@ -586,7 +695,10 @@ function HeatmapCard({ period }) {
                   const scope = SCOPES.find((s) => s.id === scopeId);
                   const strong = cellWeight(value) > 0.62;
                   return (
-                    <div key={scopeId} className="flex w-[92px] shrink-0 flex-col items-center gap-1">
+                    <div
+                      key={scopeId}
+                      className="flex w-[92px] shrink-0 flex-col items-center gap-1"
+                    >
                       <div
                         className="flex h-[38px] w-full items-center justify-center rounded-[10px] text-[12px] font-bold transition-transform hover:scale-[1.04]"
                         style={{
@@ -598,8 +710,14 @@ function HeatmapCard({ period }) {
                       >
                         {fmt(value, 0)}
                       </div>
-                      <span className={`text-[10px] ${strong ? "text-[#0f172a]" : "text-[#94a3b8]"}`}>
-                        {((value / (mode === "total" ? total : rowVal || 1)) * 100).toFixed(0)}%
+                      <span
+                        className={`text-[10px] ${strong ? "text-[#0f172a]" : "text-[#94a3b8]"}`}
+                      >
+                        {(
+                          (value / (mode === "total" ? total : rowVal || 1)) *
+                          100
+                        ).toFixed(0)}
+                        %
                       </span>
                     </div>
                   );
@@ -607,12 +725,17 @@ function HeatmapCard({ period }) {
 
                 {/* Tổng + thanh tỉ trọng */}
                 <div className="flex min-w-[120px] flex-1 flex-col items-end gap-[6px]">
-                  <span className="text-[13px] font-bold text-[#0f172a]">{fmt(rowVal)} tấn</span>
+                  <span className="text-[13px] font-bold text-[#0f172a]">
+                    {fmt(rowVal)} tấn
+                  </span>
                   <div className="flex w-full items-center justify-end gap-2">
                     <div className="h-[6px] w-full max-w-[110px] overflow-hidden rounded-full bg-white/70">
                       <div
                         className="h-full rounded-full transition-[width] duration-500"
-                        style={{ width: `${(rowVal / maxForBar) * 100}%`, backgroundColor: COLOR.emeraldDark }}
+                        style={{
+                          width: `${(rowVal / maxForBar) * 100}%`,
+                          backgroundColor: COLOR.emeraldDark,
+                        }}
                       />
                     </div>
                     <span className="w-[42px] shrink-0 text-right text-[11px] font-semibold text-[#64748b]">
@@ -654,22 +777,44 @@ function NetZeroPanel({ period }) {
   const gap = totalActual - totalPlan;
 
   // Tiến độ giảm phát thải so với mốc cơ sở 2021 (lấy theo mốc Năm)
-  const baseline = SCOPE_DATA.year.scope1.value + SCOPE_DATA.year.scope2.value + SCOPE_DATA.year.scope3.value;
-  const yearActual = SCOPE_DATA.year.scope1.value + SCOPE_DATA.year.scope2.value + SCOPE_DATA.year.scope3.value;
+  const baseline =
+    SCOPE_DATA.year.scope1.value +
+    SCOPE_DATA.year.scope2.value +
+    SCOPE_DATA.year.scope3.value;
+  const yearActual =
+    SCOPE_DATA.year.scope1.value +
+    SCOPE_DATA.year.scope2.value +
+    SCOPE_DATA.year.scope3.value;
   const reduction = ((baseline - yearActual) / baseline) * 100;
 
   return (
-    <section className={`${GLASS} flex w-full shrink-0 flex-col gap-5 p-5 xl:w-[400px]`}>
+    <section
+      className={`${GLASS} flex w-full shrink-0 flex-col gap-5 p-4 sm:p-5 xl:w-[400px]`}
+    >
       <div className="flex items-center gap-2">
         <Activity size={18} strokeWidth={2.2} color={COLOR.emeraldDark} />
-        <h2 className="text-[15px] font-bold text-[#0f172a]">Lộ trình Net Zero</h2>
+        <h2 className="text-[15px] font-bold text-[#0f172a]">
+          Lộ trình Net Zero
+        </h2>
       </div>
 
       {/* Vòng tròn tiến độ */}
       <div className="flex items-center gap-4">
         <div className="relative h-[126px] w-[126px] shrink-0">
-          <svg viewBox="0 0 126 126" className="h-full w-full" role="img" aria-label="Tiến độ giảm phát thải">
-            <circle cx="63" cy="63" r="52" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="14" />
+          <svg
+            viewBox="0 0 126 126"
+            className="h-full w-full"
+            role="img"
+            aria-label="Tiến độ giảm phát thải"
+          >
+            <circle
+              cx="63"
+              cy="63"
+              r="52"
+              fill="none"
+              stroke="rgba(255,255,255,0.7)"
+              strokeWidth="14"
+            />
             <circle
               cx="63"
               cy="63"
@@ -683,7 +828,9 @@ function NetZeroPanel({ period }) {
             />
           </svg>
           <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
-            <span className="text-[20px] font-extrabold text-[#0f172a]">{reduction.toFixed(1)}%</span>
+            <span className="text-[20px] font-extrabold text-[#0f172a]">
+              {reduction.toFixed(1)}%
+            </span>
             <span className="text-[10px] text-[#64748b]">đã giảm</span>
           </div>
         </div>
@@ -691,15 +838,23 @@ function NetZeroPanel({ period }) {
         <ul className="flex min-w-0 flex-1 flex-col gap-[10px]">
           <li className="flex flex-col gap-[2px]">
             <span className="text-[11px] text-[#64748b]">Mốc cơ sở</span>
-            <span className="text-[13px] font-semibold text-[#0f172a]">{NET_ZERO.baseline} · {fmt(baseline, 0)} tấn</span>
+            <span className="text-[13px] font-semibold text-[#0f172a]">
+              {NET_ZERO.baseline} · {fmt(baseline, 0)} tấn
+            </span>
           </li>
           <li className="flex flex-col gap-[2px]">
-            <span className="text-[11px] text-[#64748b]">Mục tiêu Net Zero</span>
-            <span className="text-[13px] font-semibold text-[#0f172a]">{NET_ZERO.targetYear}</span>
+            <span className="text-[11px] text-[#64748b]">
+              Mục tiêu Net Zero
+            </span>
+            <span className="text-[13px] font-semibold text-[#0f172a]">
+              {NET_ZERO.targetYear}
+            </span>
           </li>
           <li className="flex flex-col gap-[2px]">
             <span className="text-[11px] text-[#64748b]">Lộ trình</span>
-            <span className="text-[13px] font-semibold text-[#059669]">{NET_ZERO.plan}</span>
+            <span className="text-[13px] font-semibold text-[#059669]">
+              {NET_ZERO.plan}
+            </span>
           </li>
         </ul>
       </div>
@@ -711,28 +866,48 @@ function NetZeroPanel({ period }) {
         }`}
       >
         {gap > 0 ? (
-          <Info size={17} strokeWidth={2.4} color="#b45309" className="mt-[2px] shrink-0" />
+          <Info
+            size={17}
+            strokeWidth={2.4}
+            color="#b45309"
+            className="mt-[2px] shrink-0"
+          />
         ) : (
-          <TrendingDown size={17} strokeWidth={2.4} color={COLOR.emeraldDark} className="mt-[2px] shrink-0" />
+          <TrendingDown
+            size={17}
+            strokeWidth={2.4}
+            color={COLOR.emeraldDark}
+            className="mt-[2px] shrink-0"
+          />
         )}
         <div className="flex flex-col gap-[2px]">
-          <span className={`text-[12px] font-bold ${gap > 0 ? "text-[#b45309]" : "text-[#059669]"}`}>
-            {gap > 0 ? `Vượt hạn mức ${fmt(gap)} tấn CO2e` : `Dưới hạn mức ${fmt(Math.abs(gap))} tấn CO2e`}
+          <span
+            className={`text-[12px] font-bold ${gap > 0 ? "text-[#b45309]" : "text-[#059669]"}`}
+          >
+            {gap > 0
+              ? `Vượt hạn mức ${fmt(gap)} tấn CO2e`
+              : `Dưới hạn mức ${fmt(Math.abs(gap))} tấn CO2e`}
           </span>
           <span className="text-[11px] text-[#64748b]">
-            Tổng thực tế {fmt(totalActual)} tấn vs hạn mức {fmt(totalPlan, 0)} tấn ({PERIOD_LABEL[period].title})
+            Tổng thực tế {fmt(totalActual)} tấn vs hạn mức {fmt(totalPlan, 0)}{" "}
+            tấn ({PERIOD_LABEL[period].title})
           </span>
         </div>
       </div>
 
       {/* Cơ cấu theo Scope */}
       <div className="flex flex-col gap-3">
-        <h3 className="text-[13px] font-bold text-[#0f172a]">Cơ cấu phát thải theo Scope</h3>
+        <h3 className="text-[13px] font-bold text-[#0f172a]">
+          Cơ cấu phát thải theo Scope
+        </h3>
         <div className="flex h-[10px] w-full overflow-hidden rounded-full">
           {SCOPES.map((s) => (
             <span
               key={s.id}
-              style={{ width: `${(data[s.id].value / totalActual) * 100}%`, backgroundColor: s.color }}
+              style={{
+                width: `${(data[s.id].value / totalActual) * 100}%`,
+                backgroundColor: s.color,
+              }}
               title={`${s.name}: ${fmt(data[s.id].value)} tấn`}
             />
           ))}
@@ -740,8 +915,13 @@ function NetZeroPanel({ period }) {
         <ul className="flex flex-col gap-[6px]">
           {SCOPES.map((s) => (
             <li key={s.id} className="flex items-center gap-2">
-              <span className="h-[10px] w-[10px] shrink-0 rounded-[3px]" style={{ backgroundColor: s.color }} />
-              <span className="flex-1 text-[12px] font-medium text-[#0f172a]">{s.name}</span>
+              <span
+                className="h-[10px] w-[10px] shrink-0 rounded-[3px]"
+                style={{ backgroundColor: s.color }}
+              />
+              <span className="flex-1 text-[12px] font-medium text-[#0f172a]">
+                {s.name}
+              </span>
               <span className="whitespace-nowrap text-[12px] font-semibold text-[#64748b]">
                 {((data[s.id].value / totalActual) * 100).toFixed(1)}%
               </span>
@@ -765,13 +945,16 @@ export default function CarbonEmissions() {
   );
 
   return (
-    <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-6 p-6">
+    <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
       {/* Tiêu đề trang + bộ lọc thời gian */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-col gap-[6px]">
-          <h1 className="text-[24px] font-extrabold text-[#0f172a]">Phát thải carbon</h1>
-          <p className="text-[14px] text-[#64748b]">
-            Kiểm kê khí nhà kính theo GHG Protocol · {PERIOD_LABEL[period].title} · Tổng{" "}
+          <h1 className="text-[20px] font-extrabold leading-tight text-[#0f172a] sm:text-[24px]">
+            Phát thải carbon
+          </h1>
+          <p className="text-[13px] leading-snug text-[#64748b] sm:text-[14px]">
+            Kiểm kê khí nhà kính theo GHG Protocol ·{" "}
+            {PERIOD_LABEL[period].title} · Tổng{" "}
             <b className="text-[#0f172a]">{fmt(total)} tấn CO2e</b>
           </p>
         </div>

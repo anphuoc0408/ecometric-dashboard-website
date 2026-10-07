@@ -10,13 +10,30 @@
  *
  * Xuất kèm `QRCodeModal` nếu chỉ muốn dùng phần hộp thoại.
  *
+ * Cách căn giữa (quan trọng):
+ *   Hộp thoại được render qua `createPortal` vào `document.body`.
+ *   Lý do: nút QR nằm trong <header> của Topbar, mà header có
+ *   `backdrop-filter: blur(24px)`. Theo spec CSS, phần tử có backdrop-filter
+ *   sẽ trở thành CONTAINING BLOCK cho mọi `position: fixed` bên trong nó.
+ *   Hệ quả: `fixed inset-0` bị neo vào thanh Topbar cao ~64px thay vì toàn
+ *   màn hình → modal bị dồn lên mép trên. Portal đưa modal ra ngoài header
+ *   nên `inset-0` luôn phủ đúng toàn viewport.
+ *
+ *   Khi đó việc căn giữa dùng lớp `min-h-full` + `flex items-center`
+ *   (KHÔNG dùng `items-center` trực tiếp trên hộp cuộn, vì flex item cao
+ *   hơn vùng cuộn sẽ bị cắt ở mép trên và không cuộn tới được).
+ *
  * Lưu ý: `imageSettings` cần được cấu hình TRƯỚC khi QR render.
  * Vì logo tải bất đồng bộ, ta bật cờ `logoReady` sau khi ảnh load xong
  * để QRCodeSVG vẽ lại kèm logo ở giữa (excavate để không phá mã).
  */
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
 import { Check, Copy, Download, Leaf, Link2, QrCode, X } from "lucide-react";
+
+// Thời lượng hiệu ứng đóng (ms) – phải khớp với class `duration-200` bên dưới.
+const CLOSE_ANIMATION_MS = 200;
 
 export const DEFAULT_URL = "https://ecometric-dashboard-website.vercel.app/";
 
@@ -43,7 +60,17 @@ export function QRCodeModal({
 }) {
   const [logoReady, setLogoReady] = useState(false);
   const [copied, setCopied] = useState(false);
+  // `closing` bật hiệu ứng fade-out + scale-down trước khi unmount hẳn.
+  const [closing, setClosing] = useState(false);
   const canvasHostRef = useRef(null);
+  const closeTimer = useRef(null);
+
+  // Đóng có hiệu ứng: chạy animation rồi mới gọi onClose của component cha.
+  const requestClose = () => {
+    if (closing) return;
+    setClosing(true);
+    closeTimer.current = window.setTimeout(() => onClose?.(), CLOSE_ANIMATION_MS);
+  };
 
   // Cấu hình logo chỉ khi ảnh đã sẵn sàng (tránh render logo rỗng).
   const imageSettings = useMemo(
@@ -58,14 +85,27 @@ export function QRCodeModal({
 
   const effectiveImageSettings = logoReady ? imageSettings : undefined;
 
-  // Đóng hộp thoại bằng phím Esc
+  // Đóng hộp thoại bằng phím Esc (kèm hiệu ứng đóng)
   useEffect(() => {
     const onKeyDown = (e) => {
-      if (e.key === "Escape") onClose?.();
+      if (e.key === "Escape") requestClose();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onClose]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [closing]);
+
+  // Dọn timer khi unmount để không gọi setState trên component đã gỡ
+  useEffect(() => () => window.clearTimeout(closeTimer.current), []);
+
+  // Khoá cuộn trang nền khi hộp thoại đang mở
+  useEffect(() => {
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, []);
 
   const handleCopy = async () => {
     try {
@@ -100,20 +140,28 @@ export function QRCodeModal({
     document.body.removeChild(link);
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-[#0f172a]/35 p-4 backdrop-blur-[6px] sm:p-6"
+      className={`fixed inset-0 z-50 overflow-y-auto bg-black/50 p-4 backdrop-blur-sm transition-all duration-200 ease-out sm:p-6 ${
+        closing ? "opacity-0" : "opacity-100"
+      }`}
       role="dialog"
       aria-modal="true"
       aria-labelledby="qr-share-title"
-      onClick={onClose}
+      onClick={requestClose}
     >
-      <div
-        className="my-auto flex w-full max-w-[380px] flex-col gap-4 rounded-2xl border border-slate-200 bg-white/95 p-6 shadow-2xl backdrop-blur-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Tiêu đề */}
-        <div className="flex items-start justify-between gap-3">
+      {/* Lớp căn giữa: `min-h-full` + `flex items-center` buộc thẻ nằm giữa
+          chiều cao màn hình; khi thẻ cao hơn màn hình thì lớp này tự cao
+          theo nội dung nên vẫn cuộn xem được trọn vẹn từ trên xuống. */}
+      <div className="flex min-h-full items-center justify-center">
+        <div
+          className={`relative flex w-full max-w-[380px] flex-col gap-4 rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-2xl backdrop-blur-xl transition-all duration-200 ease-out sm:p-6 ${
+            closing ? "scale-95 opacity-0" : "scale-100 opacity-100"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+        {/* Tiêu đề + nút đóng (neo góc trên bên phải, vùng chạm 40×40) */}
+        <div className="flex items-start justify-between gap-3 pr-11">
           <div className="flex min-w-0 items-center gap-2">
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[#10b981]/10">
               <QrCode size={18} strokeWidth={2.2} color="#059669" />
@@ -125,16 +173,16 @@ export function QRCodeModal({
               <p className="text-[12px] text-[#64748b]">{title}</p>
             </div>
           </div>
-
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Đóng mã QR"
-            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/70 text-[#64748b] transition-all hover:bg-white hover:text-[#0f172a] ${FOCUS}`}
-          >
-            <X size={17} strokeWidth={2.4} />
-          </button>
         </div>
+
+        <button
+          type="button"
+          onClick={requestClose}
+          aria-label="Đóng mã QR"
+          className={`absolute right-3 top-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#e2e8f0] bg-white text-[#64748b] shadow-sm transition-all hover:bg-[#f1f5f9] hover:text-[#0f172a] active:scale-[0.94] sm:right-4 sm:top-4 ${FOCUS}`}
+        >
+          <X size={18} strokeWidth={2.4} />
+        </button>
 
       {/* Mã QR */}
       <div className="flex flex-col items-center gap-3">
@@ -224,8 +272,10 @@ export function QRCodeModal({
         className="hidden"
         onLoad={() => setLogoReady(true)}
       />
+        </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

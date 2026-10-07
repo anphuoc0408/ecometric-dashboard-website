@@ -355,7 +355,7 @@ function CompanyCard({ company, onSaved }) {
   };
 
   return (
-    <form onSubmit={save} className={`${GLASS} flex flex-col gap-5 p-5`}>
+    <form onSubmit={save} className={`${GLASS} flex flex-col gap-4 p-4 sm:gap-5 sm:p-5`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#10b981]/14">
@@ -489,7 +489,7 @@ function SitesCard() {
   const totalArea = useMemo(() => SITES.reduce((s, x) => s + x.area, 0), []);
 
   return (
-    <section className={`${GLASS} flex flex-col gap-4 p-5`}>
+    <section className={`${GLASS} flex flex-col gap-4 p-4 sm:p-5`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#10b981]/14">
@@ -594,7 +594,7 @@ function EmissionFactorsCard({ onSaved }) {
   const changedCount = factors.filter((f) => Math.abs(f.ef - f.ref) > 0.00005).length;
 
   return (
-    <section className={`${GLASS} flex flex-col gap-5 p-5`}>
+    <section className={`${GLASS} flex flex-col gap-4 p-4 sm:gap-5 sm:p-5`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#10b981]/14">
@@ -736,7 +736,7 @@ function ThresholdsCard({ onSaved }) {
   const enabledCount = rows.filter((r) => r.enabled).length;
 
   return (
-    <section className={`${GLASS} flex flex-col gap-5 p-5`}>
+    <section className={`${GLASS} flex flex-col gap-4 p-4 sm:gap-5 sm:p-5`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#fef3c7]">
@@ -924,7 +924,7 @@ function UsersCard({ onSaved }) {
   const tabs = [{ id: "all", label: "Tất cả", color: COLOR.emeraldDark }, ...Object.entries(ROLES).map(([id, r]) => ({ id, label: r.label, color: r.color }))];
 
   return (
-    <section className={`${GLASS} flex flex-col gap-4 p-5`}>
+    <section className={`${GLASS} flex flex-col gap-4 p-4 sm:p-5`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#10b981]/14">
@@ -1126,12 +1126,12 @@ export default function Settings() {
   const notify = (message) => setToast({ message });
 
   return (
-    <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-6 p-6">
+    <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
       {/* Tiêu đề trang + thông báo */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-col gap-[6px]">
-          <h1 className="text-[24px] font-extrabold text-[#0f172a]">Cài đặt</h1>
-          <p className="text-[14px] text-[#64748b]">
+          <h1 className="text-[20px] font-extrabold leading-tight text-[#0f172a] sm:text-[24px]">Cài đặt</h1>
+          <p className="text-[13px] leading-snug text-[#64748b] sm:text-[14px]">
             Thông tin doanh nghiệp, hệ số phát thải, ngưỡng cảnh báo và phân quyền người dùng
           </p>
         </div>

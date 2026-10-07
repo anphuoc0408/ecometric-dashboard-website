@@ -51,6 +51,8 @@ const FIELD =
   "w-full rounded-[12px] border-white/70 bg-white/60 px-3 py-[10px] text-[13px] text-[#0f172a] " +
   "placeholder:text-[#94a3b8] outline-none backdrop-blur-[12px] transition-shadow " +
   "focus:border-[#10b981]/60 focus:bg-white/85 focus:shadow-[0_0_0_3px_rgba(16,185,129,0.18)]";
+// Đệm trong thẻ kính: nhỏ hơn trên di động (rộng rãi cho nội dung), đủ thoáng từ sm.
+const GLASS_PAD_MD = `${GLASS} flex-col gap-4 p-4 sm:gap-5 sm:p-6`;
 const LABEL = "flex items-center gap-[6px] text-[12px] font-semibold text-[#64748b]";
 
 /* ────────────────────────────────
@@ -239,7 +241,7 @@ function ConsumptionForm({ onAdd }) {
   };
 
   return (
-    <section className={`${GLASS} flex-col gap-5 p-6`}>
+    <section className={`${GLASS_PAD_MD} p-4 sm:p-6`}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-col gap-1">
           <h2 className="text-[16px] font-bold text-[#0f172a]">Nhập liệu tiêu thụ năng lượng / nguyên liệu</h2>
@@ -532,7 +534,7 @@ function RecordsTable({ records }) {
   ];
 
   return (
-    <section className={`${GLASS} flex-col gap-4 p-6`}>
+    <section className={`${GLASS_PAD_MD} p-4 sm:p-6`}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-col gap-1">
           <h2 className="text-[16px] font-bold text-[#0f172a]">Danh sách bản ghi dữ liệu vận hành</h2>
@@ -646,11 +648,11 @@ export default function DataInput() {
     setRecords((prev) => [{ ...record, id: `${record.id}` }, ...prev]);
 
   return (
-    <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-6 p-6">
+    <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
       {/* Tiêu đề trang */}
       <div className="flex flex-col gap-[6px]">
-        <h1 className="text-[24px] font-extrabold text-[#0f172a]">Dữ liệu vận hành</h1>
-        <p className="text-[14px] text-[#64748b]">
+        <h1 className="text-[20px] font-extrabold leading-tight text-[#0f172a] sm:text-[24px]">Dữ liệu vận hành</h1>
+        <p className="text-[13px] leading-snug text-[#64748b] sm:text-[14px]">
           Nhập liệu tiêu thụ năng lượng, nước, nhiên liệu và nguyên liệu theo nhà xưởng
         </p>
       </div>

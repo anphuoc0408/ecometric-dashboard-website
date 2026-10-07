@@ -331,7 +331,7 @@ function FrameworkCard({ framework, active, onSelect }) {
 
   return (
     <article
-      className={`${GLASS} relative flex cursor-pointer flex-col gap-4 overflow-hidden p-5 ${
+      className={`${GLASS} relative flex cursor-pointer flex-col gap-4 overflow-hidden p-4 sm:p-5 ${
         active ? "ring-2 ring-white/80" : ""
       }`}
       onClick={() => onSelect(framework.id)}
@@ -541,7 +541,7 @@ function EsgTable({ period }) {
   };
 
   return (
-    <section className={`${GLASS} flex min-w-0 flex-1 flex-col gap-4 p-5`}>
+    <section className={`${GLASS} flex min-w-0 flex-1 flex-col gap-4 p-4 sm:p-5`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
           <h2 className="text-[16px] font-bold text-[#0f172a]">Bảng tổng hợp chỉ số E-S-G</h2>
@@ -665,7 +665,7 @@ function ExportPanel({ period, onPeriodChange, selected, onToggle, onExport, mes
   );
 
   return (
-    <section className={`${GLASS} flex flex-col gap-5 p-5`}>
+    <section className={`${GLASS} flex flex-col gap-4 p-4 sm:gap-5 sm:p-5`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
@@ -787,7 +787,7 @@ function ExportPanel({ period, onPeriodChange, selected, onToggle, onExport, mes
 /* ── Panel phụ: mức độ sẵn sàng kiểm toán + kế hoạch hành động ── */
 function ReadinessPanel() {
   return (
-    <section className={`${GLASS} flex w-full shrink-0 flex-col gap-5 p-5 xl:w-[400px]`}>
+    <section className={`${GLASS} flex w-full shrink-0 flex-col gap-5 p-4 sm:p-5 xl:w-[400px]`}>
       <div className="flex items-center gap-2">
         <ShieldCheck size={18} strokeWidth={2.2} color={COLOR.emeraldDark} />
         <h2 className="text-[15px] font-bold text-[#0f172a]">Mức độ sẵn sàng kiểm toán</h2>
@@ -888,12 +888,12 @@ export default function ESGReporting() {
   const openRequirements = requirementList.filter((r) => !r.ok);
 
   return (
-    <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-6 p-6">
+    <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
       {/* Tiêu đề trang */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-col gap-[6px]">
-          <h1 className="text-[24px] font-extrabold text-[#0f172a]">Báo cáo ESG</h1>
-          <p className="text-[14px] text-[#64748b]">
+          <h1 className="text-[20px] font-extrabold leading-tight text-[#0f172a] sm:text-[24px]">Báo cáo ESG</h1>
+          <p className="text-[13px] leading-snug text-[#64748b] sm:text-[14px]">
             Tiến độ chuẩn hoá theo GRI, SASB, TCFD · Chỉ số E-S-G và xuất hồ sơ công bố ·{" "}
             <b className="text-[#0f172a]">{PERIOD_TITLE[period]}</b>
           </p>
@@ -924,7 +924,7 @@ export default function ESGReporting() {
       </div>
 
       {/* Yêu cầu còn thiếu của bộ tiêu chuẩn đang chọn */}
-      <div className={`${GLASS} flex flex-col gap-4 p-5`}>
+      <div className={`${GLASS} flex flex-col gap-4 p-4 sm:p-5`}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-col gap-1">
             <h2 className="text-[15px] font-bold text-[#0f172a]">
