@@ -25,6 +25,8 @@ import {
   Zap,
 } from "lucide-react";
 
+import DataUploader from "./components/DataUploader.jsx";
+
 /* ────────────────────────────────
    1. DESIGN TOKENS (kế thừa bảng màu của Dashboard)
    ──────────────────────────────── */
@@ -647,6 +649,21 @@ export default function DataInput() {
   const addRecord = (record) =>
     setRecords((prev) => [{ ...record, id: `${record.id}` }, ...prev]);
 
+  // Nhận danh sách bản ghi hợp lệ từ DataUploader (tệp Excel/CSV) và thêm vào bảng.
+  const addRecords = (rows) =>
+    setRecords((prev) => [
+      ...rows.map((r, i) => ({
+        id: `IMP-${Date.now().toString(36).toUpperCase()}-${i + 1}`,
+        typeId: r.typeId,
+        factory: r.factory,
+        quantity: r.quantity,
+        unit: r.unit,
+        date: r.date,
+        invoice: "",
+      })),
+      ...prev,
+    ]);
+
   return (
     <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
       {/* Tiêu đề trang */}
@@ -657,7 +674,10 @@ export default function DataInput() {
         </p>
       </div>
 
-      {/* Form nhập liệu */}
+      {/* Nhập dữ liệu từ tệp Excel / CSV (kéo-thả + xem trước) */}
+      <DataUploader onSave={addRecords} />
+
+      {/* Form nhập liệu thủ công */}
       <ConsumptionForm onAdd={addRecord} />
 
       {/* Bảng danh sách + lọc + phân trang */}

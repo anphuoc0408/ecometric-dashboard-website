@@ -41,6 +41,8 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import { getRecommendations } from "./services/api.js";
+import useApiData from "./hooks/useApiData.js";
 
 /* ────────────────────────────────
    0. HÀM ĐỊNH DẠNG DÙNG CHUNG
@@ -1023,11 +1025,29 @@ export default function AIRecommendations() {
   // Khuyến nghị đang mở Action Plan (null = modal đóng)
   const [planItem, setPlanItem] = useState(null);
 
+  // Gọi FastAPI /recommend với thông số vận hành;
+  // nếu backend chưa chạy → hiển thị RECOMMENDATIONS mock để không trắng trang.
+  const { data: apiRecs, loading, usingFallback } = useApiData(
+    (signal) =>
+      getRecommendations(
+        { site: "Toàn hệ thống", period: "month", baselineYear: 2021 },
+        { signal },
+      ),
+    { fallbackData: RECOMMENDATIONS },
+  );
+
+  // Payload backend có thể là mảng trực tiếp, hoặc bọc trong { recommendations }.
+  const rawRecs = useMemo(() => {
+    if (Array.isArray(apiRecs)) return apiRecs;
+    if (Array.isArray(apiRecs?.recommendations)) return apiRecs.recommendations;
+    return RECOMMENDATIONS;
+  }, [apiRecs]);
+
   // Áp dụng trạng thái mới vào danh sách
   const items = useMemo(
     () =>
-      RECOMMENDATIONS.map((r) => normalizeItem(actions[r.id] ? { ...r, status: actions[r.id] } : r)),
-    [actions],
+      rawRecs.map((r) => normalizeItem(actions[r.id] ? { ...r, status: actions[r.id] } : r)),
+    [rawRecs, actions],
   );
 
   const priorityCounts = useMemo(() => {
@@ -1111,6 +1131,11 @@ export default function AIRecommendations() {
           <p className="text-[13px] leading-snug text-[#64748b] sm:text-[14px]">
             Giải pháp tối ưu năng lượng &amp; phát thải do mô hình đề xuất · Xếp hạng theo mức độ ưu tiên, chi phí và ROI
           </p>
+          {(loading || usingFallback) && (
+            <p className="text-[11px] font-semibold text-[#94a3b8]">
+              {loading ? "Đang gọi /recommend…" : "Đang dùng dữ liệu mô phỏng (backend chưa kết nối)"}
+            </p>
+          )}
         </div>
 
         {toast && (

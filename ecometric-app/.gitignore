@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Biến môi trường cục bộ – chỉ commit `.env.example`, không commit `.env`
+.env
+.env.*
+!.env.example
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

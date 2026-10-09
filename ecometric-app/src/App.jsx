@@ -53,8 +53,31 @@ import {
   REPORTS,
   RESOURCES,
   SUGGESTIONS,
+  TREND_BARS,
+  TREND_POINTS,
+  X_LABELS,
+  Y_LABELS,
 } from "./data/dashboardData.js";
+import { getDashboardData } from "./services/api.js";
+import useApiData from "./hooks/useApiData.js";
 
+
+/* ────────────────────────────────────────────────────────────────
+   DỮ LIỆU MOCK DỰ PHÒNG CHO DASHBOARD
+   Gom các hằng tĩnh vào một object để truyền làm `fallbackData` cho hook.
+   Khi backend FastAPI chưa chạy, giao diện vẫn hiển thị đủ số liệu demo.
+   ──────────────────────────────────────────────────────────────── */
+const DASHBOARD_FALLBACK = {
+  pageTitle: PAGE_TITLE,
+  pageSubtitle: PAGE_SUBTITLE,
+  metrics: METRICS,
+  priorities: ACTIONABLE_PRIORITIES,
+  trend: { points: TREND_POINTS, bars: TREND_BARS, xLabels: X_LABELS, yLabels: Y_LABELS },
+  resources: RESOURCES,
+  alerts: ALERTS,
+  suggestions: SUGGESTIONS,
+  reports: REPORTS,
+};
 
 /* ────────────────────────────────────────────────────────────────
    TRANG TỔNG QUAN (Dashboard)
@@ -63,46 +86,60 @@ function OverviewPage({ onGoToAI }) {
   // Khối "Top 3 việc cần làm ngay" mở Action Plan dạng hộp thoại ngay trên Dashboard
   const [planItem, setPlanItem] = useState(null);
 
+  // Gọi API tổng quan; nếu backend chưa sẵn sàng → dùng DASHBOARD_FALLBACK.
+  const { data, loading, usingFallback } = useApiData(
+    (signal) => getDashboardData({ period: "month", signal }),
+    { fallbackData: DASHBOARD_FALLBACK },
+  );
+
+  // Ưu tiên dữ liệu từ API, thiếu trường nào thì lấy từ mock để không vỡ layout.
+  const view = { ...DASHBOARD_FALLBACK, ...(data ?? {}) };
+
   return (
     <main className="glass flex min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
       {/* Tiêu đề trang */}
       <div className="flex flex-col gap-[6px]">
         <h1 className="text-[20px] font-extrabold leading-tight text-[#0f172a] sm:text-[24px]">
-          {PAGE_TITLE}
+          {view.pageTitle}
         </h1>
         <p className="text-[13px] leading-snug text-[#64748b] sm:text-[14px]">
-          {PAGE_SUBTITLE}
+          {view.pageSubtitle}
         </p>
+        {(loading || usingFallback) && (
+          <p className="text-[11px] font-semibold text-[#94a3b8]">
+            {loading ? "Đang tải dữ liệu từ máy chủ…" : "Đang dùng dữ liệu mô phỏng (backend chưa kết nối)"}
+          </p>
+        )}
       </div>
 
       {/* Hàng chỉ số KPI – Grid 2×2 trên mobile, 4 cột từ xl */}
-      <MetricsGrid metrics={METRICS} />
+      <MetricsGrid metrics={view.metrics} />
 
       {/* Khối nổi bật: Top 3 việc cần làm ngay trong tháng
           (thẻ dọc trên mobile → 3 cột từ xl) */}
       <ActionPriorityCardList
-        items={ACTIONABLE_PRIORITIES}
+        items={view.priorities}
         onOpenPlan={(item) => setPlanItem(item)}
         onGoToAI={onGoToAI}
       />
 
       {/* Biểu đồ + cột phải */}
       <div className="flex flex-col items-stretch gap-5 xl:flex-row">
-        <TrendChartCard />
+        <TrendChartCard trend={view.trend} />
         <div className="flex w-full shrink-0 flex-col gap-5 xl:w-[420px]">
-          <ResourceDonutCard resources={RESOURCES} />
-          <AlertsCard alerts={ALERTS} />
+          <ResourceDonutCard resources={view.resources} />
+          <AlertsCard alerts={view.alerts} />
         </div>
       </div>
 
       {/* Tải file + khuyến nghị AI */}
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
         <UploadCard />
-        <AiSuggestionsCard suggestions={SUGGESTIONS} />
+        <AiSuggestionsCard suggestions={view.suggestions} />
       </div>
 
       {/* Báo cáo: card list trên mobile, bảng trên desktop */}
-      <RecentReportsList reports={REPORTS} />
+      <RecentReportsList reports={view.reports} />
 
       {/* Hộp thoại Action Plan 5 bước */}
       {planItem && <ActionPlanModal item={planItem} onClose={() => setPlanItem(null)} />}

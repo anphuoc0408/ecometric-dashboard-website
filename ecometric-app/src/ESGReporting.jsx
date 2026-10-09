@@ -32,6 +32,14 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import { getESGReport } from "./services/api.js";
+import useApiData from "./hooks/useApiData.js";
+import {
+  buildEsgSheets,
+  exportToExcel,
+  exportToPdf,
+  buildEsgPdfTables,
+} from "./lib/export.js";
 
 /* ────────────────────────────────
    1. DESIGN TOKENS (kế thừa bảng màu của Dashboard, Phát thải carbon & Khuyến nghị AI)
@@ -516,9 +524,10 @@ function IndicatorRow({ item, pillar }) {
 }
 
 /* ── Bảng tổng hợp chỉ số E-S-G ───────────────────────────────── */
-function EsgTable({ period }) {
+function EsgTable({ period, matrix: matrixProp }) {
   const [pillarFilter, setPillarFilter] = useState("all");
-  const matrix = ESG_MATRIX[period];
+  // Ưu tiên ma trận từ API; nếu thiếu thì rơi về mock ESG_MATRIX.
+  const matrix = matrixProp?.[period] ?? ESG_MATRIX[period];
 
   const visiblePillars = pillarFilter === "all" ? PILLARS : PILLARS.filter((p) => p.id === pillarFilter);
 
@@ -656,8 +665,8 @@ function EsgTable({ period }) {
 }
 
 /* ── Khu vực xuất báo cáo tự động ─────────────────────────────── */
-function ExportPanel({ period, onPeriodChange, selected, onToggle, onExport, message }) {
-  const matrix = ESG_MATRIX[period];
+function ExportPanel({ period, onPeriodChange, selected, onToggle, onExport, message, matrix: matrixProp }) {
+  const matrix = matrixProp?.[period] ?? ESG_MATRIX[period];
   const totalIndicators = PILLARS.reduce((s, p) => s + matrix[p.id].length, 0);
   const compliantCount = PILLARS.reduce(
     (s, p) => s + matrix[p.id].filter((i) => i.compliance === "compliant").length,
@@ -859,6 +868,21 @@ export default function ESGReporting() {
   const [activeFramework, setActiveFramework] = useState("gri");
   const [selectedFormats, setSelectedFormats] = useState(["pdf", "excel"]);
   const [message, setMessage] = useState(null);
+  // Cờ đang kết xuất – tránh người dùng bấm nút nhiều lần gây tải trùng tệp.
+  const [busy, setBusy] = useState(false);
+
+  // Gọi FastAPI để lấy dữ liệu báo cáo phát thải (ma trận chỉ số E-S-G theo kỳ).
+  // Nếu backend chưa chạy → dùng ESG_MATRIX mock. Refetch khi đổi kỳ báo cáo.
+  const { data: esgData, loading, usingFallback } = useApiData(
+    (signal) => getESGReport({ period, format: "json", signal }),
+    { fallbackData: null, deps: [period] },
+  );
+
+  // Payload có thể là { matrix: {...} } hoặc chính ma trận { month, quarter, year }.
+  const matrix = useMemo(() => {
+    const raw = esgData?.matrix ?? esgData;
+    return raw && (raw.month || raw.quarter || raw.year) ? raw : ESG_MATRIX;
+  }, [esgData]);
 
   const toggleFormat = (id) => {
     setMessage(null);
@@ -876,7 +900,51 @@ export default function ESGReporting() {
         ? `Đang tạo bản xem trước cho ${PERIOD_TITLE[period]}…`
         : `Đã kết xuất ${names} · ${PERIOD_TITLE[period]}`,
     );
-    // TODO: gọi API kết xuất báo cáo tại đây
+    // TODO: gọi API kết xuất báo cáo tại đây (src/services/api.js).
+  };
+
+  /* ── Xuất EXCEL: toàn bộ bảng chỉ số E-S-G thành các sheet ───────── */
+  const handleExportExcel = async () => {
+    setMessage(null);
+    setBusy(true);
+    try {
+      const fileName = await exportToExcel({
+        fileName: `ecometric-esg-${period}`,
+        sheets: buildEsgSheets({ matrix: matrix[period], periodLabel: PERIOD_TITLE[period], pillars: PILLARS }),
+      });
+      setMessage(`Đã xuất dữ liệu Excel: ${fileName}`);
+    } catch (err) {
+      setMessage(`Lỗi xuất Excel: ${err?.message ?? "không xác định"}`);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  /* ── Xuất PDF: báo cáo đầy đủ theo kỳ đang chọn ─────────────────── */
+  const handleExportPdf = async () => {
+    setMessage(null);
+    setBusy(true);
+    try {
+      const all = PILLARS.flatMap((p) => matrix[period][p.id]);
+      const compliant = all.filter((i) => i.compliance === "compliant").length;
+      const fileName = await exportToPdf({
+        fileName: `ecometric-esg-${period}`,
+        title: "BÁO CÁO BỀN VỮNG ESG",
+        subtitle: "EcoMetric – Nền tảng quản lý dữ liệu vận hành & theo dõi giảm phát thải CO2e",
+        meta: [
+          `Kỳ báo cáo: ${PERIOD_TITLE[period]}`,
+          `Tổng số chỉ số công bố: ${all.length}`,
+          `Tuân thủ đầy đủ: ${compliant}/${all.length} (${all.length ? Math.round((compliant / all.length) * 100) : 0}%)`,
+          `Ngày kết xuất: ${new Date().toLocaleString("vi-VN")}`,
+        ],
+        tables: buildEsgPdfTables({ matrix: matrix[period], pillars: PILLARS }),
+      });
+      setMessage(`Đã tải báo cáo PDF: ${fileName}`);
+    } catch (err) {
+      setMessage(`Lỗi xuất PDF: ${err?.message ?? "không xác định"}`);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const averageCoverage = Math.round(
@@ -897,12 +965,41 @@ export default function ESGReporting() {
             Tiến độ chuẩn hoá theo GRI, SASB, TCFD · Chỉ số E-S-G và xuất hồ sơ công bố ·{" "}
             <b className="text-[#0f172a]">{PERIOD_TITLE[period]}</b>
           </p>
+          {(loading || usingFallback) && (
+            <p className="text-[11px] font-semibold text-[#94a3b8]">
+              {loading ? "Đang tải báo cáo ESG…" : "Đang dùng dữ liệu mô phỏng (backend chưa kết nối)"}
+            </p>
+          )}
         </div>
 
-        <span className={LABEL}>
-          <Zap size={13} strokeWidth={2.4} /> Mức độ chuẩn hoá trung bình
-          <b className="ml-1 text-[13px] text-[#059669]">{averageCoverage}%</b>
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className={LABEL}>
+            <Zap size={13} strokeWidth={2.4} /> Mức độ chuẩn hoá trung bình
+            <b className="ml-1 text-[13px] text-[#059669]">{averageCoverage}%</b>
+          </span>
+
+          {/* Xuất dữ liệu Excel (toàn bộ bảng chỉ số E-S-G) */}
+          <button
+            type="button"
+            onClick={handleExportExcel}
+            disabled={busy}
+            className={BTN_GHOST}
+          >
+            <FileSpreadsheet size={15} strokeWidth={2.4} />
+            Xuất dữ liệu Excel
+          </button>
+
+          {/* Tải báo cáo PDF */}
+          <button
+            type="button"
+            onClick={handleExportPdf}
+            disabled={busy}
+            className={BTN_PRIMARY}
+          >
+            <Download size={15} strokeWidth={2.6} />
+            {busy ? "Đang kết xuất…" : "Tải báo cáo PDF"}
+          </button>
+        </div>
       </div>
 
       {/* Thẻ tiến độ theo bộ tiêu chuẩn quốc tế */}
@@ -919,7 +1016,7 @@ export default function ESGReporting() {
 
       {/* Chi tiết bộ tiêu chuẩn đang chọn + bảng E-S-G */}
       <div className="flex flex-col items-stretch gap-5 xl:flex-row">
-        <EsgTable period={period} />
+        <EsgTable period={period} matrix={matrix} />
         <ReadinessPanel />
       </div>
 
@@ -973,6 +1070,7 @@ export default function ESGReporting() {
         onToggle={toggleFormat}
         onExport={handleExport}
         message={message}
+        matrix={matrix}
       />
     </main>
   );

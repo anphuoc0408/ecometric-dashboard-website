@@ -14,8 +14,17 @@ import {
 import { CARD } from "../lib/format.js";
 import DataProvenanceTag from "./DataProvenanceTag.jsx";
 
-export default function TrendChartCard() {
-  const linePoints = TREND_POINTS.map(([x, y]) => `${x},${y}`).join(" ");
+export default function TrendChartCard({ trend }) {
+  // `trend` đến từ API (shape { points, bars, xLabels, yLabels }); nếu thiếu
+  // thì rơi về dữ liệu tĩnh để component vẫn render được khi gọi <TrendChartCard />.
+  const {
+    points = TREND_POINTS,
+    bars = TREND_BARS,
+    xLabels = X_LABELS,
+    yLabels = Y_LABELS,
+  } = trend ?? {};
+
+  const linePoints = points.map(([x, y]) => `${x},${y}`).join(" ");
 
   return (
     <section
@@ -48,7 +57,7 @@ export default function TrendChartCard() {
         aria-label="Biểu đồ đường thể hiện lượng phát thải CO2e theo 12 tháng"
       >
         {/* Lưới ngang + nhãn trục Y */}
-        {Y_LABELS.map((label, i) => (
+        {yLabels.map((label, i) => (
           <g key={label}>
             <line
               x1="0"
@@ -72,7 +81,7 @@ export default function TrendChartCard() {
 
         {/* Cột nền + đường xu hướng (vùng vẽ bắt đầu tại 40,20) */}
         <g transform="translate(40 20)">
-          {TREND_BARS.map(([x, y, w, h]) => (
+          {bars.map(([x, y, w, h]) => (
             <rect
               key={x}
               x={x}
@@ -93,14 +102,15 @@ export default function TrendChartCard() {
         </g>
 
         {/* Nhãn trục X – mobile chỉ hiện T1 / T6 / T12 để tránh dồn chữ */}
-        {X_LABELS.map((label, i) => {
+        {xLabels.map((label, i) => {
           const isKeyLabel = i === 0 || i === 5 || i === 11;
+          const lastIndex = Math.max(xLabels.length - 1, 1);
           return (
             <text
               key={label}
-              x={40 + (i / 11) * 640}
+              x={40 + (i / lastIndex) * 640}
               y="240"
-              textAnchor={i === 0 ? "start" : i === 11 ? "end" : "middle"}
+              textAnchor={i === 0 ? "start" : i === lastIndex ? "end" : "middle"}
               dominantBaseline="central"
               fontSize="11"
               fill={COLOR.muted}

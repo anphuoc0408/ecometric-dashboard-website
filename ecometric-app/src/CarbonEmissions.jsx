@@ -15,7 +15,9 @@ import {
   Building2,
   CalendarRange,
   CircleDot,
+  Download,
   Factory,
+  FileSpreadsheet,
   Flame,
   Info,
   Package,
@@ -24,6 +26,12 @@ import {
   TrendingUp,
   Truck,
 } from "lucide-react";
+import {
+  buildCarbonSheets,
+  buildCarbonPdfTables,
+  exportToExcel,
+  exportToPdf,
+} from "./lib/export.js";
 
 /* ────────────────────────────────
    1. DESIGN TOKENS (kế thừa bảng màu của Dashboard)
@@ -47,6 +55,14 @@ const FOCUS =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#10b981]";
 const LABEL =
   "flex items-center gap-[6px] text-[12px] font-semibold text-[#64748b]";
+
+// Nút hành động xuất tệp – đồng bộ với trang Báo cáo ESG.
+const BTN_PRIMARY =
+  "inline-flex items-center justify-center gap-2 rounded-[12px] bg-[#10b981] px-4 py-[10px] " +
+  `text-[13px] font-semibold text-white transition-all hover:bg-[#0ea371] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-[#10b981] ${FOCUS}`;
+const BTN_GHOST =
+  "inline-flex items-center justify-center gap-2 rounded-[12px] border border-white/70 bg-white/60 px-4 py-[10px] " +
+  `text-[13px] font-semibold text-[#0f172a] backdrop-blur-[12px] transition-all hover:bg-white active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 ${FOCUS}`;
 
 /* ────────────────────────────────
    2. DỮ LIỆU MẪU (thay bằng API sau này)
@@ -938,11 +954,67 @@ function NetZeroPanel({ period }) {
    ──────────────────────────────── */
 export default function CarbonEmissions() {
   const [period, setPeriod] = useState("month");
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState(null);
   const scopeData = SCOPE_DATA[period];
   const total = useMemo(
     () => SCOPES.reduce((s, x) => s + scopeData[x.id].value, 0),
     [scopeData],
   );
+
+  /* ── Xuất EXCEL: Scope 1/2/3 tổng hợp + phân bổ theo cơ sở ─────── */
+  const handleExcel = async () => {
+    setMsg(null);
+    setBusy(true);
+    try {
+      const fileName = await exportToExcel({
+        fileName: `ecometric-carbon-${period}`,
+        sheets: buildCarbonSheets({
+          scopes: SCOPES,
+          scopeData,
+          periodLabel: PERIOD_LABEL[period].title,
+          sites: SITES,
+          siteMatrix: SITE_MATRIX[period],
+        }),
+      });
+      setMsg(`Đã xuất dữ liệu Excel: ${fileName}`);
+    } catch (err) {
+      setMsg(`Lỗi xuất Excel: ${err?.message ?? "không xác định"}`);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  /* ── Tải báo cáo PDF: toàn bộ bảng chỉ số Scope 1/2/3 ──────────── */
+  const handlePdf = async () => {
+    setMsg(null);
+    setBusy(true);
+    try {
+      const fileName = await exportToPdf({
+        fileName: `ecometric-carbon-${period}`,
+        title: "BAO CAO PHAT THAI CARBON",
+        subtitle:
+          "EcoMetric - Kiem ke khi nha kinh theo GHG Protocol (Scope 1 / 2 / 3)",
+        meta: [
+          `Moc thoi gian: ${PERIOD_LABEL[period].title}`,
+          `Tong phat thai: ${total.toLocaleString("vi-VN")} tan CO2e`,
+          `So co so: ${SITES.length}`,
+          `Ngay ket xuat: ${new Date().toLocaleString("vi-VN")}`,
+        ],
+        tables: buildCarbonPdfTables({
+          scopes: SCOPES,
+          scopeData,
+          sites: SITES,
+          siteMatrix: SITE_MATRIX[period],
+        }),
+      });
+      setMsg(`Đã tải báo cáo PDF: ${fileName}`);
+    } catch (err) {
+      setMsg(`Lỗi xuất PDF: ${err?.message ?? "không xác định"}`);
+    } finally {
+      setBusy(false);
+    }
+  };
 
   return (
     <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
@@ -957,6 +1029,9 @@ export default function CarbonEmissions() {
             {PERIOD_LABEL[period].title} · Tổng{" "}
             <b className="text-[#0f172a]">{fmt(total)} tấn CO2e</b>
           </p>
+          {msg && (
+            <p className="text-[11px] font-semibold text-[#059669]">{msg}</p>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -964,6 +1039,15 @@ export default function CarbonEmissions() {
             <CalendarRange size={13} strokeWidth={2.4} /> Mốc thời gian
           </span>
           <PeriodFilter value={period} onChange={setPeriod} />
+
+          <button type="button" onClick={handleExcel} disabled={busy} className={BTN_GHOST}>
+            <FileSpreadsheet size={15} strokeWidth={2.4} />
+            Xuất dữ liệu Excel
+          </button>
+          <button type="button" onClick={handlePdf} disabled={busy} className={BTN_PRIMARY}>
+            <Download size={15} strokeWidth={2.6} />
+            {busy ? "Đang kết xuất…" : "Tải báo cáo PDF"}
+          </button>
         </div>
       </div>
 
