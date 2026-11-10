@@ -5,8 +5,8 @@
  *
  * Cách dùng:
  *   import QRCodeButton from "./QRCodeCard.jsx";
- *   <QRCodeButton />                                 // dùng link mặc định
- *   <QRCodeButton url="https://vidu.com" size={200} /> // tuỳ biến
+ *   <QRCodeButton />                    // sinh Pair Session ID mới mỗi lần mở
+ *   <QRCodeButton size={200} />         // tuỳ biến kích thước mã QR
  *
  * Xuất kèm `QRCodeModal` nếu chỉ muốn dùng phần hộp thoại.
  *
@@ -26,16 +26,61 @@
  * Lưu ý: `imageSettings` cần được cấu hình TRƯỚC khi QR render.
  * Vì logo tải bất đồng bộ, ta bật cờ `logoReady` sau khi ảnh load xong
  * để QRCodeSVG vẽ lại kèm logo ở giữa (excavate để không phá mã).
+ *
+ * Ghép nối thiết bị (Pairing):
+ *   Mã QR chứa một `Pair Session ID` sinh động cho mỗi phiên ghép nối
+ *   (định dạng `ecometric://pair?session=...`). Nút "Mô phỏng quét từ iOS App"
+ *   giả lập luồng xác thực: đang xác thực → đã kết nối, kèm thời điểm đồng bộ
+ *   gần nhất. Phiên hết hạn sau PAIR_SESSION_TTL_MS, khi đó QR được sinh lại.
  */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
-import { Check, Copy, Download, Leaf, Link2, QrCode, X } from "lucide-react";
+import {
+  Check,
+  CheckCircle2,
+  Copy,
+  Download,
+  Leaf,
+  Link2,
+  Loader2,
+  QrCode,
+  RefreshCw,
+  Smartphone,
+  X,
+} from "lucide-react";
 
 // Thời lượng hiệu ứng đóng (ms) – phải khớp với class `duration-200` bên dưới.
 const CLOSE_ANIMATION_MS = 200;
 
+// Thời gian giả lập iOS App xác thực phiên ghép nối (ms).
+const PAIR_AUTH_MS = 1200;
+
+// Phiên ghép nối hết hạn sau 5 phút (ms).
+const PAIR_SESSION_TTL_MS = 5 * 60 * 1000;
+
 export const DEFAULT_URL = "https://ecometric-dashboard-website.vercel.app/";
+
+// Sinh Pair Session ID ngẫu nhiên (không dùng crypto để chạy được cả HTTP).
+function createPairSessionId() {
+  const rand = () => Math.random().toString(36).slice(2, 8).toUpperCase();
+  return `ECO-${rand()}-${rand()}`;
+}
+
+// Nội dung nhúng trong mã QR: deep link mở iOS App kèm session cần ghép nối.
+function buildPairPayload(sessionId) {
+  return `ecometric://pair?session=${encodeURIComponent(sessionId)}`;
+}
+
+// Định dạng thời điểm đồng bộ theo giờ Việt Nam (vi-VN).
+function formatSyncTime(date) {
+  if (!date) return "";
+  return date.toLocaleTimeString("vi-VN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}
 
 // Logo mầm cây lồng giữa mã QR (SVG data-URI, nền trắng để tương phản).
 const LEAF_LOGO_SVG = `
@@ -53,7 +98,6 @@ const FOCUS =
 
 /* ── Hộp thoại chứa mã QR ───────────────────────────────────── */
 export function QRCodeModal({
-  url = DEFAULT_URL,
   size = 200,
   title = "Quét mã để mở EcoMetric",
   onClose,
@@ -64,6 +108,50 @@ export function QRCodeModal({
   const [closing, setClosing] = useState(false);
   const canvasHostRef = useRef(null);
   const closeTimer = useRef(null);
+
+  // ── Trạng thái ghép nối với iOS App ──────────────────────────
+  // idle → authenticating → connected
+  const [pairStatus, setPairStatus] = useState("idle");
+  const [sessionId, setSessionId] = useState(() => createPairSessionId());
+  const [lastSyncAt, setLastSyncAt] = useState(null);
+  const authTimer = useRef(null);
+
+  // Mã QR động: mỗi phiên ghép nối tạo một payload riêng.
+  const pairPayload = useMemo(() => buildPairPayload(sessionId), [sessionId]);
+  const isConnected = pairStatus === "connected";
+  const isAuthenticating = pairStatus === "authenticating";
+
+  // Sinh lại phiên ghép nối mới (dùng khi hết hạn hoặc người dùng yêu cầu).
+  const regenerateSession = useCallback(() => {
+    window.clearTimeout(authTimer.current);
+    setSessionId(createPairSessionId());
+    setPairStatus("idle");
+    setLastSyncAt(null);
+  }, []);
+
+  // Giả lập iOS App quét mã: xác thực một nhịp rồi chuyển sang đã kết nối.
+  const simulateIosScan = () => {
+    if (isAuthenticating) return;
+    setPairStatus("authenticating");
+    window.clearTimeout(authTimer.current);
+    authTimer.current = window.setTimeout(() => {
+      setPairStatus("connected");
+      setLastSyncAt(new Date());
+    }, PAIR_AUTH_MS);
+  };
+
+  // Phiên ghép nối tự hết hạn sau PAIR_SESSION_TTL_MS (chỉ khi chưa kết nối).
+  useEffect(() => {
+    if (isConnected) return undefined;
+    const ttlTimer = window.setTimeout(() => {
+      setSessionId(createPairSessionId());
+      setPairStatus("idle");
+    }, PAIR_SESSION_TTL_MS);
+    return () => window.clearTimeout(ttlTimer);
+  }, [sessionId, isConnected]);
+
+  // Dọn timer xác thực khi unmount.
+  useEffect(() => () => window.clearTimeout(authTimer.current), []);
 
   // Đóng có hiệu ứng: chạy animation rồi mới gọi onClose của component cha.
   const requestClose = () => {
@@ -109,11 +197,11 @@ export function QRCodeModal({
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(pairPayload);
     } catch {
       // Fallback cho trình duyệt / ngữ cảnh không có Clipboard API
       const ta = document.createElement("textarea");
-      ta.value = url;
+      ta.value = pairPayload;
       ta.style.position = "fixed";
       ta.style.opacity = "0";
       document.body.appendChild(ta);
@@ -134,7 +222,7 @@ export function QRCodeModal({
     if (!canvas) return;
     const link = document.createElement("a");
     link.href = canvas.toDataURL("image/png");
-    link.download = `ecometric-qr-${Date.now()}.png`;
+    link.download = `ecometric-pair-${sessionId}.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -168,9 +256,11 @@ export function QRCodeModal({
             </span>
             <div className="flex min-w-0 flex-col">
               <h2 id="qr-share-title" className="text-[15px] font-bold text-[#0f172a]">
-                Chia sẻ EcoMetric qua mã QR
+                {isConnected ? "Đã kết nối thành công với EcoMetric iOS" : "Ghép nối EcoMetric iOS"}
               </h2>
-              <p className="text-[12px] text-[#64748b]">{title}</p>
+              <p className="text-[12px] text-[#64748b]">
+                {isConnected ? "Thiết bị đã sẵn sàng đồng bộ dữ liệu" : title}
+              </p>
             </div>
           </div>
         </div>
@@ -184,21 +274,49 @@ export function QRCodeModal({
           <X size={18} strokeWidth={2.4} />
         </button>
 
-      {/* Mã QR */}
+      {/* Mã QR động chứa Pair Session ID */}
       <div className="flex flex-col items-center gap-3">
         <div className="relative rounded-[20px] border border-white/70 bg-white/70 p-4 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.25)] backdrop-blur-[12px]">
           {/* Bản SVG hiển thị rõ nét ở mọi kích thước */}
           <QRCodeSVG
-            value={url}
+            value={pairPayload}
             size={size}
             level="H"
             bgColor="#ffffff"
             fgColor="#0f172a"
             marginSize={1}
-            title="Mã QR dẫn tới EcoMetric"
+            title={`Mã QR ghép nối EcoMetric iOS – phiên ${sessionId}`}
             imageSettings={effectiveImageSettings}
             className="block h-auto max-w-full"
           />
+
+          {/* Lớp phủ khi đang xác thực / đã kết nối */}
+          {(isAuthenticating || isConnected) && (
+            <div
+              role="status"
+              aria-live="polite"
+              className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-[20px] bg-white/90 px-4 text-center backdrop-blur-[2px]"
+            >
+              {isConnected ? (
+                <>
+                  <CheckCircle2 size={40} strokeWidth={2.2} color="#10b981" />
+                  <p className="text-[13px] font-bold text-[#0f172a]">
+                    Đã kết nối thành công với EcoMetric iOS
+                  </p>
+                  <p className="text-[12px] text-[#64748b]">
+                    Đồng bộ gần nhất: {formatSyncTime(lastSyncAt)}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <Loader2 size={36} strokeWidth={2.2} color="#059669" className="animate-spin" />
+                  <p className="text-[13px] font-semibold text-[#0f172a]">
+                    Đang xác thực phiên ghép nối…
+                  </p>
+                </>
+              )}
+            </div>
+          )}
 
           {/* Bản Canvas ẩn, chỉ dùng để xuất PNG đúng kích thước */}
           <div
@@ -206,7 +324,7 @@ export function QRCodeModal({
             className="pointer-events-none absolute left-0 top-0 -z-10 opacity-0"
           >
             <QRCodeCanvas
-              value={url}
+              value={pairPayload}
               size={size * 2}
               level="H"
               bgColor="#ffffff"
@@ -223,33 +341,71 @@ export function QRCodeModal({
 
         <p className="inline-flex min-w-0 max-w-full items-center gap-[6px] text-[12px] text-[#64748b]">
           <Link2 size={13} strokeWidth={2.4} className="shrink-0" />
-          <span className="truncate">{url}</span>
+          <span className="truncate">Pair Session ID: {sessionId}</span>
         </p>
+
+        {isConnected && (
+          <p className="inline-flex items-center gap-[6px] text-[12px] font-medium text-[#059669]">
+            <CheckCircle2 size={13} strokeWidth={2.6} className="shrink-0" />
+            Đồng bộ gần nhất: {formatSyncTime(lastSyncAt)}
+          </p>
+        )}
       </div>
 
       {/* Hành động */}
-      <div className="flex flex-wrap gap-2 border-t border-[#e2e8f0] pt-4">
+      <div className="flex flex-col gap-2 border-t border-[#e2e8f0] pt-4">
         <button
           type="button"
-          onClick={handleDownload}
-          className={`inline-flex flex-1 items-center justify-center gap-2 rounded-[12px] bg-[#10b981] px-4 py-[10px] text-[13px] font-semibold text-white transition-all hover:bg-[#0ea371] active:scale-[0.98] ${FOCUS}`}
+          onClick={simulateIosScan}
+          disabled={isAuthenticating || isConnected}
+          className={`inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[12px] bg-[#0f172a] px-4 py-[10px] text-[13px] font-semibold text-white transition-all hover:bg-[#1e293b] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 ${FOCUS}`}
         >
-          <Download size={15} strokeWidth={2.6} />
-          Tải xuống QR (PNG)
+          {isAuthenticating ? (
+            <Loader2 size={15} strokeWidth={2.6} className="animate-spin" />
+          ) : isConnected ? (
+            <CheckCircle2 size={15} strokeWidth={2.6} color="#10b981" />
+          ) : (
+            <Smartphone size={15} strokeWidth={2.4} />
+          )}
+          {isAuthenticating
+            ? "Đang xác thực…"
+            : isConnected
+              ? "Đã kết nối với EcoMetric iOS"
+              : "Mô phỏng quét từ iOS App"}
         </button>
+
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={handleDownload}
+            className={`inline-flex flex-1 items-center justify-center gap-2 rounded-[12px] bg-[#10b981] px-4 py-[10px] text-[13px] font-semibold text-white transition-all hover:bg-[#0ea371] active:scale-[0.98] ${FOCUS}`}
+          >
+            <Download size={15} strokeWidth={2.6} />
+            Tải xuống QR (PNG)
+          </button>
+
+          <button
+            type="button"
+            onClick={handleCopy}
+            aria-live="polite"
+            className={`inline-flex flex-1 items-center justify-center gap-2 rounded-[12px] border border-[#e2e8f0] bg-white px-4 py-[10px] text-[13px] font-semibold text-[#0f172a] transition-all hover:bg-[#f8fafc] active:scale-[0.98] ${FOCUS}`}
+          >
+            {copied ? (
+              <Check size={15} strokeWidth={2.8} color="#059669" />
+            ) : (
+              <Copy size={15} strokeWidth={2.4} />
+            )}
+            {copied ? "Đã sao chép!" : "Sao chép mã ghép nối"}
+          </button>
+        </div>
 
         <button
           type="button"
-          onClick={handleCopy}
-          aria-live="polite"
-          className={`inline-flex flex-1 items-center justify-center gap-2 rounded-[12px] border border-[#e2e8f0] bg-white px-4 py-[10px] text-[13px] font-semibold text-[#0f172a] transition-all hover:bg-[#f8fafc] active:scale-[0.98] ${FOCUS}`}
+          onClick={regenerateSession}
+          className={`inline-flex items-center justify-center gap-2 rounded-[12px] px-2 py-[6px] text-[12px] font-semibold text-[#64748b] transition-colors hover:text-[#0f172a] ${FOCUS}`}
         >
-          {copied ? (
-            <Check size={15} strokeWidth={2.8} color="#059669" />
-          ) : (
-            <Copy size={15} strokeWidth={2.4} />
-          )}
-          {copied ? "Đã sao chép!" : "Sao chép liên kết"}
+          <RefreshCw size={13} strokeWidth={2.4} />
+          Tạo phiên ghép nối mới
         </button>
       </div>
 
@@ -260,7 +416,7 @@ export function QRCodeModal({
           className="pointer-events-none fixed bottom-6 left-1/2 z-[60] flex -translate-x-1/2 items-center gap-2 rounded-full bg-[#0f172a] px-4 py-[10px] text-[13px] font-semibold text-white shadow-2xl"
         >
           <Leaf size={15} strokeWidth={2.6} color="#10b981" />
-          Đã sao chép liên kết EcoMetric
+          Đã sao chép mã ghép nối EcoMetric
         </div>
       )}
 
@@ -280,12 +436,7 @@ export function QRCodeModal({
 }
 
 /* ── Nút QR trong Header + hộp thoại đi kèm ─────────────────── */
-export default function QRCodeButton({
-  url = DEFAULT_URL,
-  size = 200,
-  title,
-  className = "",
-}) {
+export default function QRCodeButton({ size = 200, title, className = "" }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -303,7 +454,6 @@ export default function QRCodeButton({
 
       {open && (
         <QRCodeModal
-          url={url}
           size={size}
           title={title}
           onClose={() => setOpen(false)}
