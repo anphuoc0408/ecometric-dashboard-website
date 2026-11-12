@@ -12,7 +12,15 @@ import { COLOR } from "../lib/format.js";
 function DonutRing({ resources }) {
   const R = 59.5; // bán kính giữa vòng (ngoài 70, trong 49 → dày 21)
   const CIRC = 2 * Math.PI * R;
-  let offset = 0;
+  // Tính trước độ dài từng cung + độ lệch tích luỹ (thuần, không gán lại
+  // biến trong lúc render → an toàn với React Compiler).
+  const segments = resources.map((r, i) => {
+    const len = (CIRC * r.value) / 100;
+    const offset = resources
+      .slice(0, i)
+      .reduce((acc, prev) => acc + (CIRC * prev.value) / 100, 0);
+    return { ...r, len, offset };
+  });
 
   return (
     <div className="relative mx-auto h-[132px] w-[132px] shrink-0 sm:h-[140px] sm:w-[140px]">
@@ -31,25 +39,20 @@ function DonutRing({ resources }) {
           strokeWidth="21"
         />
 
-        {resources.map(({ label, value, color }) => {
-          const len = (CIRC * value) / 100;
-          const circle = (
-            <circle
-              key={label}
-              cx="70"
-              cy="70"
-              r={R}
-              fill="none"
-              stroke={color}
-              strokeWidth="21"
-              strokeDasharray={`${len} ${CIRC - len}`}
-              strokeDashoffset={-offset}
-              transform="rotate(-90 70 70)"
-            />
-          );
-          offset += len;
-          return circle;
-        })}
+        {segments.map(({ label, color, len, offset }) => (
+          <circle
+            key={label}
+            cx="70"
+            cy="70"
+            r={R}
+            fill="none"
+            stroke={color}
+            strokeWidth="21"
+            strokeDasharray={`${len} ${CIRC - len}`}
+            strokeDashoffset={-offset}
+            transform="rotate(-90 70 70)"
+          />
+        ))}
       </svg>
 
       <div className="pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-[2px] whitespace-nowrap">

@@ -139,6 +139,8 @@ const PRIORITIES = [
   { id: "low", label: "Ưu tiên thấp", short: "Thấp", color: COLOR.blue, bg: "bg-[#dbeafe]", text: "text-[#1d4ed8]" },
 ];
 const PRIORITY_BY_ID = Object.fromEntries(PRIORITIES.map((p) => [p.id, p]));
+// Thứ tự sắp xếp: cao → trung bình → thấp (dùng cho useMemo sắp xếp danh sách).
+const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
 
 /* — Lĩnh vực áp dụng — */
 const DOMAINS = [
@@ -1076,11 +1078,12 @@ export default function AIRecommendations() {
   );
 
   // Sắp xếp theo mức ưu tiên rồi tới mức giảm CO2e
-  const ORDER = { high: 0, medium: 1, low: 2 };
   const sorted = useMemo(
     () =>
       [...filtered].sort(
-        (a, b) => ORDER[a.priority] - ORDER[b.priority] || num(b.reduction) - num(a.reduction),
+        (a, b) =>
+          (PRIORITY_ORDER[a.priority] ?? 99) - (PRIORITY_ORDER[b.priority] ?? 99) ||
+          num(b.reduction) - num(a.reduction),
       ),
     [filtered],
   );
@@ -1114,10 +1117,7 @@ export default function AIRecommendations() {
   // Chi phí mỗi tấn CO2e – chặn chia cho 0 hoặc NaN
   const costPerTon = totalCo2 > 0 ? num(totalCapex / totalCo2) : 0;
 
-  // Giữ tên cũ để các chỗ khác trong file dùng lại an toàn
-  const totalReduction = totalCo2;
-  const totalCost = totalCapex;
-  const avgRoi = avgPayback;
+
 
   // Giải pháp trọng tâm ƯU TIÊN 01 (lấy từ items để bám trạng thái sau khi tác động)
   const focusItem = items.find((r) => r.patience === 1);

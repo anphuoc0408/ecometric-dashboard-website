@@ -248,7 +248,7 @@ const PILLARS = [
   { id: "s", letter: "S", name: "Xã hội", sub: "Social", color: COLOR.blue, icon: Users },
   { id: "g", letter: "G", name: "Quản trị", sub: "Governance", color: COLOR.violet, icon: Building2 },
 ];
-const PILLAR_BY_ID = Object.fromEntries(PILLARS.map((p) => [p.id, p]));
+
 
 /* — Kỳ báo cáo — */
 const PERIOD_OPTIONS = [

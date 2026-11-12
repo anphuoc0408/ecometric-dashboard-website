@@ -158,10 +158,17 @@ export default function App() {
     <div className="min-h-screen bg-[#f8fafc] font-['Inter',ui-sans-serif,system-ui,sans-serif] leading-[normal] text-[#0f172a] antialiased">
       <Topbar />
 
-      {/* main-container: lớp kính mờ nền (Figma: blur 15px, trắng 30%) */}
-      <div className="flex items-start bg-white/30 backdrop-blur-[15px]">
-        <Sidebar active={activeNav} onChange={setActiveNav} />
+      {/* Sidebar nằm NGOÀI container có `backdrop-blur` bên dưới.
+          Lý do: `backdrop-filter` tạo containing-block mới, khiến phần tử
+          `fixed` bên trong bị neo theo container (cao bằng nội dung trang)
+          thay vì viewport → Sidebar bị kéo dài quá đáy màn hình.
+          Đặt ở đây thì `fixed top-[73px] h-[calc(100vh-73px)]` luôn đúng. */}
+      <Sidebar active={activeNav} onChange={setActiveNav} />
 
+      {/* main-container: lớp kính mờ nền (Figma: blur 15px, trắng 30%)
+          Nội dung chừa đúng bề rộng Sidebar thu gọn (w-20); khi mở rộng
+          Sidebar phủ lên nội dung nên layout chính không bị giật. */}
+      <div className="flex items-start bg-white/30 backdrop-blur-[15px] lg:pl-20">
         {activeNav === "operations" ? (
           <DataInput />
         ) : activeNav === "carbon" ? (
