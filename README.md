@@ -2,352 +2,386 @@
 
 # 🌿 EcoMetric Web Dashboard
 
-**Hệ thống giám sát chỉ số ESG, phát thải Carbon (Scope 1/2/3) và tối ưu hóa năng lượng cho doanh nghiệp.**
+**Nền tảng quản trị chỉ số ESG, kiểm kê phát thải Carbon (Scope 1/2/3) và tối ưu hóa năng lượng cho doanh nghiệp.**
 
-Biến dữ liệu vận hành thô (điện, nước, nhiên liệu) thành quyết định giảm phát thải và chi phí có thể đo lường.
+Chuyển đổi dữ liệu vận hành thô (điện, nước, nhiên liệu) thành quyết định giảm phát thải và chi phí có thể đo lường.
 
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white&style=flat-square)](https://react.dev)
-[![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white&style=flat-square)](https://vite.dev)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white&style=flat-square)](https://tailwindcss.com)
-[![SheetJS](https://img.shields.io/badge/SheetJS-xlsx-217346?logo=microsoftexcel&logoColor=white&style=flat-square)](https://sheetjs.com)
-[![jsPDF](https://img.shields.io/badge/jsPDF-PDF-E5322D?style=flat-square)](https://github.com/parallax/jsPDF)
-[![Lucide](https://img.shields.io/badge/Lucide-Icons-F56565?logo=lucide&logoColor=white&style=flat-square)](https://lucide.dev)
+[![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=white&style=flat-square)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?logo=vite&logoColor=white&style=flat-square)](https://vite.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3-06B6D4?logo=tailwindcss&logoColor=white&style=flat-square)](https://tailwindcss.com)
+[![Oxlint](https://img.shields.io/badge/Oxlint-1.81-F59E0B?style=flat-square)](https://oxc.rs)
+[![SheetJS](https://img.shields.io/badge/SheetJS-0.18-217346?logo=microsoftexcel&logoColor=white&style=flat-square)](https://sheetjs.com)
+[![jsPDF](https://img.shields.io/badge/jsPDF-4.2-E5322D?style=flat-square)](https://github.com/parallax/jsPDF)
+[![Lucide](https://img.shields.io/badge/Lucide-Icons-10B981?logo=lucide&logoColor=white&style=flat-square)](https://lucide.dev)
 
 </div>
 
 ---
 
-## 📖 Giới thiệu
+## 1. Tổng quan & Vòng lặp vận hành
 
-**EcoMetric Web Dashboard** là bảng điều khiển dành cho doanh nghiệp muốn hiểu rõ – và cắt giảm – dấu chân carbon của mình. Thay vì những bảng tính rời rạc, nền tảng tập hợp dữ liệu vận hành thực tế (điện, nước, nhiên liệu) vào một giao diện duy nhất, chuẩn hoá theo **GHG Protocol (Scope 1/2/3)** và các khung báo cáo bền vững quốc tế (**GRI, SASB, TCFD**).
+**EcoMetric Web Dashboard** là hệ thống quản trị dữ liệu môi trường và phát thải dành cho doanh nghiệp sản xuất và các tổ chức cần công bố trách nhiệm bền vững. Thay vì quản lý dữ liệu qua các bảng tính rời rạc dễ sai sót, EcoMetric tập trung hóa toàn bộ dữ liệu tài nguyên vận hành (điện lưới, nước sạch, xăng dầu, nguyên vật liệu), tự động quy đổi tương đương CO₂e theo chuẩn quốc tế **GHG Protocol (Scope 1, 2, 3)** và đối chiếu với các khung báo cáo bền vững hàng đầu (**GRI, SASB, TCFD**).
 
-### 🔄 Vòng lặp giá trị
+Mục tiêu cốt lõi của nền tảng là giúp doanh nghiệp kiểm soát chi phí năng lượng, phát hiện điểm bất thường trong vận hành và lập kế hoạch giảm phát thải khả thi với thời gian hoàn vốn (Payback) và suất sinh lời (ROI) minh bạch.
 
-EcoMetric được thiết kế xoay quanh một vòng lặp khép kín — giá trị không nằm ở một con số, mà ở việc **quay vòng liên tục** để tối ưu từng chu kỳ:
+### Vòng lặp vận hành khép kín (The Closed-Loop Cycle)
+
+EcoMetric được thiết kế xoay quanh chu trình vận hành khép kín 5 giai đoạn liên tục. Giá trị cốt lõi không dừng lại ở một báo cáo tĩnh tại một thời điểm, mà nằm ở việc lặp lại chu kỳ để liên tục tối ưu hóa hiệu quả:
 
 ```text
-   ┌──────────┐      ┌──────────┐      ┌──────────┐      ┌──────┐      ┌────────────┐
-   │ Measure  │ ───▶ │ Insight  │ ───▶ │  Decide  │ ───▶ │ Act  │ ───▶ │ Remeasure  │
-   └──────────┘      └──────────┘      └──────────┘      └──────┘      └────────────┘
-        ▲                                                                     │
-        └─────────────────────────────────────────────────────────────────────┘
+   ┌────────────────┐      ┌────────────────┐      ┌────────────────┐
+   │   ① Measure    │ ───▶ │   ② Insight    │ ───▶ │   ③ Decide     │
+   │  Đo lường &    │      │  Quy đổi &     │      │  Đánh giá &    │
+   │  Nạp dữ liệu   │      │  Phân tích     │      │  Chọn giải pháp│
+   └────────────────┘      └────────────────┘      └────────────────┘
+           ▲                                               │
+           │                                               ▼
+   ┌────────────────┐                             ┌────────────────┐
+   │  ⑤ Remeasure   │ ◀────────────────────────── │    ④ Act       │
+   │  Đối soát &    │                             │  Thực thi theo │
+   │  Kiểm chứng    │                             │  Action Plan   │
+   └────────────────┘                             └────────────────┘
 ```
 
-| Bước            | Ý nghĩa                                                                       |
-| :-------------- | :---------------------------------------------------------------------------- |
-| **① Measure**   | Thu thập dữ liệu đo lường: điện (kWh), nước (m³), nhiên liệu (L) từ vận hành. |
-| **② Insight**   | Chuyển dữ liệu thành chỉ số CO₂e, chi phí và xu hướng tiêu thụ dễ hiểu.       |
-| **③ Decide**    | Xác định điểm nóng phát thải và mức ưu tiên xử lý.                            |
-| **④ Act**       | Triển khai kế hoạch hành động cụ thể theo từng bước.                          |
-| **⑤ Remeasure** | Đo lại sau khi hành động để kiểm chứng mức giảm — và lặp lại chu kỳ.          |
+1. **Measure (Đo lường & Nạp liệu):** Thu thập dữ liệu thực tế từ dây chuyền và nhà máy. Người dùng có thể nạp nhanh dữ liệu tiêu thụ điện (kWh), nước sạch (m³), dầu diesel/xăng (Lít) và nguyên liệu (kg) bằng form nhập tay hoặc kéo thả hàng loạt qua tệp Excel/CSV với bộ kiểm tra lỗi tự động.
+2. **Insight (Quy đổi & Phân tích):** Dữ liệu được tính toán tự động dựa trên hệ số phát thải định mức theo vùng. Hệ thống phân bổ phát thải theo Scope 1, Scope 2, Scope 3, xác định cơ cấu chi phí, vẽ biểu đồ xu hướng và so sánh trực tiếp với quỹ đạo cam kết Net Zero 2030.
+3. **Decide (Đánh giá & Chọn giải pháp):** Động cơ phân tích đối chiếu định mức tiêu thụ với lịch sử vận hành để phát hiện bất thường (rò rỉ nước, thiết bị non tải, hệ số công suất thấp). Mô hình AI lượng hóa và sắp xếp mức độ ưu tiên theo hiệu quả kinh tế: Chi phí đầu tư (CAPEX), số tiền tiết kiệm mỗi tháng và lượng tCO₂e cắt giảm.
+4. **Act (Thực thi theo kế hoạch):** Mỗi giải pháp được gắn kèm một Action Plan chuẩn hóa gồm 5 bước triển khai tuần tự, phân công phòng ban phụ trách, mốc thời gian và bảng chỉ số kỳ vọng Trước – Sau.
+5. **Remeasure (Đối soát & Kiểm chứng):** Sau khi thực thi, dữ liệu vận hành chu kỳ mới được nạp vào để đối soát mức giảm thực tế so với mục tiêu. Kết quả được đóng gói thành báo cáo kiểm toán đạt chuẩn GRI/SASB để phục vụ báo cáo cổ đông và đối tác kiểm toán.
 
 ---
 
-## ✨ Tính năng nổi bật
+## 2. Product Workflow (Luồng vận hành sản phẩm)
 
-> **Điểm nhấn:** nhập liệu hàng loạt từ Excel/CSV · xuất báo cáo PDF/Excel đa sheet · Service Layer có fallback mock.
+Quy trình xử lý dữ liệu từ đầu vào đến kết xuất báo cáo và đối soát được mô tả qua sơ đồ luồng dưới đây:
 
-### 1. 📊 Tổng quan & Biểu đồ ESG / Carbon
+```mermaid
+flowchart TD
+    classDef startNode fill:#059669,stroke:#047857,stroke-width:2px,color:#fff;
+    classDef processNode fill:#f8fafc,stroke:#cbd5e1,stroke-width:1.5px,color:#0f172a;
+    classDef logicNode fill:#eff6ff,stroke:#93c5fd,stroke-width:1.5px,color:#1e3a8a;
+    classDef actionNode fill:#ecfdf5,stroke:#a7f3d0,stroke-width:1.5px,color:#065f46;
+    classDef exportNode fill:#fef3c7,stroke:#fde68a,stroke-width:1.5px,color:#78350f;
 
-- **Dashboard tổng quan**: thẻ KPI (CO₂e, chi phí, số bản ghi, tiết kiệm tiềm năng), biểu đồ xu hướng, cơ cấu tiêu thụ tài nguyên (donut) và cảnh báo bất thường.
-- **Phát thải Carbon**: kiểm kê theo **Scope 1 / Scope 2 / Scope 3**, biểu đồ thực tế vs quỹ đạo Net Zero 2030, bản đồ nhiệt phân bổ theo nhà xưởng / chi nhánh.
-- **Báo cáo ESG**: tiến độ chuẩn hoá theo GRI / SASB / TCFD, bảng chỉ số E–S–G kèm trạng thái tuân thủ và mức độ sẵn sàng kiểm toán.
-- **Service Layer + Fallback mock data**: mọi trang gọi API qua `src/services/api.js`. Nếu backend FastAPI chưa chạy, giao diện **tự động quay về dữ liệu mô phỏng** và hiển thị dòng nhắc _“Đang dùng dữ liệu mô phỏng (backend chưa kết nối)”_ — không bao giờ trắng màn hình.
+    A["Bắt đầu: Dữ liệu vận hành nhà máy"]:::startNode --> B{"Phương thức nạp liệu"}:::logicNode
 
-### 2. 📥 Nhập liệu hàng loạt (Bulk Data Input)
+    B -->|"Nhập thủ công"| C1["Form nhập dữ liệu từng bản ghi"]:::processNode
+    B -->|"Nhập hàng loạt"| C2["DataUploader: Kéo thả .xlsx / .csv"]:::processNode
 
-Component `DataUploader.jsx` cho phép đưa dữ liệu vận hành vào hệ thống bằng tệp thay vì nhập tay:
+    C2 --> D["Bộ thẩm định dữ liệu: Kiểm tra cột, kiểu số vi-VN / en-US, loại tài nguyên"]:::processNode
+    D --> E{"Dữ liệu hợp lệ?"}:::logicNode
+    E -->|"Có dòng lỗi"| F["Bảng Preview đánh dấu đỏ, hiển thị lý do & cho phép tải file mẫu"]:::processNode
+    E -->|"Hợp lệ hoàn toàn"| G["Lưu dữ liệu vào bộ nhớ / Trạng thái ứng dụng"]:::actionNode
+    C1 --> G
 
-- **Kéo–thả** hoặc chọn tệp `.xlsx` / `.csv` (tối đa 15MB).
-- **Bảng xem trước (Preview Table)**: từng dòng hiển thị kèm trạng thái _Hợp lệ_ / _N lỗi_; dòng lỗi được tô nền đỏ để dễ nhận ra.
-- **Tự động kiểm tra lỗi**: thiếu cột bắt buộc, loại tài nguyên không hợp lệ, số lượng sai định dạng, thiếu nhà xưởng. Dòng lỗi **bị bỏ qua khi lưu** (chỉ lưu dòng hợp lệ).
-- **Nhận diện định dạng số vi-VN / en-US**: hiểu đúng cả `1.250,5` (vi-VN) lẫn `1250.5` (en-US) — quan trọng vì Excel ở Việt Nam mặc định dùng dấu chấm ngăn nghìn.
-- **Nhận diện tên cột linh hoạt**: chấp nhận cả tiếng Việt có/không dấu và tiếng Anh (ví dụ `Loại tài nguyên`, `loai tai nguyen`, `resource`).
-- **Tải file mẫu (.xlsx)**: sinh bảng tính đúng định dạng cột ngay trên trình duyệt (tự fallback sang `.csv` nếu thiếu thư viện).
+    G --> H["Bộ quy đổi phát thải & chỉ số theo hệ số định mức (Settings)"]:::processNode
 
-> Cột bắt buộc trong tệp: `Loại tài nguyên` · `Nhà xưởng` · `Số lượng` · `Đơn vị` · `Ngày ghi nhận`.
+    H --> I1["Overview Dashboard: 4 thẻ KPI, Donut phân bổ, Xu hướng & Cảnh báo"]:::processNode
+    H --> I2["Carbon Emissions: Phân tích Scope 1/2/3, Quỹ đạo Net Zero, Bản đồ nhiệt"]:::processNode
+    H --> I3["ESG Reporting: Ma trận E-S-G, Tuân thủ GRI / SASB / TCFD & Audit Readiness"]:::processNode
 
-### 3. 📤 Xuất báo cáo nâng cao
+    I1 & I2 --> J["Khuyến nghị AI: Tính toán CAPEX, Tiết kiệm/tháng, Payback & Độ tin cậy"]:::actionNode
+    J --> K["Hộp thoại Action Plan: 5 bước thực thi & So sánh KPI Trước - Sau"]:::actionNode
 
-Toàn bộ logic kết xuất tập trung tại `src/lib/export.js` — component chỉ gọi hàm, không cần biết về SheetJS hay jsPDF.
+    I2 & I3 --> L{"Yêu cầu xuất tệp?"}:::logicNode
+    L -->|"Xuất bảng tính"| M1["exportToExcel: Tạo file .xlsx đa sheet UTF-8"]:::exportNode
+    L -->|"Xuất báo cáo PDF"| M2["exportToPdf: Tạo tài liệu PDF chuẩn, tự ngắt trang"]:::exportNode
 
-| Chức năng              | Thư viện         | Kết quả                                                                                 |
-| :--------------------- | :--------------- | :-------------------------------------------------------------------------------------- |
-| **Xuất dữ liệu Excel** | SheetJS (`xlsx`) | File `.xlsx` **đa sheet**: tổng hợp, phân bổ theo cơ sở, và từng trụ cột E / S / G.     |
-| **Tải báo cáo PDF**    | jsPDF            | Báo cáo **ESG / Carbon** tiêu chuẩn, có bảng biểu, tự động ngắt trang và đánh số trang. |
-
-- Có mặt trên **cả trang Báo cáo ESG và Phát thải Carbon**.
-- Excel giữ **nguyên dấu tiếng Việt** (SheetJS hỗ trợ UTF-8 đầy đủ).
-- PDF dùng font mặc định (Helvetica, không có glyph tiếng Việt) nên chuỗi được chuyển sang ASCII không dấu qua `deaccent()` để tránh vỡ chữ.
-- Nút tự khoá khi đang kết xuất để tránh tải trùng tệp.
-
-### 4. 🤖 AI Recommendations
-
-- Gợi ý giải pháp giảm phát thải kèm **CAPEX, tiết kiệm/tháng, payback và ROI năm 1**.
-- Lọc theo **mức ưu tiên** (Cao / Trung bình / Thấp) và **lĩnh vực** (Điện năng / Nhiên liệu / Quy trình).
-- Hộp thoại **Action Plan 5 bước** + bảng so sánh KPI **Trước → Sau** cho mỗi giải pháp.
-
-### 5. 📱 Tích hợp QR Code
-
-- Nút QR trên Header để đồng bộ nhanh với **bản iOS App**.
-- Modal render qua **React Portal** (`createPortal`) kèm logo EcoMetric chèn giữa mã (chế độ _excavate_ không phá mã).
-
-### 6. 🎨 Tối ưu UI
-
-- Hiệu ứng kính mờ (`backdrop-filter`) cho thanh điều hướng và lớp nền glass.
-- **Modal dùng `createPortal`** render thẳng vào `document.body`, tránh lỗi containing-block do `backdrop-filter` gây ra → hộp thoại luôn căn giữa đúng toàn viewport.
-- Bố cục responsive: Sidebar trên desktop, BottomNav trên di động.
+    K & M1 & M2 --> N["Đối soát chu kỳ tiếp theo & Đạt chứng nhận kiểm toán"]:::startNode
+```
 
 ---
 
-## 🛠 Tech Stack chi tiết
+## 3. Demo Journey (Kịch bản trải nghiệm thực tế)
 
-| Lớp            | Công nghệ                                | Vai trò                                                                                   |
-| :------------- | :--------------------------------------- | :---------------------------------------------------------------------------------------- |
-| **UI Library** | React 19                                 | Xây dựng giao diện theo component, quản lý trạng thái điều phối tab bằng `useState`.      |
-| **Build Tool** | Vite 8                                   | Dev server tốc độ cao với HMR, build tối ưu production.                                   |
-| **Styling**    | Tailwind CSS 4 (qua `@tailwindcss/vite`) | Utility-first CSS, design tokens, hiệu ứng glass/`backdrop-blur`.                         |
-| **Charts**     | **SVG thuần (không phụ thuộc thư viện)** | Biểu đồ đường, donut, bản đồ nhiệt tự vẽ – giữ bundle nhẹ, toàn quyền kiểm soát hiển thị. |
-| **API Layer**  | `fetch` (native) + `AbortController`     | Service layer tại `src/services/api.js`; timeout, hủy request, chuẩn hoá lỗi `ApiError`.  |
-| **Icons**      | Lucide React                             | Bộ icon vector nhất quán, nhẹ (Leaf, Bell, Search, …).                                    |
-| **QR Code**    | `qrcode.react`                           | Sinh QR code SVG kèm logo ở giữa.                                                         |
-| **Excel/CSV**  | SheetJS (`xlsx`, import động)            | Đọc tệp .xlsx, sinh file mẫu và xuất dữ liệu chỉ số ra .xlsx nhiều sheet.                 |
-| **PDF**        | jsPDF (`jspdf`, import động)             | Kết xuất báo cáo PDF có bảng biểu, tự ngắt trang và đánh số trang.                        |
-| **Portals**    | `react-dom` `createPortal`               | Render modal ra ngoài cây DOM header để tránh lỗi containing block.                       |
-| **Linting**    | Oxlint                                   | Kiểm tra chất lượng mã nguồn (`.oxlintrc.json`).                                          |
-| **Font**       | Inter (400–800)                          | Typography giao diện, nạp qua Google Fonts trong `index.html`.                            |
+Để người xem hoặc người đánh giá nắm bắt toàn diện ứng dụng trong 5–10 phút, kịch bản trải nghiệm thực tế trên giao diện web được thiết kế liền mạch theo 7 bước:
 
-> 💡 **Tối ưu bundle:** `xlsx` (~424 kB) và `jspdf` (~399 kB) đều được **import động (dynamic import)** nên Vite tách thành chunk riêng – chỉ tải khi người dùng thực sự bấm nút xuất, không ảnh hưởng tốc độ tải trang ban đầu.
+```text
+[1. Tổng quan] ──▶ [2. Nhập liệu] ──▶ [3. Phát thải] ──▶ [4. Khuyến nghị AI] ──▶ [5. Báo cáo ESG] ──▶ [6. Cài đặt] ──▶ [7. Ghép nối QR]
+```
 
-> ⚠️ **Lưu ý kỹ thuật:** Tailwind CSS v4 **bắt buộc** phải có plugin `@tailwindcss/vite` (hoặc `@tailwindcss/postcss`) trong `vite.config.js`. Thiếu plugin này, toàn bộ class Tailwind bị bỏ qua và layout sẽ vỡ.
+### Bước 1: Khám phá bức tranh tổng thể tại Dashboard (`overview`)
+Người dùng bắt đầu tại màn hình **Tổng quan Vận hành & Phát thải**. Giao diện hiển thị ngay 4 thẻ KPI đồng nhất (Tổng phát thải CO₂e, Chi phí năng lượng, Bản ghi vận hành, Tiết kiệm tiềm năng) với số liệu căn lề dạng bảng (`tabular-nums`). Quan sát thanh trạng thái nhỏ ở góc phải tiêu đề: nhãn hiển thị *Dữ liệu mô phỏng* (màu hổ phách) khi chạy độc lập hoặc *Trực tuyến* (xanh lá) khi đã kết nối FastAPI. Thử chuyển đổi nhanh bộ lọc *Kỳ dữ liệu* (Tháng / Quý / Năm) và *Cơ sở* (Xưởng 1 / Xưởng 2 / Toàn bộ cơ sở). Tại khối **Top 3 việc cần làm ngay trong tháng**, bấm vào một thẻ để mở hộp thoại Action Plan 5 bước ngay trên màn hình.
+
+### Bước 2: Trải nghiệm kiểm soát chất lượng dữ liệu tại Nhập liệu (`operations`)
+Chuyển sang phân hệ **Dữ liệu vận hành** qua Sidebar hoặc BottomNav. Tại đây, nhấn nút *Tải file mẫu (.xlsx)* để trình duyệt sinh ngay một bảng tính đúng định dạng chuẩn. Kéo thả một tệp dữ liệu vào vùng `DataUploader.jsx`. Trình duyệt lập tức phân tích và hiển thị **Bảng xem trước (Preview Table)**: dòng hợp lệ có biểu tượng xanh, dòng sai định dạng số hoặc thiếu cơ sở sẽ được tô màu đỏ cảnh báo. Hệ thống xử lý thông minh cả định dạng số kiểu Việt Nam (`1.250,5`) lẫn quốc tế (`1250.5`), giúp người dùng an tâm trước khi bấm *Lưu vào hệ thống*.
+
+### Bước 3: Phân tích chuyên sâu tại Phát thải Carbon (`carbon`)
+Truy cập trang **Phát thải Carbon** để kiểm kê chi tiết theo 3 phạm vi: Scope 1 (nhiên liệu trực tiếp), Scope 2 (điện năng gián tiếp) và Scope 3 (chuỗi cung ứng). Mỗi thẻ đều có thanh tiến độ thể hiện tỷ lệ tiêu thụ so với hạn mức Net Zero 2030. Quan sát biểu đồ xu hướng thực tế đối chiếu với quỹ đạo cam kết. Phía dưới, chuyển đổi giữa chế độ xem *Phát thải tuyệt đối* (tấn CO₂e) và *Cường độ phát thải* trên **Bản đồ nhiệt** theo từng nhà xưởng. Cuối cùng, thử nghiệm nút *Xuất dữ liệu Excel* (tải về tệp `.xlsx` đa sheet) hoặc *Tải báo cáo PDF* (tạo tài liệu PDF chính thức với bộ đếm trang tự động).
+
+### Bước 4: Lập kế hoạch hành động với Khuyến nghị AI (`ai`)
+Mở trang **Khuyến nghị AI** để xem các cơ hội tối ưu hóa năng lượng do hệ thống đề xuất. 4 thẻ tổng hợp trên cùng cho biết tổng số tiền có thể tiết kiệm mỗi năm và mức giảm phát thải kỳ vọng. Lọc danh sách giải pháp theo lĩnh vực (*Điện năng*, *Nhiên liệu*, *Quy trình*) hoặc mức ưu tiên. Mỗi thẻ giải pháp cung cấp đầy đủ: căn cứ dữ liệu thực tế phát hiện được, độ tin cậy của thuật toán (%), chi phí đầu tư (CAPEX), số tiền tiết kiệm và thời gian hoàn vốn (Payback). Nhấn *Xem cách triển khai* để xem quy trình 5 bước và bảng so sánh trực quan chỉ số KPI *Trước ➔ Sau* khi áp dụng.
+
+### Bước 5: Kiểm tra tính sẵn sàng kiểm toán tại Báo cáo ESG (`esg`)
+Tại phân hệ **Báo cáo ESG**, giao diện hiển thị bảng đo lường tiến độ chuẩn hóa theo 3 khung chuẩn quốc tế: GRI Standards, SASB và TCFD. Bên dưới là bảng chỉ số chi tiết cho từng trụ cột **E (Môi trường)**, **S (Xã hội)** và **G (Quản trị)** kèm trạng thái tuân thủ và mức độ sẵn sàng kiểm toán (*Audit Readiness* đạt từ 70% đến 95%). Người dùng có thể nhấn *Xuất dữ liệu Excel* để nhận tệp bảng tính có từng sheet riêng biệt cho từng trụ cột E, S, G.
+
+### Bước 6: Tùy biến cấu hình doanh nghiệp tại Cài đặt (`settings`)
+Chuyển tới trang **Cài đặt** để quan sát khả năng mở rộng của hệ thống. 5 khối chức năng được bố trí mạch lạc: chỉnh sửa thông tin doanh nghiệp (tên, mã số thuế, mã ngành VSIC, chứng nhận ISO 14001/50001), quản lý danh sách nhà xưởng và diện tích, tùy chỉnh hệ số phát thải quy đổi so với mốc tham chiếu chuẩn, thiết lập ngưỡng cảnh báo vượt định mức (%) kèm kênh thông báo, và bảng ma trận phân quyền người dùng (Admin, Auditor, Factory Manager).
+
+### Bước 7: Trải nghiệm cầu nối thiết bị di động (`QRCodeCard.jsx`)
+Tại thanh Topbar trên cùng, bấm vào biểu tượng mã QR. Hộp thoại **Ghép nối EcoMetric iOS** xuất hiện ngay giữa màn hình thông qua React Portal (không bị ảnh hưởng bởi thanh header kính mờ). Mã QR được sinh động kèm logo EcoMetric ở chính giữa chứa deep-link `ecometric://pair?session=...`. Nhấn nút *Mô phỏng quét từ iOS App* để quan sát hiệu ứng xác thực phiên làm việc trong 1,2 giây và chuyển sang trạng thái *Đã kết nối*, sẵn sàng cho việc đồng bộ dữ liệu hai chiều.
 
 ---
 
-## 🚀 Hướng dẫn cài đặt & Chạy dự án
+## 4. Bảng Tính năng (Feature Matrix)
 
-### Yêu cầu hệ thống
+Bảng dưới đây đối chiếu chi tiết giữa thiết kế tính năng, thành phần mã nguồn hiện hữu trong dự án và trạng thái thực tế:
 
-- **Node.js** ≥ 18
-- **npm** (hoặc pnpm/yarn)
+| Phân hệ / Thành phần | Mã nguồn đảm nhiệm | Nội dung tính năng chi tiết | Trạng thái kỹ thuật trong code |
+| :--- | :--- | :--- | :--- |
+| **Tổng quan (Overview)** | `src/App.jsx`<br>`src/components/MetricsCard.jsx`<br>`src/components/TrendChartCard.jsx`<br>`src/components/ActionPriorityCard.jsx`<br>`src/components/ResourceDonutCard.jsx` | 4 thẻ KPI vận hành, biểu đồ xu hướng tài nguyên (SVG thuần), donut cơ cấu năng lượng, cảnh báo bất thường, danh sách báo cáo gần đây và top 3 việc cần làm ngay. | **Hoàn thiện**: Tích hợp hook `useApiData`. Gọi API `/api/dashboard`, tự động fallback sang `src/data/dashboardData.js` khi backend chưa bật. |
+| **Dữ liệu vận hành (Operations)** | `src/DataInput.jsx`<br>`src/components/DataUploader.jsx` | Quản lý bảng dữ liệu nhập tay; khu vực kéo thả tệp Excel/CSV; bộ phân tích và kiểm tra lỗi dữ liệu; nhận diện số vi-VN/en-US; tự sinh file mẫu `.xlsx`. | **Hoàn thiện**: Hoạt động 100% phía client, import động thư viện SheetJS `xlsx`, kiểm tra tính hợp lệ từng dòng trước khi ghi vào state. |
+| **Phát thải Carbon (Carbon)** | `src/CarbonEmissions.jsx`<br>`src/lib/export.js` | Kiểm kê phát thải Scope 1, Scope 2, Scope 3 theo GHG Protocol; so sánh quỹ đạo Net Zero 2030; bản đồ nhiệt phân bổ theo nhà máy; xuất báo cáo Excel/PDF. | **Hoàn thiện**: Chạy độc lập trên dữ liệu mẫu chuẩn; biểu đồ SVG thuần; tích hợp chức năng xuất tệp đa sheet và PDF tải về trực tiếp. |
+| **Khuyến nghị AI (AI)** | `src/AIRecommendations.jsx`<br>`src/components/ActionPlanModal.jsx` | 4 KPI kinh tế kỹ thuật (CAPEX, Tiết kiệm, Giảm phát thải, Payback); bộ lọc lĩnh vực & ưu tiên; danh sách thẻ giải pháp minh bạch căn cứ tính toán; modal Action Plan 5 bước. | **Hoàn thiện**: Tích hợp hook `useApiData`. Gọi API `POST /recommend`, tự động fallback sang dữ liệu giải pháp mẫu chuẩn khi chưa kết nối API. |
+| **Báo cáo ESG (ESG)** | `src/ESGReporting.jsx`<br>`src/lib/export.js` | Đánh giá tuân thủ 3 khung tiêu chuẩn (GRI, SASB, TCFD); bảng ma trận chỉ số E-S-G kèm tỷ lệ sẵn sàng kiểm toán; xuất dữ liệu báo cáo chuyên biệt. | **Hoàn thiện**: Tích hợp hook `useApiData`. Gọi API `/api/esg/report`, tự động fallback sang dữ liệu chỉ số mẫu; hỗ trợ xuất Excel và PDF. |
+| **Cài đặt hệ thống (Settings)** | `src/Settings.jsx` | Cấu hình hồ sơ doanh nghiệp; quản lý danh sách nhà xưởng; điều chỉnh hệ số phát thải theo cơ sở; cài đặt ngưỡng cảnh báo tiêu thụ; quản lý tài khoản & phân quyền. | **Hoàn thiện**: Quản lý trạng thái cục bộ (`useState`), có thông báo phản hồi (Toast), form nhập liệu và bảng tra cứu tối ưu hóa tương tác. |
+| **Service Layer & API** | `src/services/api.js`<br>`src/hooks/useApiData.js` | Điểm tập trung duy nhất gọi HTTP tới FastAPI; bọc timeout `AbortController`; phân loại lỗi `ApiError`; hook quản lý vòng đời request và fallback an toàn. | **Hoàn thiện**: Viết bằng native `fetch`, sẵn sàng kết nối Backend FastAPI tại `VITE_API_BASE_URL`, không làm sập giao diện khi mất kết nối. |
+| **Xuất tệp nâng cao (Export)** | `src/lib/export.js` | Xuất workbook Excel `.xlsx` nhiều sheet giữ nguyên dấu tiếng Việt; xuất báo cáo PDF chuẩn hóa qua thuật toán `deaccent` xử lý font Latin-1. | **Hoàn thiện**: Áp dụng dynamic import cho `xlsx` (~424 kB) và `jspdf` (~399 kB), tách riêng chunk để tối ưu thời gian tải trang ban đầu. |
+| **Ghép nối thiết bị (QR Pairing)** | `src/QRCodeCard.jsx` | Nút mở mã QR trên Topbar; sinh Pair Session ID ngẫu nhiên; render qua `createPortal`; giả lập quét kết nối với ứng dụng EcoMetric iOS. | **Hoàn thiện**: Sinh mã QR chuẩn SVG có logo ở giữa; cơ chế Portal khắc phục triệt để lỗi containing-block của CSS backdrop-filter. |
 
-### Các bước
+---
+
+## 5. Kiến trúc hệ thống (System Architecture)
+
+Kiến trúc EcoMetric Web Dashboard được xây dựng theo mô hình phân tầng hướng module (Layered Modular Architecture). Cấu trúc này tách biệt rõ ràng giữa tầng hiển thị giao diện, tầng quản lý trạng thái, tầng dịch vụ mạng và các ranh giới tích hợp bên ngoài.
+
+```mermaid
+flowchart TB
+    classDef uiLayer fill:#f0fdf4,stroke:#86efac,stroke-width:1.5px,color:#14532d;
+    classDef hookLayer fill:#eff6ff,stroke:#93c5fd,stroke-width:1.5px,color:#1e3a8a;
+    classDef serviceLayer fill:#fdf4ff,stroke:#f0abfc,stroke-width:1.5px,color:#701a75;
+    classDef dataLayer fill:#fffbeb,stroke:#fde68a,stroke-width:1.5px,color:#78350f;
+    classDef extLayer fill:#f1f5f9,stroke:#94a3b8,stroke-width:1.5px,color:#0f172a;
+
+    subgraph UI_LAYER["1. TẦNG GIAO DIỆN (Presentation Layer - React 19 & Tailwind v4)"]
+        direction TB
+        Nav["Khung điều hướng: Topbar, Sidebar (w-20), BottomNav"]:::uiLayer
+        Pages["6 Phân hệ: OverviewPage, DataInput, CarbonEmissions, AIRecommendations, ESGReporting, Settings"]:::uiLayer
+        Modals["Portals (createPortal): ActionPlanModal, QRCodeModal (document.body)"]:::uiLayer
+        Visuals["Trực quan hóa: Pure SVG Charts (Trend, Donut, Heatmap) - Zero external chart lib"]:::uiLayer
+        Uploader["DataUploader: Preview Table & File Validator"]:::uiLayer
+    end
+
+    subgraph HOOK_LAYER["2. TẦNG TRẠNG THÁI & HOOKS (State & Hooks Layer)"]
+        direction TB
+        LocalState["State cục bộ: useState, useMemo, useCallback"]:::hookLayer
+        ApiHook["Custom Hook: useApiData(fetcher, { fallbackData, deps })"]:::hookLayer
+    end
+
+    subgraph SERVICE_LAYER["3. TẦNG DỊCH VỤ & THƯ VIỆN LÕI (Service & Core Utilities)"]
+        direction TB
+        ApiService["src/services/api.js: request(), ApiError, getDashboardData(), getRecommendations(), getESGReport()"]:::serviceLayer
+        ExportService["src/lib/export.js: Dynamic import SheetJS (xlsx) & jsPDF, hàm deaccent()"]:::serviceLayer
+        FormatService["src/lib/format.js: B2B Design Tokens, format tiền tệ VNĐ & số liệu thập phân"]:::serviceLayer
+    end
+
+    subgraph DATA_LAYER["4. TẦNG DỮ LIỆU & DỰ PHÒNG (Data & Fallback Layer)"]
+        direction TB
+        MockData["src/data/dashboardData.js & Fallback Constants (Đảm bảo Zero-Downtime khi demo)"]:::dataLayer
+    end
+
+    subgraph EXT_LAYER["5. RANH GIỚI TÍCH HỢP NGOÀI (External & Companion Boundaries)"]
+        direction TB
+        FastAPI["Backend FastAPI (http://localhost:8000)<br>GET /api/dashboard | POST /recommend | GET /api/esg/report"]:::extLayer
+        IOSApp["EcoMetric iOS App (Companion)<br>Ghép nối qua Deep-link ecometric://pair?session=..."]:::extLayer
+    end
+
+    %% Liên kết giữa các tầng
+    UI_LAYER --> HOOK_LAYER
+    HOOK_LAYER --> SERVICE_LAYER
+    SERVICE_LAYER -.->|"Khi offline / lỗi mạng (usingFallback)"| DATA_LAYER
+    SERVICE_LAYER ==>|"Giao tiếp HTTP fetch native"| FastAPI
+    Modals -.->|"Sinh mã QR ghép nối"| IOSApp
+    Uploader --> ExportService
+```
+
+### Các nguyên tắc kiến trúc nổi bật
+
+- **Tách biệt ranh giới gọi mạng:** Toàn bộ lệnh gọi mạng tập trung tại `src/services/api.js`. Component tuyệt đối không sử dụng `fetch` tùy tiện, giúp việc bảo trì, thay đổi endpoint hoặc chuyển đổi sang Axios trong tương lai không làm ảnh hưởng tới giao diện.
+- **Cơ chế Fallback bảo toàn hiển thị:** Thông qua hook `useApiData`, nếu Backend FastAPI chưa khởi động hoặc gặp sự cố mạng, hệ thống tự động cung cấp dữ liệu mô phỏng dự phòng (`fallbackData`) và bật cờ `usingFallback`. Nhờ đó, ứng dụng không bao giờ bị trắng trang hay gián đoạn khi trình diễn.
+- **Tối ưu dung lượng tải ban đầu (Code Splitting):** Hai thư viện có dung lượng lớn là `xlsx` (~424 kB) và `jspdf` (~399 kB) được nạp thông qua cú pháp import động (`await import(...)`). Trình duyệt chỉ tải các tệp này khi người dùng chủ động bấm nút xuất báo cáo.
+- **Tránh phụ thuộc thư viện biểu đồ cồng kềnh:** Các biểu đồ đường, biểu đồ tròn (donut), biểu đồ nhiệt và thanh hạn mức đều được vẽ bằng SVG thuần với toán học tọa độ chuẩn xác. Điều này giúp bundle ứng dụng nhẹ, khởi động nhanh và tùy biến giao diện linh hoạt theo Tailwind CSS v4.
+- **Khắc phục lỗi Containing-Block bằng React Portals:** Các modal quan trọng (`ActionPlanModal`, `QRCodeCard`) được đưa ra ngoài cây DOM thông qua `createPortal(..., document.body)`. Kỹ thuật này ngăn chặn hiện tượng lớp nền kính mờ (`backdrop-filter`) của thanh Header biến thành khối chứa neo tọa độ, đảm bảo hộp thoại luôn hiển thị chính giữa toàn bộ màn hình.
+
+---
+
+## 6. Hướng dẫn cài đặt & Chạy dự án
+
+### Yêu cầu môi trường
+
+- **Node.js**: Phiên bản 18.0.0 trở lên (khuyến nghị Node 20 LTS).
+- **Trình quản lý gói**: `npm` (đi kèm Node.js) hoặc `pnpm` / `yarn`.
+
+### Các bước cài đặt
+
+Di chuyển vào thư mục ứng dụng và cài đặt các gói phụ thuộc:
 
 ```bash
-# 1. Di chuyển vào thư mục dự án
 cd ecometric-app
-
-# 2. Cài đặt dependencies
 npm install
 ```
 
-### Chạy môi trường phát triển (HMR)
+### Cấu hình biến môi trường (Tùy chọn)
 
-```bash
-npm run dev
-```
-
-Mở trình duyệt tại địa chỉ Vite in ra (mặc định **http://localhost:5173**).
-
-> 💡 **Không cần backend để chạy thử:** nếu FastAPI chưa bật, ứng dụng tự động dùng dữ liệu mô phỏng và hiển thị nhắc nhở _“Đang dùng dữ liệu mô phỏng (backend chưa kết nối)”_. Muốn nối backend thật, xem mục **Service Layer** bên dưới để cấu hình `VITE_API_BASE_URL`.
-
-### Build cho production
-
-```bash
-npm run build
-```
-
-### Xem thử bản build
-
-```bash
-npm run preview
-```
-
-### Kiểm tra chất lượng mã
-
-```bash
-npm run lint
-```
-
-### Tổng hợp lệnh
-
-| Lệnh              | Mô tả                                 |
-| :---------------- | :------------------------------------ |
-| `npm run dev`     | Khởi động dev server với HMR.         |
-| `npm run build`   | Build production vào thư mục `dist/`. |
-| `npm run preview` | Xem thử bản build production tại chỗ. |
-| `npm run lint`    | Chạy Oxlint kiểm tra mã nguồn.        |
-
----
-
-## 📁 Cấu trúc thư mục dự án
-
-```text
-ecometric-app/
-├── public/
-│   ├── favicon.svg
-│   └── icons.svg
-├── src/
-│   ├── assets/                     # Hình ảnh (hero.png, vite.svg, react.svg)
-│   ├── components/                 # Khối giao diện dùng lại
-│   │   ├── Topbar.jsx              # Thanh trên cùng (logo, search, QR, avatar)
-│   │   ├── Sidebar.jsx             # Điều hướng trái (desktop)
-│   │   ├── BottomNav.jsx           # Điều hướng đáy (mobile)
-│   │   ├── MetricsCard.jsx         # Thẻ KPI (grid 2×2 mobile)
-│   │   ├── ActionPriorityCard.jsx  # Top 3 việc cần làm ngay
-│   │   ├── TrendChartCard.jsx      # Biểu đồ xu hướng tiêu thụ
-│   │   ├── ResourceDonutCard.jsx   # Donut phân bổ nguồn lực + legend
-│   │   ├── AlertsCard.jsx          # Cảnh báo bất thường
-│   │   ├── UploadCard.jsx          # Tải lên dữ liệu (dashboard)
-│   │   ├── DataUploader.jsx        # Kéo-thả .xlsx/.csv + bảng xem trước + file mẫu
-│   │   ├── AiSuggestionsCard.jsx   # Khuyến nghị AI
-│   │   ├── RecentReportsList.jsx   # Báo cáo gần đây (card/bảng)
-│   │   ├── ActionPlanModal.jsx     # Hộp thoại Action Plan 5 bước
-│   │   └── DataProvenanceTag.jsx   # Nhãn nguồn gốc dữ liệu
-│   ├── data/
-│   │   └── dashboardData.js        # Dữ liệu tĩnh (mock) cho dashboard
-│   ├── hooks/
-│   │   └── useApiData.js           # Hook tải dữ liệu qua service layer (loading/error/fallback)
-│   ├── services/
-│   │   └── api.js                  # Service layer gọi Backend FastAPI (getDashboardData / getRecommendations / getESGReport)
-│   ├── lib/
-│   │   ├── format.js               # Hàm định dạng & design tokens (COLOR, FOCUS)
-│   │   └── export.js               # Xuất Excel (.xlsx) & báo cáo PDF (jspdf) cho ESG / Carbon
-│   ├── App.jsx                     # Điều phối chính: routing theo tab + bố cục
-│   ├── App.css
-│   ├── index.css                   # Import Tailwind + style nền tảng
-│   ├── main.jsx                    # Điểm khởi tạo React
-│   ├── CarbonEmissions.jsx         # Trang phát thải Carbon
-│   ├── AIRecommendations.jsx       # Trang khuyến nghị AI
-│   ├── DataInput.jsx               # Trang nhập liệu vận hành (Operations)
-│   ├── ESGReporting.jsx            # Trang báo cáo ESG
-│   ├── QRCodeCard.jsx              # Nút + modal QR code (dùng createPortal)
-│   └── Settings.jsx                # Trang cài đặt
-├── index.html                      # HTML gốc (nạp font Inter, favicon, theme-color)
-├── vite.config.js                  # Cấu hình Vite (plugin Tailwind v4 + React)
-├── .env.example                    # Mẫu biến môi trường (VITE_API_BASE_URL, VITE_API_TIMEOUT_MS)
-├── package.json
-├── .oxlintrc.json                  # Cấu hình Oxlint
-└── .gitignore
-```
-
----
-
-## 🧭 Điều hướng & các trang
-
-| Tab          | Trang              | Mô tả                                                     |
-| :----------- | :----------------- | :-------------------------------------------------------- |
-| `overview`   | Dashboard          | Tổng quan KPI, xu hướng, cảnh báo, báo cáo gần đây.       |
-| `operations` | Data Input         | Nhập & quản lý dữ liệu vận hành (điện, nước, nhiên liệu). |
-| `carbon`     | Carbon Emissions   | Phân tích chi tiết phát thải CO₂e.                        |
-| `ai`         | AI Recommendations | Gợi ý hành động giảm phát thải.                           |
-| `esg`        | ESG Reporting      | Xuất dữ liệu cho báo cáo bền vững.                        |
-| `settings`   | Settings           | Cấu hình hệ thống.                                        |
-
-> Trên desktop dùng **Sidebar**, dưới breakpoint `lg` tự động chuyển sang **BottomNav**.
-
----
-
-## 🔌 Service Layer & kết nối Backend FastAPI
-
-Toàn bộ giao tiếp HTTP với backend tập trung tại **`src/services/api.js`** – đây là điểm duy nhất trong frontend biết cách gọi API. Component không tự `fetch` rải rác.
-
-### Cấu hình môi trường
-
-Sao chép `.env.example` thành `.env.local` và chỉnh theo môi trường của bạn:
+Để kết nối với Backend FastAPI thật, tạo tệp `.env.local` trong thư mục `ecometric-app/` dựa trên mẫu `.env.example`:
 
 ```bash
 cp .env.example .env.local
 ```
 
+Nội dung cấu hình mẫu trong `.env.local`:
+
 ```dotenv
+# Địa chỉ máy chủ FastAPI (mặc định nếu không cấu hình là http://localhost:8000)
 VITE_API_BASE_URL=http://localhost:8000
+
+# Thời gian chờ tối đa cho mỗi yêu cầu HTTP (tính theo mili-giây)
 VITE_API_TIMEOUT_MS=15000
 ```
 
-> Vite chỉ expose các biến có tiền tố `VITE_` ra phía client. Nếu không cấu hình, base URL mặc định là `http://localhost:8000`.
+*Lưu ý: Nếu không tạo file `.env.local`, ứng dụng vẫn tự động hoạt động bình thường trên dữ liệu mô phỏng chuẩn.*
 
-### Các hàm public
+### Khởi chạy môi trường phát triển (Development)
 
-| Hàm                                        | Endpoint              | Mô tả                                                                  |
-| :----------------------------------------- | :-------------------- | :--------------------------------------------------------------------- |
-| `getDashboardData({ period, site })`       | `GET /api/dashboard`  | Lấy KPI CO₂e, chi phí, biểu đồ xu hướng, cảnh báo…                     |
-| `getRecommendations(parameters, { topK })` | `POST /recommend`     | Gửi thông số vận hành, nhận giải pháp tiết kiệm năng lượng.            |
-| `getESGReport({ period, format })`         | `GET /api/esg/report` | Lấy dữ liệu báo cáo phát thải phục vụ công bố ESG.                     |
-| `request(path, options)`                   | –                     | Hàm HTTP lõi: timeout, parse JSON, chuẩn hoá lỗi (có thể tái sử dụng). |
-| `pingBackend()`                            | `GET /health`         | Health-check nhanh backend đã sẵn sàng chưa.                           |
-| `withFallback(apiCall, fallback)`          | –                     | Bọc promise API, trả về giá trị dự phòng khi lỗi.                      |
+Chạy máy chủ phát triển Vite với tính năng Hot Module Replacement (HMR):
 
-### Xử lý lỗi
-
-Mọi lỗi được ném dưới dạng `ApiError` (có `status`, `url`, `payload`) để phân biệt rõ:
-
-- `err.isNetworkError` – backend tắt / sai URL / mất mạng / timeout.
-- `err.isServerError` – backend trả lỗi 5xx.
-
-### Hook tải dữ liệu dùng chung
-
-`src/hooks/useApiData.js` gom logic gọi API khi mount, theo dõi `loading`/`error`, hủy request khi unmount, và **tự động quay về dữ liệu mock** nếu backend chưa chạy:
-
-```js
-const { data, loading, error, usingFallback, reload } = useApiData(
-  (signal) => getDashboardData({ period: "month", signal }),
-  { fallbackData: DASHBOARD_FALLBACK },
-);
+```bash
+npm run dev
 ```
 
-Khi `usingFallback === true`, giao diện hiển thị dòng nhắc _“Đang dùng dữ liệu mô phỏng (backend chưa kết nối)”_ để không gây hiểu nhầm về nguồn số liệu.
+Mở trình duyệt và truy cập vào địa chỉ hiển thị trên terminal (thông thường là `http://localhost:5173`).
 
-### Ví dụ gọi API trong component
+### Kiểm tra chất lượng mã nguồn (Linting)
 
-```js
-import { getRecommendations } from "../services/api.js";
+Dự án sử dụng **Oxlint** tốc độ cao để rà soát lỗi cú pháp và chuẩn mực mã nguồn:
 
-// Gửi thông số vận hành sang FastAPI
-const result = await getRecommendations({
-  site: "Xuong 1",
-  period: "month",
-  electricityKwh: 20000,
-  waterM3: 1500,
-  fuelLiters: 800,
-});
-console.log(result.recommendations);
+```bash
+npm run lint
+```
+
+### Đóng gói cho môi trường Production (Build)
+
+Biên dịch và tối ưu hóa toàn bộ mã nguồn vào thư mục `dist/`:
+
+```bash
+npm run build
+```
+
+### Xem thử bản đóng gói (Preview)
+
+Khởi chạy máy chủ cục bộ để kiểm tra tệp sau khi build production:
+
+```bash
+npm run preview
+```
+
+### Bảng tổng hợp lệnh
+
+| Lệnh | Ý nghĩa và mục đích |
+| :--- | :--- |
+| `npm run dev` | Khởi động máy chủ phát triển Vite tại cổng 5173 với HMR. |
+| `npm run lint` | Chạy Oxlint quét toàn bộ 28 tệp mã nguồn để kiểm tra lỗi cú pháp và quy tắc code. |
+| `npm run build` | Biên dịch toàn bộ ứng dụng sang mã tĩnh tại thư mục `dist/` phục vụ triển khai production. |
+| `npm run preview` | Khởi chạy máy chủ nội bộ để kiểm tra trực tiếp sản phẩm sau khi build. |
+
+---
+
+## 7. Cấu trúc thư mục dự án
+
+Cấu trúc mã nguồn chi tiết của `ecometric-app/` được tổ chức khoa học và nhất quán:
+
+```text
+ecometric-app/
+├── public/                         # Tệp tĩnh phục vụ trực tiếp không qua biên dịch
+│   ├── favicon.svg                 # Biểu tượng chiếc lá thương hiệu EcoMetric
+│   └── icons.svg                   # Bộ ký hiệu vector dùng chung
+├── src/
+│   ├── assets/                     # Tài nguyên đồ họa (hero.png, react.svg, vite.svg)
+│   ├── components/                 # Các khối giao diện dùng lại theo nguyên tắc nguyên tử
+│   │   ├── ActionPlanModal.jsx     # Hộp thoại quy trình 5 bước & so sánh KPI (Portal)
+│   │   ├── ActionPriorityCard.jsx  # Danh sách thẻ việc cần làm ngay trong tháng
+│   │   ├── AiSuggestionsCard.jsx   # Thẻ khuyến nghị ngắn gọn trên Dashboard
+│   │   ├── AlertsCard.jsx          # Thẻ danh sách cảnh báo vận hành bất thường
+│   │   ├── BottomNav.jsx           # Thanh điều hướng đáy dành cho màn hình di động (< lg)
+│   │   ├── DataProvenanceTag.jsx   # Pill nhãn nguồn gốc số liệu (Trực tuyến / Mô phỏng)
+│   │   ├── DataUploader.jsx        # Khu vực kéo thả Excel/CSV, bảng Preview & Validator
+│   │   ├── MetricsCard.jsx         # Hệ thống 4 thẻ chỉ số KPI chính
+│   │   ├── RecentReportsList.jsx   # Danh sách báo cáo gần đây (Card list / Bảng)
+│   │   ├── ResourceDonutCard.jsx   # Biểu đồ tròn (Donut SVG) phân bổ cơ cấu tài nguyên
+│   │   ├── Sidebar.jsx             # Thanh điều hướng bên trái dành cho màn hình lớn (≥ lg)
+│   │   ├── Topbar.jsx              # Thanh đầu trang (Logo, tìm kiếm ⌘K, nút QR, Avatar)
+│   │   ├── TrendChartCard.jsx      # Biểu đồ xu hướng tiêu thụ tài nguyên (SVG thuần)
+│   │   └── UploadCard.jsx          # Thẻ điều hướng nhanh tới khu vực nạp dữ liệu
+│   ├── data/
+│   │   └── dashboardData.js        # Dữ liệu tĩnh dự phòng (Mock registry) cho Dashboard
+│   ├── hooks/
+│   │   └── useApiData.js           # Custom Hook gọi API kèm cơ chế Fallback và hủy request
+│   ├── lib/
+│   │   ├── export.js               # Động cơ xuất bảng tính Excel (.xlsx) và báo cáo PDF
+│   │   └── format.js               # Tokens thiết kế B2B SaaS, hàm định dạng số và tiền tệ
+│   ├── services/
+│   │   └── api.js                  # Service layer kết nối Backend FastAPI & xử lý lỗi ApiError
+│   ├── AIRecommendations.jsx       # Phân hệ Khuyến nghị AI và giải pháp tiết kiệm năng lượng
+│   ├── App.css                     # Phong cách tùy biến bổ trợ
+│   ├── App.jsx                     # Bộ điều phối trung tâm: Routing theo tab & phân bổ bố cục
+│   ├── CarbonEmissions.jsx         # Phân hệ Kiểm kê phát thải Scope 1/2/3 & Quỹ đạo Net Zero
+│   ├── DataInput.jsx               # Phân hệ Quản lý & Nhập liệu vận hành (Operations)
+│   ├── ESGReporting.jsx            # Phân hệ Báo cáo phát triển bền vững (GRI / SASB / TCFD)
+│   ├── index.css                   # Điểm nạp Tailwind CSS v4 & phong cách nền tảng
+│   ├── main.jsx                    # Điểm khởi tạo ứng dụng React 19
+│   ├── QRCodeCard.jsx              # Nút & Hộp thoại mã QR ghép nối ứng dụng iOS (Portal)
+│   └── Settings.jsx                # Phân hệ Cài đặt doanh nghiệp, hệ số, cảnh báo & người dùng
+├── .env.example                    # Mẫu khai báo biến môi trường cho Vite
+├── .gitignore                      # Danh sách loại trừ tệp khi đẩy lên Git
+├── .oxlintrc.json                  # Cấu hình quy tắc kiểm tra chất lượng mã của Oxlint
+├── index.html                      # Tệp HTML gốc (nạp font Inter và thiết lập viewport)
+├── package.json                    # Khai báo phụ thuộc và kịch bản thực thi lệnh
+└── vite.config.js                  # Cấu hình máy chủ và plugin Vite (@tailwindcss/vite)
 ```
 
 ---
 
-## 🗺 Roadmap phát triển
+## 8. Roadmap phát triển
 
-- [x] **Dashboard tổng quan** — KPI CO₂e, chi phí, biểu đồ xu hướng, cảnh báo bất thường.
-- [x] **Service Layer & Fallback mock data** — `src/services/api.js` + hook `useApiData`, tự quay về mock khi backend chưa chạy.
-- [x] **Nhập liệu hàng loạt (Bulk Data Input)** — kéo-thả Excel/CSV, bảng xem trước, kiểm tra lỗi, nhận diện số vi-VN / en-US.
-- [x] **Xuất báo cáo nâng cao** — Excel đa sheet (SheetJS) và PDF báo cáo ESG/Carbon tiêu chuẩn (jsPDF).
-- [x] **Phát thải Carbon theo Scope 1/2/3** — kiểm kê GHG Protocol, so sánh quỹ đạo Net Zero, bản đồ nhiệt theo cơ sở.
-- [x] **Báo cáo ESG theo GRI / SASB / TCFD** — bảng chỉ số E–S–G, trạng thái tuân thủ, mức độ sẵn sàng kiểm toán.
-- [x] **AI Recommendations** — gợi ý giải pháp giảm phát thải, Action Plan 5 bước, so sánh KPI Trước → Sau.
-- [x] **Tối ưu UI** — kính mờ `backdrop-filter`, modal qua React Portals, responsive mobile/desktop.
-- [ ] **Đồng bộ iOS App (QR Pairing)** — hoàn thiện luồng ghép nối QR, deep-link và đồng bộ hai chiều với bản iOS. _(giai đoạn sau)_
-- [ ] **Kết nối dữ liệu thời gian thực** — thay mock bằng WebSocket và tích hợp đồng hồ đo thông minh (IoT meters).
-- [ ] **Xác thực & phân quyền** — đăng nhập, vai trò theo phòng ban, phân quyền theo dữ liệu.
-- [ ] **Quản lý nhiều cơ sở** — hệ số phát thải và đơn vị tiền tệ theo vùng.
-- [ ] **Mở rộng bộ test & CI/CD** — unit/e2e test, pipeline lint + build tự động.
-- [ ] **Chuyển sang TypeScript** — bật type-aware lint để tăng độ an toàn khi mở rộng.
+Kế hoạch phát triển EcoMetric được phân định rõ ràng giữa các tính năng đã hoàn thiện trong phiên bản hiện tại và lộ trình mở rộng trong tương lai:
 
-> Giai đoạn tiếp theo tập trung vào **Đồng bộ iOS App (QR Pairing)** và kết nối dữ liệu thời gian thực.
+### Phiên bản hiện tại (Web MVP – Hoàn thiện)
+
+- [x] **Kiến trúc B2B SaaS sắc nét**: Giao diện chuẩn mực với hệ thống thẻ trắng viền mảnh (`border-slate-200/90`), số liệu định dạng bảng (`tabular-nums`), tương thích responsive mượt mà từ Desktop tới Mobile.
+- [x] **6 Phân hệ nghiệp vụ trọn vẹn**: Tổng quan (Overview), Nhập liệu vận hành (Operations), Phát thải Carbon (Carbon Emissions), Khuyến nghị AI (AI Recommendations), Báo cáo bền vững (ESG Reporting) và Cài đặt hệ thống (Settings).
+- [x] **Tầng kết nối dịch vụ & Fallback an toàn**: Module `src/services/api.js` và hook `useApiData` sẵn sàng kết nối API thật, tự động chuyển về dữ liệu mô phỏng có nhãn báo hiệu khi backend chưa hoạt động.
+- [x] **Nhập liệu hàng loạt chuyên nghiệp**: Component `DataUploader.jsx` kéo thả Excel/CSV, tự động kiểm tra tính hợp lệ từng dòng, xử lý định dạng số vi-VN/en-US và hỗ trợ tải file mẫu `.xlsx`.
+- [x] **Xuất báo cáo đa định dạng**: Cơ chế xuất bảng tính Excel đa sheet giữ trọn dấu tiếng Việt và xuất tệp PDF phân trang tự động sử dụng dynamic import tiết kiệm dung lượng.
+- [x] **Đồ họa SVG thuần tối ưu**: Toàn bộ biểu đồ xu hướng, biểu đồ donut và bản đồ nhiệt đều được vẽ trực tiếp bằng SVG, đạt điểm tuyệt đối về tốc độ và dung lượng.
+- [x] **Cầu nối mã QR qua React Portal**: Tạo mã QR ghép nối thiết bị sinh session động, render độc lập vào `document.body` để loại bỏ lỗi xung đột CSS backdrop-filter.
+
+### Giai đoạn kế tiếp (Future Releases)
+
+- [ ] **Hoàn thiện luồng đồng bộ 2 chiều với iOS App**: Triển khai WebSocket và giao thức xác thực bảo mật để khi quét mã QR từ điện thoại, dữ liệu nhập hiện trường từ ứng dụng iOS đồng bộ tức thì lên Web Dashboard.
+- [ ] **Kết nối dữ liệu thời gian thực (IoT Smart Meters)**: Tích hợp gateway thu thập chỉ số điện năng và lưu lượng nước tự động theo chu kỳ mỗi phút qua giao thức MQTT/HTTP.
+- [ ] **Hệ thống xác thực & Phân quyền nâng cao (SSO / RBAC)**: Bổ sung màn hình đăng nhập, phân quyền chi tiết theo nhà máy và hỗ trợ đăng nhập một lần (Single Sign-On qua SAML/OAuth2).
+- [ ] **Tự động hóa tính toán theo thời gian thực**: Nâng cấp động cơ tính toán hệ số phát thải theo lưới điện thời gian thực (Real-time Grid Carbon Intensity).
+- [ ] **Mở rộng kiểm thử tự động (Automated Testing)**: Xây dựng bộ kiểm thử đơn vị với Vitest và kiểm thử luồng người dùng đầu cuối (E2E) với Playwright.
 
 ---
 
-## 🤝 Đóng góp
+## 9. Đóng góp & Bản quyền
 
-Đây là dự án nội bộ. Khi đóng góp, vui lòng:
+Dự án được phát triển cho mục đích quản trị nội bộ và trình diễn giải pháp công nghệ. Khi đóng góp mã nguồn, vui lòng tuân thủ quy trình:
 
-1. Tạo nhánh theo tính năng: `feature/ten-tinh-nang`.
-2. Chạy `npm run lint` và `npm run build` trước khi mở Pull Request.
-3. Mô tả rõ thay đổi và ảnh hưởng tới UI/UX.
+1. Tạo nhánh tính năng mới từ nhánh chính: `git checkout -b feature/ten-tinh-nang`.
+2. Kiểm tra chất lượng code và bản build trước khi tạo Pull Request:
+   ```bash
+   cd ecometric-app
+   npm run lint
+   npm run build
+   ```
+3. Đảm bảo toàn bộ 28 tệp mã nguồn vượt qua kiểm tra của Oxlint với 0 lỗi (0 errors) và 0 cảnh báo (0 warnings).
 
 ---
 
 <div align="center">
 
-**EcoMetric** — Đo lường hôm nay, giảm phát thải ngày mai. 🌱
+**EcoMetric** — Đo lường chuẩn xác hôm nay, kiến tạo tương lai phát thải ròng bằng không. 🌱
 
 </div>
