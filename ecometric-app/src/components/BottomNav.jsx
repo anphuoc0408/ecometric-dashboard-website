@@ -20,7 +20,7 @@ export default function BottomNav({ items, active, onChange }) {
   return (
     <nav
       aria-label="Điều hướng chính trên di động"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-white/60 bg-white/85 pb-[env(safe-area-inset-bottom)] shadow-[0_-6px_24px_-12px_rgba(15,23,42,0.28)] backdrop-blur-xl supports-[backdrop-filter]:bg-white/75 lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200/90 bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-xs backdrop-blur-md lg:hidden"
     >
       <ul className="mx-auto flex w-full max-w-[560px] items-stretch justify-around px-1">
         {items.map(({ id, label, navLabel, icon: Icon }) => {
@@ -35,42 +35,40 @@ export default function BottomNav({ items, active, onChange }) {
                 aria-current={isActive ? "page" : undefined}
                 aria-label={label}
                 title={label}
-                className={`relative flex h-[58px] w-full flex-col items-center justify-center gap-[3px] overflow-hidden rounded-2xl px-1 transition-all duration-200 active:scale-[0.94] ${FOCUS} ${
+                className={`relative flex h-[54px] w-full flex-col items-center justify-center gap-1 overflow-hidden px-1 transition-colors ${FOCUS} ${
                   isActive
-                    ? "text-[#059669]"
-                    : "text-[#94a3b8] hover:text-[#64748b]"
+                    ? "text-emerald-700"
+                    : "text-slate-500 hover:text-slate-700"
                 }`}
               >
                 {/* Vạch chỉ báo mục đang chọn */}
                 <span
-                  className={`absolute top-0 h-[3px] w-6 rounded-full bg-[#10b981] transition-opacity duration-200 sm:w-8 ${
+                  className={`absolute top-0 h-[2px] w-6 rounded-full bg-emerald-600 transition-opacity duration-150 sm:w-8 ${
                     isActive ? "opacity-100" : "opacity-0"
                   }`}
                   aria-hidden="true"
                 />
 
                 <span
-                  className={`flex h-7 w-9 items-center justify-center rounded-full transition-all duration-200 sm:w-11 ${
-                    isActive
-                      ? "-translate-y-[1px] bg-[#10b981]/12"
-                      : "bg-transparent"
+                  className={`flex h-6 w-9 items-center justify-center rounded-md transition-colors ${
+                    isActive ? "text-emerald-600" : "text-slate-500"
                   }`}
                 >
                   <Icon
                     size={18}
-                    strokeWidth={isActive ? 2.5 : 2}
+                    strokeWidth={isActive ? 2.4 : 1.9}
                     className="shrink-0 sm:hidden"
                   />
                   <Icon
-                    size={20}
-                    strokeWidth={isActive ? 2.5 : 2}
+                    size={19}
+                    strokeWidth={isActive ? 2.4 : 1.9}
                     className="hidden shrink-0 sm:block"
                   />
                 </span>
 
                 <span
-                  className={`w-full truncate px-1 text-center text-[10px] leading-none ${
-                    isActive ? "font-bold" : "font-medium"
+                  className={`w-full truncate px-1 text-center text-[10px] leading-tight ${
+                    isActive ? "font-semibold" : "font-normal"
                   }`}
                 >
                   {text}

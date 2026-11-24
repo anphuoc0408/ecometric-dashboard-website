@@ -39,26 +39,24 @@ export const COLOR = {
   line: "#e2e8f0",
 };
 
-// Lớp bề mặt kính. `card` cho thẻ/khối, `modal` cho hộp thoại Action Plan.
-// Bo góc tăng dần theo breakpoint để mềm mại kiểu Mobile OS.
+// Lớp bề mặt thẻ/khối và modal
 export const GLASS = {
-  card: "bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-sm rounded-2xl",
+  card: "bg-white border border-slate-200/90 shadow-xs rounded-xl",
   modal:
     "bg-white/95 backdrop-blur-xl border border-slate-200 shadow-2xl rounded-2xl sm:rounded-3xl",
 };
 
-// Class dùng lại nhiều lần – bo góc mềm (mobile-first)
+// Class dùng lại nhiều lần – giao diện SaaS B2B viền mảnh, nền trắng sạch
 export const CARD =
-  "bg-white border border-[#e2e8f0] rounded-2xl shadow-[0_2px_2px_rgba(0,0,0,0.02)] sm:rounded-[16px]";
+  "bg-white border border-slate-200/90 rounded-xl shadow-xs";
 
 export const FOCUS =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#10b981]";
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600";
 
 // Nút Primary Action dùng chung cho thẻ ưu tiên & modal.
-// min-h-[44px]: chạm thoải mái theo chuẩn iOS HIG / Android Material.
-export const BTN_PRIMARY = `inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-2xl bg-[#10b981] px-4 text-[13px] font-semibold text-white shadow-[0_6px_16px_-6px_rgba(16,185,129,0.7)] transition-all hover:bg-[#0ea371] hover:shadow-[0_10px_22px_-8px_rgba(16,185,129,0.75)] active:scale-[0.97] ${FOCUS}`;
+export const BTN_PRIMARY = `inline-flex min-h-[40px] w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-[13px] font-semibold text-white shadow-xs transition-colors hover:bg-emerald-700 active:scale-[0.98] ${FOCUS}`;
 
-export const BTN_GHOST = `inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-2xl border border-[#e2e8f0] bg-white px-4 text-[13px] font-semibold text-[#0f172a] transition-all hover:bg-[#f8fafc] active:scale-[0.97] ${FOCUS}`;
+export const BTN_GHOST = `inline-flex min-h-[40px] w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-700 shadow-xs transition-colors hover:bg-slate-50 hover:text-slate-900 active:scale-[0.98] ${FOCUS}`;
 
 /* ── Nhận diện dữ liệu ─────────────────────────────────────────── */
 export const GRID_FACTOR = 0.6766;
@@ -66,8 +64,8 @@ export const PROVENANCE_TEXT =
   "Dữ liệu mô phỏng theo Hệ số Lưới điện VN 2024 (0.6766 kg CO₂e/kWh)";
 
 export const DELTA_STYLE = {
-  good: "bg-[#10b981]/10 text-[#059669]",
-  bad: "bg-[#fee2e2] text-[#991b1b]",
+  good: "bg-emerald-50 text-emerald-700 border border-emerald-200/70",
+  bad: "bg-rose-50 text-rose-700 border border-rose-200/70",
 };
 
 export const STATUS = {

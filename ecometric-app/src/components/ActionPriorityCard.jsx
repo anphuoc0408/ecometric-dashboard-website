@@ -2,136 +2,129 @@
  * ActionPriorityCard – Khối "Top 3 việc cần làm ngay trong tháng"
  *
  * Responsive:
- *  · Mobile (< 1280px): danh sách thẻ DỌC (vertical stack) – mỗi thẻ full width,
- *    đọc từ trên xuống, nút Primary Action luôn nằm cuối thẻ và full-width.
- *  · ≥ 1280px (xl)    : 3 cột ngang như thiết kế Figma.
+ *  · Mobile (< 1280px): danh sách thẻ DỌC (vertical stack) – mỗi thẻ full width.
+ *  · ≥ 1280px (xl)    : 3 cột ngang.
  *
- * Mỗi thẻ hiển thị: số ưu tiên, tiêu đề, mức tiết kiệm chi phí,
- * giảm phát thải, thời gian hoàn vốn + 1 nút Primary Action.
+ * 3 thẻ trắng đồng nhất viền mảnh, làm nổi bật 3 thông số chính:
+ * Tiết kiệm chi phí, Giảm CO2e và Thời gian hoàn vốn.
  */
-import { ClipboardList, Cpu, Leaf, RefreshCw, Wallet, Zap } from "lucide-react";
-import { BTN_GHOST, BTN_PRIMARY, COLOR, GLASS } from "../lib/format.js";
+import {
+  ClipboardList,
+  Cpu,
+  Leaf,
+  RefreshCw,
+  Wallet,
+  Zap,
+} from "lucide-react";
+import { BTN_GHOST, BTN_PRIMARY } from "../lib/format.js";
 import DataProvenanceTag from "./DataProvenanceTag.jsx";
 
 /* ── Một thẻ ưu tiên ────────────────────────────────────────────── */
 export function ActionPriorityCard({ item, onOpenPlan, onGoToAI }) {
-  const Icon = item.icon;
   const isLed = item.kind === "led";
 
   return (
     <article
-      className="group relative flex flex-col gap-3 overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-4 shadow-[0_2px_10px_-6px_rgba(15,23,42,0.15)] transition-all duration-200 active:scale-[0.995] hover:border-slate-300 hover:shadow-[0_14px_30px_-16px_rgba(15,23,42,0.35)] sm:p-5 xl:h-full"
+      className="group relative flex flex-col gap-3.5 rounded-xl border border-slate-200/90 bg-white p-4.5 shadow-xs transition-all duration-150 hover:border-slate-300 hover:shadow-sm sm:p-5 xl:h-full"
       aria-label={`Ưu tiên ${item.no}: ${item.title}`}
     >
-      {/* Vệt màu nhận diện mức ưu tiên */}
-      <span
-        className="absolute bottom-0 left-0 top-0 w-1"
-        style={{ backgroundColor: item.color }}
-      />
-
-      {/* Hàng đầu: biểu tượng + số ưu tiên + mức độ */}
-      <div className="flex items-start gap-3">
-        <span
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl"
-          style={{ backgroundColor: `${item.color}1f` }}
-        >
-          <Icon size={19} strokeWidth={2.2} color={item.color} />
+      {/* Hàng đầu: Tag ưu tiên + Cơ sở + Thời hạn */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span
+            className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold tracking-wide ${
+              item.no === 1
+                ? "border border-emerald-200/70 bg-emerald-50 text-emerald-700"
+                : "border border-slate-200 bg-slate-100 text-slate-700"
+            }`}
+          >
+            Ưu tiên {String(item.no).padStart(2, "0")}
+          </span>
+          <span className="inline-flex items-center rounded-md border border-slate-200/60 bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-600">
+            {item.site}
+          </span>
+        </div>
+        <span className="text-[11px] text-slate-400">
+          {item.level?.includes("·")
+            ? item.level.split("·")[1].trim()
+            : item.level}
         </span>
+      </div>
 
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <span
-              className="inline-flex items-center rounded-full px-[9px] py-[3px] text-[10px] font-bold uppercase tracking-wide"
-              style={{ backgroundColor: `${item.color}1f`, color: item.color }}
-            >
-              Ưu tiên {String(item.no).padStart(2, "0")}
+      {/* Tên giải pháp */}
+      <h3 className="min-h-[42px] text-[14px] font-semibold leading-snug text-slate-900 line-clamp-2 sm:text-[15px]">
+        {item.title}
+      </h3>
+
+      {/* 3 thông số chính: Tiết kiệm chi phí, Giảm CO2e và Thời gian hoàn vốn */}
+      <div className="flex flex-col divide-y divide-slate-100 rounded-lg border border-slate-100 bg-slate-50/70 p-3">
+        {/* Tiết kiệm chi phí */}
+        <div className="flex flex-col gap-1 pb-2 sm:flex-row sm:items-baseline sm:justify-between">
+          <span className="flex shrink-0 items-center gap-1.5 text-[11px] font-medium text-slate-500">
+            <Wallet size={14} className="shrink-0 text-slate-400" />
+            Tiết kiệm chi phí
+          </span>
+          <div className="text-left sm:text-right">
+            <span className="text-[12.5px] font-bold text-slate-900 tabular-nums sm:text-[13px]">
+              {item.saving.includes("(") ? item.saving.split("(")[0].trim() : item.saving}
             </span>
-            <span className="inline-flex items-center rounded-full bg-[#f1f5f9] px-[9px] py-[3px] text-[10px] font-semibold text-[#64748b]">
-              {item.site}
-            </span>
+            {item.saving.includes("(") && (
+              <span className="block text-[10.5px] font-normal text-slate-500 tabular-nums whitespace-nowrap sm:ml-1 sm:inline">
+                ({item.saving.split("(")[1]}
+              </span>
+            )}
           </div>
-          <span className="text-[11px] leading-snug text-[#94a3b8]">
-            {item.level}
+        </div>
+
+        {/* Giảm CO2e */}
+        <div className="flex flex-col gap-1 py-2 sm:flex-row sm:items-baseline sm:justify-between">
+          <span className="flex shrink-0 items-center gap-1.5 text-[11px] font-medium text-slate-500">
+            <Leaf size={14} className="shrink-0 text-emerald-600" />
+            Giảm CO2e
+          </span>
+          <div className="text-left sm:text-right">
+            <span className="text-[12.5px] font-bold text-emerald-700 tabular-nums sm:text-[13px]">
+              {item.reduction.includes("(") ? item.reduction.split("(")[0].trim() : item.reduction}
+            </span>
+            {item.reduction.includes("(") && (
+              <span className="block text-[10.5px] font-normal text-emerald-600/80 tabular-nums whitespace-nowrap sm:ml-1 sm:inline">
+                ({item.reduction.split("(")[1]}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Thời gian hoàn vốn */}
+        <div className="flex items-center justify-between gap-2 pt-2">
+          <span className="flex shrink-0 items-center gap-1.5 text-[11px] font-medium text-slate-500">
+            <RefreshCw size={14} className="shrink-0 text-slate-400" />
+            Thời gian hoàn vốn
+          </span>
+          <span className="text-right text-[12.5px] font-bold text-slate-900 tabular-nums sm:text-[13px]">
+            {item.payback}
           </span>
         </div>
       </div>
 
-      {/* Tên giải pháp */}
-      <h3 className="text-[14px] font-bold leading-[1.45] text-[#0f172a] sm:text-[15px]">
-        {item.title}
-      </h3>
+      {/* Ghi chú chi tiết */}
+      <p className="min-h-[32px] text-[11px] leading-relaxed text-slate-500 line-clamp-2">
+        {item.note}
+      </p>
 
-      {/* 3 thông số chính: tiết kiệm · giảm phát thải · hoàn vốn */}
-      <ul className="flex flex-col gap-2.5 rounded-2xl bg-[#f8fafc] px-3 py-3">
-        <li className="flex items-start gap-2.5">
-          <Wallet
-            size={15}
-            strokeWidth={2.6}
-            color={COLOR.blue}
-            className="mt-[2px] shrink-0"
-          />
-          <span className="flex min-w-0 flex-col gap-[1px]">
-            <span className="text-[10px] uppercase tracking-wide text-[#94a3b8]">
-              Tiết kiệm chi phí
-            </span>
-            <span className="text-[12px] font-bold leading-snug text-[#0f172a] sm:text-[13px]">
-              {item.saving}
-            </span>
-          </span>
-        </li>
-
-        <li className="flex items-start gap-2.5">
-          <Leaf
-            size={15}
-            strokeWidth={2.6}
-            color={COLOR.emeraldDark}
-            className="mt-[2px] shrink-0"
-          />
-          <span className="flex min-w-0 flex-col gap-[1px]">
-            <span className="text-[10px] uppercase tracking-wide text-[#94a3b8]">
-              Giảm phát thải / lãng phí
-            </span>
-            <span className="text-[12px] font-bold leading-snug text-[#0f172a] sm:text-[13px]">
-              {item.reduction}
-            </span>
-          </span>
-        </li>
-
-        <li className="flex items-start gap-2.5">
-          <RefreshCw
-            size={15}
-            strokeWidth={2.6}
-            color={COLOR.violet}
-            className="mt-[2px] shrink-0"
-          />
-          <span className="flex min-w-0 flex-col gap-[1px]">
-            <span className="text-[10px] uppercase tracking-wide text-[#94a3b8]">
-              Hoàn vốn
-            </span>
-            <span className="text-[12px] font-bold leading-snug text-[#0f172a] sm:text-[13px]">
-              {item.payback}
-            </span>
-          </span>
-        </li>
-      </ul>
-
-      {/* Ghi chú cơ sở tính */}
-      <p className="text-[11px] leading-[1.55] text-[#94a3b8]">{item.note}</p>
-
-      {/* Nút Primary Action – luôn ở đáy thẻ */}
-      <div className="mt-auto border-t border-[#f1f5f9] pt-3">
+      {/* Nút hành động */}
+      <div className="mt-auto border-t border-slate-100 pt-3">
         {isLed ? (
           <button
             type="button"
             onClick={() => onOpenPlan(item)}
             className={BTN_PRIMARY}
           >
-            <ClipboardList size={16} strokeWidth={2.6} />
+            <ClipboardList size={15} strokeWidth={2.4} />
             Tạo Action Plan
           </button>
         ) : (
           <button type="button" onClick={onGoToAI} className={BTN_GHOST}>
-            <Cpu size={16} strokeWidth={2.4} />
+            <Cpu size={15} strokeWidth={2.2} />
             Xem trong Khuyến nghị AI
           </button>
         )}
@@ -148,40 +141,30 @@ export default function ActionPriorityCardList({
 }) {
   return (
     <section
-      className={`${GLASS.card} relative flex flex-col gap-4 overflow-hidden p-4 sm:p-5`}
+      className="flex flex-col gap-4 rounded-xl border border-slate-200/90 bg-white p-4.5 shadow-xs sm:p-5"
       aria-labelledby="actionable-priorities-title"
     >
-      {/* Vệt nhấn nhận diện khối hành động */}
-      <span
-        className="absolute bottom-0 left-0 top-0 w-1"
-        style={{ backgroundColor: COLOR.emerald }}
-      />
-
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
-        <div className="flex items-start gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#10b981]/14">
-            <Zap size={19} strokeWidth={2.2} color={COLOR.emeraldDark} />
+      <div className="flex flex-col gap-3 border-b border-slate-100 pb-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-emerald-100 bg-emerald-50 text-emerald-700">
+            <Zap size={16} strokeWidth={2.4} />
           </span>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col">
             <h2
               id="actionable-priorities-title"
-              className="text-[15px] font-bold text-[#0f172a] sm:text-[16px]"
+              className="text-[15px] font-bold text-slate-900 sm:text-[16px]"
             >
               Top 3 việc cần làm ngay trong tháng
             </h2>
-            <p className="text-[12px] leading-snug text-[#64748b]">
-              Actionable Priorities · xếp hạng theo tác động phát thải, chi phí
-              và thời gian hoàn vốn
+            <p className="text-[12px] text-slate-500">
+              Xếp hạng theo tác động phát thải, tiết kiệm chi phí và thời gian hoàn vốn
             </p>
           </div>
         </div>
-        <DataProvenanceTag />
+        <DataProvenanceTag compact />
       </div>
 
-      {/*
-        Danh sách thẻ: DỌC trên mobile → 3 CỘT từ xl.
-        `items-stretch` giúp 3 thẻ cao bằng nhau ở desktop.
-      */}
+      {/* Danh sách 3 thẻ trắng đồng nhất viền mảnh */}
       <div className="flex flex-col gap-4 xl:grid xl:grid-cols-3 xl:items-stretch">
         {items.map((item) => (
           <ActionPriorityCard

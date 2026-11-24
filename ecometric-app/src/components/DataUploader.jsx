@@ -52,16 +52,16 @@ const COLOR = {
   line: "#e2e8f0",
 };
 
-const GLASS = "glass glass-press";
+const GLASS = "rounded-xl border border-slate-200/90 bg-white shadow-xs";
 const FOCUS =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#10b981]";
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600";
 
 const BTN_PRIMARY =
-  "inline-flex items-center justify-center gap-2 rounded-[12px] bg-[#10b981] px-4 py-[10px] " +
-  `text-[13px] font-semibold text-white transition-all hover:bg-[#0ea371] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-[#10b981] ${FOCUS}`;
+  "inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 " +
+  `text-[13px] font-semibold text-white shadow-xs transition-colors hover:bg-emerald-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-emerald-600 ${FOCUS}`;
 const BTN_GHOST =
-  "inline-flex items-center justify-center gap-2 rounded-[12px] border border-white/70 bg-white/60 px-4 py-[10px] " +
-  `text-[13px] font-semibold text-[#0f172a] backdrop-blur-[12px] transition-all hover:bg-white active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 ${FOCUS}`;
+  "inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 " +
+  `text-[13px] font-medium text-slate-700 shadow-xs transition-colors hover:bg-slate-50 hover:text-slate-900 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 ${FOCUS}`;
 
 /* ────────────────────────────────
    2. CẤU HÌNH NGHIỆP VỤ
@@ -371,10 +371,10 @@ function Dropzone({
           onDraggingChange(false);
           pick(e.dataTransfer.files);
         }}
-        className={`${GLASS} flex flex-col items-center justify-center gap-3 rounded-[16px] border-2 border-dashed p-6 text-center transition-colors ${
+        className={`flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-6 text-center transition-colors ${
           dragging
-            ? "border-[#10b981] bg-[#10b981]/10"
-            : "border-[#10b981]/50 bg-white/45"
+            ? "border-emerald-500 bg-emerald-50/50"
+            : "border-slate-300 bg-slate-50/60 hover:border-emerald-400 hover:bg-slate-50"
         }`}
       >
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#10b981]/12">
@@ -820,7 +820,7 @@ export default function DataUploader({ onSave }) {
       )}
 
       {savedMsg && (
-        <span className="glass inline-flex w-fit items-center gap-2 px-4 py-[10px] text-[12px] font-semibold text-[#059669]">
+        <span className="inline-flex w-fit items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-2 text-[12px] font-semibold text-emerald-700">
           <BadgeCheck size={15} strokeWidth={2.6} />
           {savedMsg}
         </span>

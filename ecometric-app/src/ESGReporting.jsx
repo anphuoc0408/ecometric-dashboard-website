@@ -57,19 +57,19 @@ const COLOR = {
   line: "#e2e8f0",
 };
 
-// Lớp bề mặt kính – dùng lại utility "glass" đã khai báo trong index.css
-const GLASS = "glass glass-press";
+// Lớp bề mặt B2B SaaS đồng bộ với OverviewPage
+const GLASS = "rounded-xl border border-slate-200/90 bg-white shadow-xs";
 const FOCUS =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#10b981]";
-const LABEL = "flex items-center gap-[6px] text-[12px] font-semibold text-[#64748b]";
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600";
+const LABEL = "flex items-center gap-[6px] text-[12px] font-semibold text-slate-600";
 
-// Nút hành động chính (kính xanh đặc) & nút phụ (kính trong)
+// Nút hành động B2B SaaS
 const BTN_PRIMARY =
-  "inline-flex items-center justify-center gap-2 rounded-[12px] bg-[#10b981] px-4 py-[10px] " +
-  `text-[13px] font-semibold text-white transition-all hover:bg-[#0ea371] active:scale-[0.98] ${FOCUS}`;
+  "inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 " +
+  `text-[13px] font-semibold text-white shadow-xs transition-colors hover:bg-emerald-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-emerald-600 ${FOCUS}`;
 const BTN_GHOST =
-  "inline-flex items-center justify-center gap-2 rounded-[12px] border border-white/70 bg-white/60 px-4 py-[10px] " +
-  `text-[13px] font-semibold text-[#0f172a] backdrop-blur-[12px] transition-all hover:bg-white active:scale-[0.98] ${FOCUS}`;
+  "inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 " +
+  `text-[13px] font-medium text-slate-700 shadow-xs transition-colors hover:bg-slate-50 hover:text-slate-900 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 ${FOCUS}`;
 
 /* ────────────────────────────────
    2. DỮ LIỆU MẪU (thay bằng API sau này)
@@ -339,8 +339,8 @@ function FrameworkCard({ framework, active, onSelect }) {
 
   return (
     <article
-      className={`${GLASS} relative flex cursor-pointer flex-col gap-4 overflow-hidden p-4 sm:p-5 ${
-        active ? "ring-2 ring-white/80" : ""
+      className={`group relative flex cursor-pointer flex-col gap-3.5 rounded-xl border bg-white p-4.5 shadow-xs transition-all hover:border-slate-300 hover:shadow-sm sm:p-5 ${
+        active ? "border-emerald-500 ring-1 ring-emerald-500/30" : "border-slate-200/90"
       }`}
       onClick={() => onSelect(framework.id)}
       onKeyDown={(e) => {
@@ -353,24 +353,20 @@ function FrameworkCard({ framework, active, onSelect }) {
       tabIndex={0}
       aria-pressed={active}
     >
-      {/* Vệt màu nhận diện bộ tiêu chuẩn */}
-      <span className="absolute bottom-0 left-0 top-0 w-1" style={{ backgroundColor: framework.color }} />
-
       <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <span
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px]"
-            style={{ backgroundColor: `${framework.color}1f` }}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200/80 bg-slate-50"
           >
-            <Icon size={19} strokeWidth={2.2} color={framework.color} />
+            <Icon size={18} strokeWidth={2.2} color={framework.color} />
           </span>
           <div className="flex min-w-0 flex-col">
-            <h3 className="text-[15px] font-bold text-[#0f172a]">{framework.name}</h3>
-            <span className="truncate text-[11px] text-[#64748b]">{framework.full}</span>
+            <h3 className="text-[15px] font-bold text-slate-900">{framework.name}</h3>
+            <span className="truncate text-[11px] text-slate-500">{framework.full}</span>
           </div>
         </div>
         {active && (
-          <span className="inline-flex items-center gap-[5px] rounded-full bg-white/70 px-[10px] py-[4px] text-[11px] font-semibold text-[#059669]">
+          <span className="inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
             <Check size={12} strokeWidth={2.8} />
             Đang xem
           </span>
@@ -378,31 +374,31 @@ function FrameworkCard({ framework, active, onSelect }) {
       </div>
 
       {/* Tiến độ chuẩn hoá */}
-      <div className="flex flex-col gap-[6px]">
+      <div className="flex flex-col gap-1.5">
         <div className="flex items-end justify-between gap-3">
-          <span className="text-[26px] font-extrabold leading-tight text-[#0f172a]">
+          <span className="text-[24px] font-bold tracking-tight text-slate-900 tabular-nums sm:text-[26px]">
             {framework.coverage}
-            <span className="text-[14px] font-semibold text-[#64748b]">%</span>
+            <span className="text-[13px] font-semibold text-slate-500">%</span>
           </span>
-          <span className="text-[11px] font-semibold text-[#64748b]">
+          <span className="text-[11px] font-medium text-slate-500 tabular-nums">
             {framework.disclosed}/{framework.total} chỉ số
           </span>
         </div>
-        <div className="h-[8px] w-full overflow-hidden rounded-full bg-white/70">
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
           <div
-            className="h-full rounded-full transition-[width] duration-500"
-            style={{ width: `${framework.coverage}%`, backgroundColor: framework.color }}
+            className="h-full rounded-full bg-emerald-600 transition-[width] duration-500"
+            style={{ width: `${framework.coverage}%` }}
           />
         </div>
       </div>
 
-      <p className="text-[12px] leading-[1.5] text-[#64748b]">{framework.desc}</p>
+      <p className="text-[12px] leading-relaxed text-slate-500">{framework.desc}</p>
 
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/60 pt-3">
-        <span className="text-[11px] text-[#94a3b8]">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
+        <span className="text-[11px] text-slate-400 tabular-nums">
           {metCount}/{requirementList.length} nhóm yêu cầu đạt
         </span>
-        <span className="inline-flex items-center gap-[5px] text-[11px] font-semibold text-[#64748b]">
+        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 tabular-nums">
           <Clock size={12} strokeWidth={2.4} />
           Kiểm toán: {framework.lastAudit}
         </span>
@@ -411,13 +407,13 @@ function FrameworkCard({ framework, active, onSelect }) {
   );
 }
 
-/* ── Ô chọn kỳ báo cáo (segmented control kiểu iOS) ───────────── */
+/* ── Ô chọn kỳ báo cáo (segmented control B2B SaaS) ───────────── */
 function PeriodFilter({ value, onChange }) {
   return (
     <div
       role="radiogroup"
       aria-label="Kỳ báo cáo"
-      className="glass-press inline-flex items-center gap-1 rounded-full border border-white/60 bg-white/45 p-1 backdrop-blur-[16px]"
+      className="inline-flex h-8.5 items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 text-[12px]"
     >
       {PERIOD_OPTIONS.map(({ id, label, icon: Icon }) => {
         const active = id === value;
@@ -428,13 +424,13 @@ function PeriodFilter({ value, onChange }) {
             role="radio"
             aria-checked={active}
             onClick={() => onChange(id)}
-            className={`flex items-center gap-2 rounded-full px-[16px] py-[7px] text-[13px] font-semibold transition-all ${FOCUS} ${
+            className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[12px] transition-all ${FOCUS} ${
               active
-                ? "bg-[#10b981] text-white shadow-[0_6px_16px_-6px_rgba(16,185,129,0.85)]"
-                : "text-[#64748b] hover:bg-white/70 hover:text-[#0f172a]"
+                ? "bg-white font-semibold text-slate-900 shadow-xs"
+                : "font-medium text-slate-600 hover:text-slate-900"
             }`}
           >
-            <Icon size={14} strokeWidth={2.4} />
+            <Icon size={13} strokeWidth={2.2} />
             {label}
           </button>
         );
@@ -957,25 +953,41 @@ export default function ESGReporting() {
 
   return (
     <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
-      {/* Tiêu đề trang */}
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex flex-col gap-[6px]">
-          <h1 className="text-[20px] font-extrabold leading-tight text-[#0f172a] sm:text-[24px]">Báo cáo ESG</h1>
-          <p className="text-[13px] leading-snug text-[#64748b] sm:text-[14px]">
+      {/* Tiêu đề trang + pill trạng thái */}
+      <div className="flex flex-col gap-4 border-b border-slate-200/80 pb-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        <div className="flex min-w-0 flex-col gap-1">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="text-[20px] font-bold tracking-tight text-slate-900 sm:text-[22px]">Báo cáo ESG</h1>
+            {/* Pill trạng thái nhỏ gọn cạnh tiêu đề trang giống OverviewPage */}
+            {loading ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[11px] font-medium text-slate-600">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+                Đang tải báo cáo ESG…
+              </span>
+            ) : usingFallback ? (
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[11px] font-medium text-slate-500"
+                title="Đang dùng dữ liệu mô phỏng do backend chưa kết nối"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                Dữ liệu mô phỏng
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/70 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                Trực tuyến
+              </span>
+            )}
+          </div>
+          <p className="text-[13px] leading-snug text-slate-500">
             Tiến độ chuẩn hoá theo GRI, SASB, TCFD · Chỉ số E-S-G và xuất hồ sơ công bố ·{" "}
-            <b className="text-[#0f172a]">{PERIOD_TITLE[period]}</b>
+            <b className="font-semibold text-slate-900">{PERIOD_TITLE[period]}</b>
           </p>
-          {(loading || usingFallback) && (
-            <p className="text-[11px] font-semibold text-[#94a3b8]">
-              {loading ? "Đang tải báo cáo ESG…" : "Đang dùng dữ liệu mô phỏng (backend chưa kết nối)"}
-            </p>
-          )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <span className={LABEL}>
-            <Zap size={13} strokeWidth={2.4} /> Mức độ chuẩn hoá trung bình
-            <b className="ml-1 text-[13px] text-[#059669]">{averageCoverage}%</b>
+        <div className="flex flex-wrap items-center gap-2.5 sm:shrink-0">
+          <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200/80 bg-emerald-50 px-3 py-1.5 text-[12px] font-semibold text-emerald-700">
+            <Zap size={13} strokeWidth={2.4} /> Chuẩn hoá: {averageCoverage}%
           </span>
 
           {/* Xuất dữ liệu Excel (toàn bộ bảng chỉ số E-S-G) */}
@@ -986,7 +998,7 @@ export default function ESGReporting() {
             className={BTN_GHOST}
           >
             <FileSpreadsheet size={15} strokeWidth={2.4} />
-            Xuất dữ liệu Excel
+            Xuất Excel
           </button>
 
           {/* Tải báo cáo PDF */}
@@ -997,7 +1009,7 @@ export default function ESGReporting() {
             className={BTN_PRIMARY}
           >
             <Download size={15} strokeWidth={2.6} />
-            {busy ? "Đang kết xuất…" : "Tải báo cáo PDF"}
+            {busy ? "Đang kết xuất…" : "Tải PDF"}
           </button>
         </div>
       </div>

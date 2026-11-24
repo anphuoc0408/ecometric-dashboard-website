@@ -85,31 +85,104 @@ const DASHBOARD_FALLBACK = {
 function OverviewPage({ onGoToAI }) {
   // Khối "Top 3 việc cần làm ngay" mở Action Plan dạng hộp thoại ngay trên Dashboard
   const [planItem, setPlanItem] = useState(null);
+  const [period, setPeriod] = useState("month");
+  const [site, setSite] = useState("all");
 
   // Gọi API tổng quan; nếu backend chưa sẵn sàng → dùng DASHBOARD_FALLBACK.
   const { data, loading, usingFallback } = useApiData(
-    (signal) => getDashboardData({ period: "month", signal }),
-    { fallbackData: DASHBOARD_FALLBACK },
+    (signal) =>
+      getDashboardData({
+        period,
+        site: site === "all" ? undefined : site,
+        signal,
+      }),
+    { fallbackData: DASHBOARD_FALLBACK, deps: [period, site] },
   );
 
   // Ưu tiên dữ liệu từ API, thiếu trường nào thì lấy từ mock để không vỡ layout.
   const view = { ...DASHBOARD_FALLBACK, ...(data ?? {}) };
 
   return (
-    <main className="glass flex min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
-      {/* Tiêu đề trang */}
-      <div className="flex flex-col gap-[6px]">
-        <h1 className="text-[20px] font-extrabold leading-tight text-[#0f172a] sm:text-[24px]">
-          {view.pageTitle}
-        </h1>
-        <p className="text-[13px] leading-snug text-[#64748b] sm:text-[14px]">
-          {view.pageSubtitle}
-        </p>
-        {(loading || usingFallback) && (
-          <p className="text-[11px] font-semibold text-[#94a3b8]">
-            {loading ? "Đang tải dữ liệu từ máy chủ…" : "Đang dùng dữ liệu mô phỏng (backend chưa kết nối)"}
+    <main className="flex min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
+      {/* Header khu vực Tổng quan */}
+      <div className="flex flex-col gap-4 border-b border-slate-200/80 pb-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        {/* Tiêu đề & mô tả */}
+        <div className="flex min-w-0 flex-col gap-1">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="text-[20px] font-bold tracking-tight text-slate-900 sm:text-[22px]">
+              {view.pageTitle}
+            </h1>
+            {/* Pill trạng thái nhỏ tinh tế */}
+            {loading ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[11px] font-medium text-slate-600">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+                Đang tải dữ liệu…
+              </span>
+            ) : usingFallback ? (
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[11px] font-medium text-slate-500"
+                title="Đang dùng dữ liệu mô phỏng chuẩn (backend chưa kết nối)"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                Dữ liệu mô phỏng
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/70 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                Trực tuyến
+              </span>
+            )}
+          </div>
+          <p className="text-[13px] leading-snug text-slate-500">
+            {view.pageSubtitle}
           </p>
-        )}
+        </div>
+
+        {/* Các điều khiển lọc / kỳ dữ liệu ở góc phải */}
+        <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
+          {/* Lọc cơ sở */}
+          <select
+            value={site}
+            onChange={(e) => setSite(e.target.value)}
+            aria-label="Chọn cơ sở lọc dữ liệu"
+            className="h-8.5 rounded-lg border border-slate-200 bg-white px-2.5 pr-7 text-[12px] font-medium text-slate-700 shadow-xs outline-none transition-colors hover:border-slate-300 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20"
+          >
+            <option value="all">Toàn bộ cơ sở</option>
+            <option value="Xuong 1">Xưởng 1</option>
+            <option value="Xuong 2">Xưởng 2</option>
+            <option value="Khu B">Khu B</option>
+          </select>
+
+          {/* Kỳ dữ liệu (Tháng / Quý / Năm) */}
+          <div
+            role="group"
+            aria-label="Kỳ dữ liệu"
+            className="inline-flex h-8.5 items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 text-[12px]"
+          >
+            {[
+              { id: "month", label: "Tháng" },
+              { id: "quarter", label: "Quý" },
+              { id: "year", label: "Năm" },
+            ].map(({ id, label }) => {
+              const active = period === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setPeriod(id)}
+                  aria-pressed={active}
+                  className={`rounded-md px-2.5 py-1 text-[12px] transition-all ${
+                    active
+                      ? "bg-white font-semibold text-slate-900 shadow-xs"
+                      : "font-medium text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* Hàng chỉ số KPI – Grid 2×2 trên mobile, 4 cột từ xl */}
@@ -158,17 +231,11 @@ export default function App() {
     <div className="min-h-screen bg-[#f8fafc] font-['Inter',ui-sans-serif,system-ui,sans-serif] leading-[normal] text-[#0f172a] antialiased">
       <Topbar />
 
-      {/* Sidebar nằm NGOÀI container có `backdrop-blur` bên dưới.
-          Lý do: `backdrop-filter` tạo containing-block mới, khiến phần tử
-          `fixed` bên trong bị neo theo container (cao bằng nội dung trang)
-          thay vì viewport → Sidebar bị kéo dài quá đáy màn hình.
-          Đặt ở đây thì `fixed top-[73px] h-[calc(100vh-73px)]` luôn đúng. */}
+      {/* Sidebar nằm NGOÀI container để `fixed top-[73px] h-[calc(100vh-73px)]` luôn đúng. */}
       <Sidebar active={activeNav} onChange={setActiveNav} />
 
-      {/* main-container: lớp kính mờ nền (Figma: blur 15px, trắng 30%)
-          Nội dung chừa đúng bề rộng Sidebar thu gọn (w-20); khi mở rộng
-          Sidebar phủ lên nội dung nên layout chính không bị giật. */}
-      <div className="flex items-start bg-white/30 backdrop-blur-[15px] lg:pl-20">
+      {/* main-container: nền sạch, chừa đúng bề rộng Sidebar thu gọn (w-20) */}
+      <div className="flex items-start lg:pl-20">
         {activeNav === "operations" ? (
           <DataInput />
         ) : activeNav === "carbon" ? (

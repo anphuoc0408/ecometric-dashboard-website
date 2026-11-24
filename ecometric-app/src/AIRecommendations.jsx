@@ -114,19 +114,19 @@ const COLOR = {
   line: "#e2e8f0",
 };
 
-// Lớp bề mặt kính – dùng lại utility "glass" đã khai báo trong index.css
-const GLASS = "glass glass-press";
+// Lớp bề mặt B2B SaaS đồng bộ với OverviewPage
+const GLASS = "rounded-xl border border-slate-200/90 bg-white shadow-xs";
 const FOCUS =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#10b981]";
-const LABEL = "flex items-center gap-[6px] text-[12px] font-semibold text-[#64748b]";
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600";
+const LABEL = "flex items-center gap-[6px] text-[12px] font-semibold text-slate-600";
 
-// Nút hành động chính (kính xanh đặc) & nút phụ (kính trong)
+// Nút hành động B2B SaaS
 const BTN_PRIMARY =
-  "inline-flex flex-1 items-center justify-center gap-2 rounded-[12px] bg-[#10b981] px-4 py-[10px] " +
-  `text-[13px] font-semibold text-white transition-all hover:bg-[#0ea371] active:scale-[0.98] ${FOCUS}`;
+  "inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 " +
+  `text-[13px] font-semibold text-white shadow-xs transition-colors hover:bg-emerald-700 active:scale-[0.98] ${FOCUS}`;
 const BTN_GHOST =
-  "inline-flex flex-1 items-center justify-center gap-2 rounded-[12px] border border-white/70 bg-white/60 px-4 py-[10px] " +
-  `text-[13px] font-semibold text-[#0f172a] backdrop-blur-[12px] transition-all hover:bg-white active:scale-[0.98] ${FOCUS}`;
+  "inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 " +
+  `text-[13px] font-medium text-slate-700 shadow-xs transition-colors hover:bg-slate-50 hover:text-slate-900 active:scale-[0.98] ${FOCUS}`;
 
 /* ────────────────────────────────
    2. DỮ LIỆU MẪU (thay bằng API sau này)
@@ -138,7 +138,6 @@ const PRIORITIES = [
   { id: "medium", label: "Ưu tiên trung bình", short: "Trung bình", color: COLOR.amber, bg: "bg-[#fef3c7]", text: "text-[#b45309]" },
   { id: "low", label: "Ưu tiên thấp", short: "Thấp", color: COLOR.blue, bg: "bg-[#dbeafe]", text: "text-[#1d4ed8]" },
 ];
-const PRIORITY_BY_ID = Object.fromEntries(PRIORITIES.map((p) => [p.id, p]));
 // Thứ tự sắp xếp: cao → trung bình → thấp (dùng cho useMemo sắp xếp danh sách).
 const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
 
@@ -400,21 +399,19 @@ const normalizeItem = (raw) => {
 /* ── Dải chỉ số tổng hợp tiềm năng ──────────────────────────── */
 function SummaryCard({ icon: Icon, label, value, unit, accent, note }) {
   return (
-    <article className={`${GLASS} relative flex min-w-0 flex-col gap-3 overflow-hidden p-4 sm:p-5`}>
-      <span className="absolute bottom-0 left-0 top-0 w-1" style={{ backgroundColor: accent }} />
+    <article className="relative flex min-w-0 flex-col gap-2.5 rounded-xl border border-slate-200/90 bg-white p-4 shadow-xs sm:p-5">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-[13px] font-medium text-[#64748b]">{label}</p>
+        <p className="text-[12px] font-medium text-slate-500 sm:text-[13px]">{label}</p>
         <span
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px]"
-          style={{ backgroundColor: `${accent}1f` }}
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200/80 bg-slate-50"
         >
-          <Icon size={17} strokeWidth={2.2} color={accent} />
+          <Icon size={16} strokeWidth={2.2} color={accent} />
         </span>
       </div>
-      <p className="text-[22px] font-extrabold leading-tight text-[#0f172a]">
-        {value} {unit && <span className="text-[13px] font-semibold text-[#64748b]">{unit}</span>}
+      <p className="text-[20px] font-bold tracking-tight text-slate-900 tabular-nums sm:text-[22px]">
+        {value} {unit && <span className="text-[12px] font-medium text-slate-500">{unit}</span>}
       </p>
-      <p className="text-[12px] text-[#94a3b8]">{note}</p>
+      <p className="text-[11px] text-slate-400 tabular-nums">{note}</p>
     </article>
   );
 }
@@ -424,8 +421,8 @@ function SummaryCard({ icon: Icon, label, value, unit, accent, note }) {
      theo hệ số lưới điện Việt Nam 2024.                          */
 function DataProvenanceTag() {
   return (
-    <span className="inline-flex items-center gap-[6px] rounded-full bg-[#dbeafe] px-[10px] py-[4px] text-[11px] font-semibold text-[#1d4ed8]">
-      <Info size={12} strokeWidth={2.6} />
+    <span className="inline-flex items-center gap-1.5 rounded-md border border-slate-200/80 bg-slate-50 px-2.5 py-0.5 text-[11px] font-medium text-slate-600">
+      <Info size={12} strokeWidth={2.4} className="shrink-0 text-slate-400" />
       Dữ liệu mô phỏng theo Hệ số Lưới điện VN 2024
     </span>
   );
@@ -438,17 +435,17 @@ const STEP_STATUS = {
   pending: { label: "Chưa bắt đầu", bg: "bg-white/70", text: "text-[#64748b]", icon: CircleSlash },
 };
 
-/* ── Bộ lọc theo mức ưu tiên (segmented control kiểu iOS) ─────── */
+/* ── Bộ lọc theo mức ưu tiên (segmented control B2B SaaS) ─────── */
 function PriorityFilter({ value, onChange, counts }) {
-  const tabs = [{ id: "all", label: "Tất cả", color: COLOR.emeraldDark }, ...PRIORITIES];
+  const tabs = [{ id: "all", label: "Tất cả" }, ...PRIORITIES];
 
   return (
     <div
       role="radiogroup"
       aria-label="Mức độ ưu tiên"
-      className="glass-press inline-flex flex-wrap items-center gap-1 rounded-full border border-white/60 bg-white/45 p-1 backdrop-blur-[16px]"
+      className="inline-flex h-8.5 flex-wrap items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 text-[12px]"
     >
-      {tabs.map(({ id, label, color }) => {
+      {tabs.map(({ id, label }) => {
         const active = id === value;
         return (
           <button
@@ -457,17 +454,16 @@ function PriorityFilter({ value, onChange, counts }) {
             role="radio"
             aria-checked={active}
             onClick={() => onChange(id)}
-            className={`flex items-center gap-2 rounded-full px-[16px] py-[7px] text-[13px] font-semibold transition-all ${FOCUS} ${
+            className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[12px] transition-all ${FOCUS} ${
               active
-                ? "text-white shadow-[0_6px_16px_-6px_rgba(16,185,129,0.85)]"
-                : "text-[#64748b] hover:bg-white/70 hover:text-[#0f172a]"
+                ? "bg-white font-semibold text-slate-900 shadow-xs"
+                : "font-medium text-slate-600 hover:text-slate-900"
             }`}
-            style={active ? { backgroundColor: id === "all" ? COLOR.emerald : color } : undefined}
           >
             {label}
             <span
-              className={`rounded-full px-[7px] py-[1px] text-[11px] ${
-                active ? "bg-white/25 text-white" : "bg-white/70 text-[#64748b]"
+              className={`rounded-full px-1.5 py-[1px] text-[10px] tabular-nums font-semibold ${
+                active ? "bg-slate-100 text-slate-800" : "bg-slate-200/70 text-slate-600"
               }`}
             >
               {counts[id] ?? 0}
@@ -520,7 +516,6 @@ function DomainFilter({ value, onChange, counts }) {
 
 /* ── Solution Card: thẻ giải pháp có thể hành động ───────────── */
 function SolutionCard({ item, onApply, onPlan, onOpenPlan }) {
-  const priority = PRIORITY_BY_ID[item.priority];
   const domain = DOMAIN_BY_ID[item.domain];
   const status = STATUS_META[item.status];
   const StatusIcon = status.icon;
@@ -528,42 +523,42 @@ function SolutionCard({ item, onApply, onPlan, onOpenPlan }) {
   const hasPlan = Boolean(item.steps?.length);
 
   return (
-    <article className={`${GLASS} relative flex flex-col gap-4 overflow-hidden p-4 sm:p-5`}>
-      {/* Vệt màu nhận diện mức ưu tiên */}
-      <span className="absolute bottom-0 left-0 top-0 w-1" style={{ backgroundColor: priority.color }} />
-
+    <article className="relative flex flex-col gap-4 rounded-xl border border-slate-200/90 bg-white p-4.5 shadow-xs transition-all hover:border-slate-300 hover:shadow-sm sm:p-5">
       {/* Hàng đầu: số hiệu ưu tiên + nhãn + độ tin cậy */}
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="flex min-w-0 flex-1 flex-col gap-[6px]">
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
           <div className="flex flex-wrap items-center gap-2">
             <span
-              className="inline-flex items-center gap-[6px] rounded-full px-[10px] py-[4px] text-[11px] font-bold uppercase"
-              style={{ backgroundColor: `${priority.color}1f`, color: priority.color }}
+              className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] font-semibold border ${
+                item.priority === "high"
+                  ? "bg-rose-50 text-rose-700 border-rose-200/60"
+                  : item.priority === "medium"
+                  ? "bg-amber-50 text-amber-700 border-amber-200/60"
+                  : "bg-slate-100 text-slate-700 border-slate-200"
+              }`}
             >
-              <span className="h-[6px] w-[6px] rounded-full" style={{ backgroundColor: priority.color }} />
               Ưu tiên {String(item.patience ?? 0).padStart(2, "0")}
             </span>
             <span
-              className="inline-flex items-center gap-[6px] rounded-full px-[10px] py-[4px] text-[11px] font-semibold"
-              style={{ backgroundColor: `${domain.color}1f`, color: domain.color }}
+              className="inline-flex items-center gap-1.5 rounded-md border border-slate-200/60 bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-600"
             >
-              <DomainIcon size={12} strokeWidth={2.6} />
+              <DomainIcon size={12} strokeWidth={2.4} />
               {domain.label}
             </span>
-            <span className="rounded-full bg-white/70 px-[10px] py-[4px] text-[11px] font-semibold text-[#64748b]">
+            <span className="rounded-md border border-slate-200/60 bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-500">
               {item.scope}
             </span>
           </div>
 
-          <h3 className="text-[15px] font-bold text-[#0f172a]">{item.title}</h3>
-          <p className="text-[12px] leading-[1.5] text-[#64748b]">{item.desc}</p>
+          <h3 className="text-[15px] font-bold text-slate-900">{item.title}</h3>
+          <p className="text-[12px] leading-snug text-slate-500">{item.desc}</p>
         </div>
 
-        <span className="flex shrink-0 flex-col items-end gap-[6px]">
-          <span className="rounded-full bg-white/70 px-3 py-[4px] text-[11px] font-semibold text-[#64748b]">
+        <span className="flex shrink-0 flex-col items-end gap-1.5">
+          <span className="rounded-md border border-slate-200/60 bg-slate-50 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600 tabular-nums">
             {item.id}
           </span>
-          <span className="inline-flex items-center gap-[5px] text-[11px] font-semibold text-[#059669]">
+          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 tabular-nums">
             <BadgeCheck size={13} strokeWidth={2.4} />
             Tin cậy {item.confidence}%
           </span>
@@ -572,8 +567,8 @@ function SolutionCard({ item, onApply, onPlan, onOpenPlan }) {
 
       {/* Căn cứ dữ liệu */}
       {item.evidence && (
-        <p className="flex items-start gap-2 rounded-[14px] bg-[#fef3c7] px-4 py-3 text-[12px] leading-[1.5] text-[#b45309]">
-          <Gauge size={14} strokeWidth={2.6} className="mt-[2px] shrink-0" />
+        <p className="flex items-start gap-2 rounded-lg border border-amber-200/70 bg-amber-50/60 px-3.5 py-2.5 text-[12px] leading-snug text-amber-900">
+          <Gauge size={14} strokeWidth={2.4} className="mt-[2px] shrink-0 text-amber-700" />
           <span>
             <b>Căn cứ dữ liệu: </b>
             {item.evidence}
@@ -583,80 +578,80 @@ function SolutionCard({ item, onApply, onPlan, onOpenPlan }) {
 
       {/* Bốn chỉ số kinh tế – kỹ thuật */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="flex flex-col gap-[3px] rounded-[14px] bg-white/55 px-4 py-3">
-          <span className="inline-flex items-center gap-[6px] text-[11px] font-semibold text-[#64748b]">
-            <Wallet size={13} strokeWidth={2.6} color={COLOR.blue} />
+        <div className="flex flex-col gap-1 rounded-lg border border-slate-100 bg-slate-50/70 px-3.5 py-2.5">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-500">
+            <Wallet size={13} strokeWidth={2.4} className="text-slate-400" />
             Chi phí đầu tư (CAPEX)
           </span>
-          <span className="text-[16px] font-extrabold text-[#0f172a]">{fmtMoney(item.cost)}</span>
-          <span className="text-[10px] text-[#94a3b8]">{fmtInt(item.cost)} VNĐ</span>
+          <span className="text-[15px] font-bold text-slate-900 tabular-nums sm:text-[16px]">{fmtMoney(item.cost)}</span>
+          <span className="text-[10.5px] text-slate-400 tabular-nums">{fmtInt(item.cost)} VNĐ</span>
         </div>
 
-        <div className="flex flex-col gap-[3px] rounded-[14px] bg-white/55 px-4 py-3">
-          <span className="inline-flex items-center gap-[6px] text-[11px] font-semibold text-[#64748b]">
-            <TrendingDown size={13} strokeWidth={2.6} color={COLOR.emeraldDark} />
+        <div className="flex flex-col gap-1 rounded-lg border border-slate-100 bg-slate-50/70 px-3.5 py-2.5">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-500">
+            <TrendingDown size={13} strokeWidth={2.4} className="text-emerald-600" />
             Tiết kiệm chi phí
           </span>
-          <span className="text-[16px] font-extrabold text-[#0f172a]">{fmtMoney(item.savingMonth)}/tháng</span>
-          <span className="text-[10px] text-[#94a3b8]">{fmtMoney(item.savingYear)}/năm</span>
+          <span className="text-[15px] font-bold text-slate-900 tabular-nums sm:text-[16px]">{fmtMoney(item.savingMonth)}/tháng</span>
+          <span className="text-[10.5px] text-slate-400 tabular-nums">{fmtMoney(item.savingYear)}/năm</span>
         </div>
 
-        <div className="flex flex-col gap-[3px] rounded-[14px] bg-white/55 px-4 py-3">
-          <span className="inline-flex items-center gap-[6px] text-[11px] font-semibold text-[#64748b]">
-            <Leaf size={13} strokeWidth={2.6} color={COLOR.emeraldDark} />
+        <div className="flex flex-col gap-1 rounded-lg border border-slate-100 bg-slate-50/70 px-3.5 py-2.5">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-500">
+            <Leaf size={13} strokeWidth={2.4} className="text-emerald-600" />
             Giảm phát thải
           </span>
-          <span className="text-[16px] font-extrabold text-[#0f172a]">
-            {fmtDec(item.reductionMonth, 3)} <span className="text-[11px] font-semibold text-[#64748b]">tCO₂e/tháng</span>
+          <span className="text-[15px] font-bold text-emerald-700 tabular-nums sm:text-[16px]">
+            {fmtDec(item.reductionMonth, 3)} <span className="text-[11px] font-medium text-slate-500">tCO₂e/tháng</span>
           </span>
-          <span className="text-[10px] text-[#94a3b8]">{fmtDec(item.reductionYear, 3)} tCO₂e/năm</span>
+          <span className="text-[10.5px] text-slate-400 tabular-nums">{fmtDec(item.reductionYear, 3)} tCO₂e/năm</span>
         </div>
 
-        <div className="flex flex-col gap-[3px] rounded-[14px] bg-white/55 px-4 py-3">
-          <span className="inline-flex items-center gap-[6px] text-[11px] font-semibold text-[#64748b]">
-            <RefreshCw size={13} strokeWidth={2.6} color={COLOR.violet} />
+        <div className="flex flex-col gap-1 rounded-lg border border-slate-100 bg-slate-50/70 px-3.5 py-2.5">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-500">
+            <RefreshCw size={13} strokeWidth={2.4} className="text-violet-600" />
             Hoàn vốn (Payback)
           </span>
-          <span className="text-[16px] font-extrabold text-[#0f172a]">
-            {fmtDec(item.roi, 1)} <span className="text-[11px] font-semibold text-[#64748b]">tháng</span>
+          <span className="text-[15px] font-bold text-slate-900 tabular-nums sm:text-[16px]">
+            {fmtDec(item.roi, 1)} <span className="text-[11px] font-medium text-slate-500">tháng</span>
           </span>
-          <span className="text-[10px] text-[#94a3b8]">Simple ROI năm 1: {fmtDec(item.roiYear1, 1)}%</span>
+          <span className="text-[10.5px] text-slate-400 tabular-nums">Simple ROI năm 1: {fmtDec(item.roiYear1, 1)}%</span>
         </div>
       </div>
 
       {/* Cơ sở tính toán */}
-      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-[14px] bg-white/45 px-4 py-3 text-[11px] text-[#64748b]">
-        <span className="inline-flex items-center gap-[6px] font-semibold text-[#0f172a]">
-          <Info size={13} strokeWidth={2.6} color={COLOR.emeraldDark} /> Cơ sở tính:
+      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border border-slate-200/80 bg-slate-50/70 px-3.5 py-2 text-[11px] text-slate-600">
+        <span className="inline-flex items-center gap-1.5 font-semibold text-slate-900">
+          <Info size={13} strokeWidth={2.4} className="text-emerald-700" /> Cơ sở tính:
         </span>
         <span>
-          <b className="text-[#0f172a]">{fmtInt(item.kwhMonth)} kWh</b> tiết kiệm/tháng
+          <b className="font-semibold text-slate-900 tabular-nums">{fmtInt(item.kwhMonth)} kWh</b> tiết kiệm/tháng
         </span>
-        <span className="text-[#cbd5e1]">·</span>
+        <span className="text-slate-300">·</span>
         <span>
-          <b className="text-[#0f172a]">{fmtInt(item.kwhYear)} kWh</b>/năm
+          <b className="font-semibold text-slate-900 tabular-nums">{fmtInt(item.kwhYear)} kWh</b>/năm
         </span>
-        <span className="text-[#cbd5e1]">·</span>
+        <span className="text-slate-300">·</span>
         <span>
-          Hệ số lưới điện <b className="text-[#0f172a]">{fmtDec(item.gridFactor, 4)} kg CO₂e/kWh</b>
+          Hệ số lưới điện <b className="font-semibold text-slate-900 tabular-nums">{fmtDec(item.gridFactor, 4)} kg CO₂e/kWh</b>
         </span>
         <DataProvenanceTag />
       </p>
 
       {/* Chân thẻ: địa điểm + cấp triển khai + trạng thái + nút hành động */}
-      <div className="flex flex-col gap-3 border-t border-white/60 pt-4">
+      <div className="flex flex-col gap-3 border-t border-slate-100 pt-3.5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             {item.level && (
-              <span className="inline-flex items-center gap-[6px] rounded-full bg-white/70 px-[10px] py-[4px] text-[11px] font-semibold text-[#64748b]">
-                <Layers size={12} strokeWidth={2.6} />
+              <span className="inline-flex items-center gap-1.5 rounded-md border border-slate-200/80 bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-600">
+                <Layers size={12} strokeWidth={2.4} />
                 {item.level} · {item.duration}
               </span>
             )}
-            <span className="text-[11px] text-[#94a3b8]">Áp dụng cho: {item.site}</span>
+            <span className="text-[11px] text-slate-400">Áp dụng cho: {item.site}</span>
           </div>
           <span
-            className={`inline-flex items-center gap-[6px] rounded-full px-[10px] py-[4px] text-[11px] font-semibold ${status.bg} ${status.text}`}
+            className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] font-semibold ${status.bg} ${status.text}`}
           >
             <StatusIcon size={12} strokeWidth={2.6} />
             {status.label}
@@ -1124,23 +1119,40 @@ export default function AIRecommendations() {
 
   return (
     <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
-      {/* Tiêu đề trang + thông báo hành động */}
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex flex-col gap-[6px]">
-          <h1 className="text-[20px] font-extrabold leading-tight text-[#0f172a] sm:text-[24px]">Khuyến nghị AI</h1>
-          <p className="text-[13px] leading-snug text-[#64748b] sm:text-[14px]">
+      {/* Tiêu đề trang + pill trạng thái */}
+      <div className="flex flex-col gap-4 border-b border-slate-200/80 pb-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        <div className="flex min-w-0 flex-col gap-1">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="text-[20px] font-bold tracking-tight text-slate-900 sm:text-[22px]">Khuyến nghị AI</h1>
+            {/* Pill trạng thái nhỏ gọn cạnh tiêu đề trang giống OverviewPage */}
+            {loading ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[11px] font-medium text-slate-600">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+                Đang gọi /recommend…
+              </span>
+            ) : usingFallback ? (
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[11px] font-medium text-slate-500"
+                title="Đang dùng dữ liệu mô phỏng do backend chưa kết nối"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                Dữ liệu mô phỏng
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/70 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                Trực tuyến
+              </span>
+            )}
+          </div>
+          <p className="text-[13px] leading-snug text-slate-500">
             Giải pháp tối ưu năng lượng &amp; phát thải do mô hình đề xuất · Xếp hạng theo mức độ ưu tiên, chi phí và ROI
           </p>
-          {(loading || usingFallback) && (
-            <p className="text-[11px] font-semibold text-[#94a3b8]">
-              {loading ? "Đang gọi /recommend…" : "Đang dùng dữ liệu mô phỏng (backend chưa kết nối)"}
-            </p>
-          )}
         </div>
 
         {toast && (
-          <span className="glass inline-flex items-center gap-2 px-4 py-[10px] text-[12px] font-semibold text-[#059669]">
-            <CircleCheckBig size={15} strokeWidth={2.6} />
+          <span className="inline-flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[12px] font-semibold text-emerald-700">
+            <CircleCheckBig size={15} strokeWidth={2.4} />
             {toast.id}: {toast.message}
           </span>
         )}
@@ -1148,13 +1160,13 @@ export default function AIRecommendations() {
 
       {/* Nút mở Action Plan của giải pháp trọng tâm (ƯU TIÊN 01) */}
       {focusItem?.steps?.length > 0 && (
-        <div className={`${GLASS} flex flex-wrap items-center justify-between gap-3 p-4 sm:p-5`}>
-          <div className="flex min-w-0 flex-1 flex-col gap-[4px]">
-            <span className="inline-flex items-center gap-[6px] text-[13px] font-bold text-[#0f172a]">
-              <Lightbulb size={15} strokeWidth={2.4} color={COLOR.emeraldDark} />
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/90 bg-white p-4 shadow-xs sm:p-5">
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <span className="inline-flex items-center gap-1.5 text-[13px] font-bold text-slate-900">
+              <Lightbulb size={15} strokeWidth={2.4} className="text-emerald-700" />
               Ưu tiên 01 · {focusItem.title}
             </span>
-            <span className="text-[11px] text-[#64748b]">
+            <span className="text-[12px] text-slate-500">
               {focusItem.evidence}
             </span>
           </div>

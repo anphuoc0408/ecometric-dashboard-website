@@ -13,33 +13,27 @@
  */
 import { DELTA_STYLE, FOCUS } from "../lib/format.js";
 
-export function MetricCard({ label, value, delta, note, accent, tone }) {
+export function MetricCard({ label, value, delta, note, tone }) {
   return (
     <article
-      className={`group relative flex min-w-0 flex-col gap-3 overflow-hidden rounded-2xl border border-white bg-white/70 p-4 backdrop-blur-[15px] transition-all duration-200 hover:-translate-y-[2px] hover:shadow-[0_12px_28px_-14px_rgba(15,23,42,0.3)] sm:p-5 ${FOCUS}`}
+      className={`group relative flex min-w-0 flex-col gap-2.5 rounded-xl border border-slate-200/90 bg-white p-4 shadow-xs transition-all duration-150 hover:border-slate-300 hover:shadow-sm sm:p-5 ${FOCUS}`}
     >
-      {/* Vệt màu nhận diện chỉ số */}
-      <span
-        className="absolute bottom-0 left-0 top-0 w-1 rounded-full"
-        style={{ backgroundColor: accent }}
-      />
-
-      <p className="text-[12px] font-medium leading-snug text-[#64748b] sm:text-[13px]">
+      <p className="text-[12px] font-medium leading-snug text-slate-500 sm:text-[13px]">
         {label}
       </p>
 
-      <p className="text-[17px] font-bold leading-tight tracking-tight text-[#0f172a] tabular-nums sm:text-[22px]">
+      <p className="text-[18px] font-bold tracking-tight text-slate-900 tabular-nums leading-tight sm:text-[22px] break-words">
         {value}
       </p>
 
       {/* Delta có thể xuống dòng trên màn hẹp nên dùng flex-wrap */}
-      <div className="mt-auto flex flex-wrap items-center gap-x-[6px] gap-y-1">
+      <div className="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-1">
         <span
-          className={`shrink-0 rounded-lg px-2 py-[3px] text-[11px] font-semibold tabular-nums sm:text-[12px] ${DELTA_STYLE[tone]}`}
+          className={`shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-semibold tabular-nums sm:text-[12px] ${DELTA_STYLE[tone] ?? DELTA_STYLE.good}`}
         >
           {delta}
         </span>
-        <span className="min-w-0 text-[11px] leading-snug text-[#94a3b8] sm:text-[12px]">
+        <span className="min-w-0 text-[11px] leading-snug text-slate-400 sm:text-[12px]">
           {note}
         </span>
       </div>

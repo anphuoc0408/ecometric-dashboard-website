@@ -49,20 +49,18 @@ const COLOR = {
   line: "#e2e8f0",
 };
 
-// Lớp bề mặt kính – dùng lại utility "glass" đã khai báo trong index.css
-const GLASS = "glass glass-press";
+// Lớp bề mặt B2B SaaS đồng bộ với OverviewPage
+const GLASS = "rounded-xl border border-slate-200/90 bg-white shadow-xs";
 const FOCUS =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#10b981]";
-const LABEL =
-  "flex items-center gap-[6px] text-[12px] font-semibold text-[#64748b]";
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600";
 
-// Nút hành động xuất tệp – đồng bộ với trang Báo cáo ESG.
+// Nút hành động xuất tệp B2B SaaS
 const BTN_PRIMARY =
-  "inline-flex items-center justify-center gap-2 rounded-[12px] bg-[#10b981] px-4 py-[10px] " +
-  `text-[13px] font-semibold text-white transition-all hover:bg-[#0ea371] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-[#10b981] ${FOCUS}`;
+  "inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 " +
+  `text-[13px] font-semibold text-white shadow-xs transition-colors hover:bg-emerald-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-emerald-600 ${FOCUS}`;
 const BTN_GHOST =
-  "inline-flex items-center justify-center gap-2 rounded-[12px] border border-white/70 bg-white/60 px-4 py-[10px] " +
-  `text-[13px] font-semibold text-[#0f172a] backdrop-blur-[12px] transition-all hover:bg-white active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 ${FOCUS}`;
+  "inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 " +
+  `text-[13px] font-medium text-slate-700 shadow-xs transition-colors hover:bg-slate-50 hover:text-slate-900 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 ${FOCUS}`;
 
 /* ────────────────────────────────
    2. DỮ LIỆU MẪU (thay bằng API sau này)
@@ -254,13 +252,13 @@ const pctDelta = (value, prev) => ((value - prev) / prev) * 100;
    4. THÀNH PHẦN GIAO DIỆN
    ──────────────────────────────── */
 
-/* ── Bộ lọc mốc thời gian (segmented control kiểu iOS) ─────────── */
+/* ── Bộ lọc mốc thời gian (segmented control B2B SaaS) ─────────── */
 function PeriodFilter({ value, onChange }) {
   return (
     <div
       role="radiogroup"
       aria-label="Mốc thời gian"
-      className="glass-press inline-flex items-center gap-1 rounded-full border border-white/60 bg-white/45 p-1 backdrop-blur-[16px]"
+      className="inline-flex h-8.5 items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 text-[12px]"
     >
       {PERIOD_OPTIONS.map(({ id, label, icon: Icon }) => {
         const active = id === value;
@@ -271,13 +269,13 @@ function PeriodFilter({ value, onChange }) {
             role="radio"
             aria-checked={active}
             onClick={() => onChange(id)}
-            className={`flex items-center gap-2 rounded-full px-[16px] py-[7px] text-[13px] font-semibold transition-all ${FOCUS} ${
+            className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[12px] transition-all ${FOCUS} ${
               active
-                ? "bg-[#10b981] text-white shadow-[0_6px_16px_-6px_rgba(16,185,129,0.85)]"
-                : "text-[#64748b] hover:bg-white/70 hover:text-[#0f172a]"
+                ? "bg-white font-semibold text-slate-900 shadow-xs"
+                : "font-medium text-slate-600 hover:text-slate-900"
             }`}
           >
-            <Icon size={14} strokeWidth={2.4} />
+            <Icon size={13} strokeWidth={2.2} />
             {label}
           </button>
         );
@@ -296,74 +294,71 @@ function ScopeCard({ scope, value, prev, target }) {
 
   return (
     <article
-      className={`${GLASS} relative flex flex-col gap-4 overflow-hidden p-4 sm:p-5`}
+      className="group relative flex flex-col gap-3.5 rounded-xl border border-slate-200/90 bg-white p-4.5 shadow-xs transition-all hover:border-slate-300 hover:shadow-sm sm:p-5"
     >
-      {/* Vệt màu nhận diện Scope */}
-      <span
-        className="absolute bottom-0 left-0 top-0 w-1"
-        style={{ backgroundColor: scope.color }}
-      />
-
       <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <span
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px]"
-            style={{ backgroundColor: `${scope.color}1f` }}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200/70"
+            style={{ backgroundColor: `${scope.color}14` }}
           >
-            <Icon size={19} strokeWidth={2.2} color={scope.color} />
+            <Icon size={18} strokeWidth={2.2} color={scope.color} />
           </span>
           <div className="flex flex-col">
-            <h3 className="text-[15px] font-bold text-[#0f172a]">
+            <h3 className="text-[15px] font-bold text-slate-900">
               {scope.name}
             </h3>
-            <span className="text-[12px] text-[#64748b]">{scope.subtitle}</span>
+            <span className="text-[12px] text-slate-500">{scope.subtitle}</span>
           </div>
         </div>
 
         <span
-          className={`inline-flex items-center gap-[5px] rounded-full px-[10px] py-[4px] text-[12px] font-semibold ${
+          className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold tabular-nums ${
             up
-              ? "bg-[#fee2e2] text-[#991b1b]"
-              : "bg-[#10b981]/12 text-[#059669]"
+              ? "border border-rose-200/60 bg-rose-50 text-rose-700"
+              : "border border-emerald-200/60 bg-emerald-50 text-emerald-700"
           }`}
         >
           {up ? (
-            <TrendingUp size={13} strokeWidth={2.6} />
+            <TrendingUp size={12} strokeWidth={2.6} />
           ) : (
-            <TrendingDown size={13} strokeWidth={2.6} />
+            <TrendingDown size={12} strokeWidth={2.6} />
           )}
           {up ? "+" : ""}
           {fmt(delta)}%
         </span>
       </div>
 
-      <div className="flex flex-col gap-[2px]">
-        <p className="text-[26px] font-extrabold leading-tight text-[#0f172a]">
+      <div className="flex flex-col gap-0.5">
+        <p className="text-[22px] font-bold leading-tight tracking-tight text-slate-900 tabular-nums sm:text-[24px]">
           {fmt(value)}{" "}
-          <span className="text-[13px] font-semibold text-[#64748b]">
+          <span className="text-[13px] font-medium text-slate-500">
             tấn CO2e
           </span>
         </p>
-        <p className="text-[11px] text-[#94a3b8]">{scope.hint}</p>
+        <p className="text-[11px] text-slate-400">{scope.hint}</p>
       </div>
 
       {/* Thanh tiến độ so với hạn mức Net Zero */}
-      <div className="flex flex-col gap-[6px]">
-        <div className="flex items-center justify-between text-[11px] font-semibold">
-          <span className="text-[#64748b]">
-            Hạn mức kỳ này: {fmt(target, 0)} tấn
+      <div className="flex flex-col gap-1.5 pt-1">
+        <div className="flex items-center justify-between text-[11px]">
+          <span className="text-slate-500">
+            Mục tiêu: <b className="font-semibold text-slate-800 tabular-nums">{fmt(target)} tấn</b>
           </span>
-          <span className={overBudget ? "text-[#b45309]" : "text-[#059669]"}>
-            {ratio}%{overBudget ? " · vượt hạn mức" : " · trong hạn mức"}
+          <span
+            className={`font-semibold tabular-nums ${
+              overBudget ? "text-rose-600" : "text-emerald-700"
+            }`}
+          >
+            {ratio}% hạn mức
           </span>
         </div>
-        <div className="h-[7px] w-full overflow-hidden rounded-full bg-white/70">
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
           <div
-            className="h-full rounded-full transition-[width] duration-500"
-            style={{
-              width: `${ratio}%`,
-              backgroundColor: overBudget ? COLOR.amber : COLOR.emerald,
-            }}
+            className={`h-full rounded-full transition-all duration-300 ${
+              overBudget ? "bg-rose-500" : "bg-emerald-600"
+            }`}
+            style={{ width: `${ratio}%` }}
           />
         </div>
       </div>
@@ -637,7 +632,7 @@ function HeatmapCard({ period }) {
           </p>
         </div>
 
-        <div className="glass-press inline-flex items-center gap-1 rounded-full border border-white/60 bg-white/45 p-1">
+        <div className="inline-flex h-8.5 items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 text-[12px]">
           {HEAT_MODES.map(({ id, label }) => {
             const active = id === mode;
             return (
@@ -646,10 +641,10 @@ function HeatmapCard({ period }) {
                 type="button"
                 onClick={() => setMode(id)}
                 aria-pressed={active}
-                className={`rounded-full px-[12px] py-[5px] text-[12px] font-semibold transition-all ${FOCUS} ${
+                className={`rounded-md px-2.5 py-1 text-[12px] transition-all ${FOCUS} ${
                   active
-                    ? "bg-white text-[#0f172a] shadow-[0_2px_6px_-2px_rgba(15,23,42,0.25)]"
-                    : "text-[#64748b] hover:text-[#0f172a]"
+                    ? "bg-white font-semibold text-slate-900 shadow-xs"
+                    : "font-medium text-slate-600 hover:text-slate-900"
                 }`}
               >
                 {label}
@@ -1019,34 +1014,31 @@ export default function CarbonEmissions() {
   return (
     <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
       {/* Tiêu đề trang + bộ lọc thời gian */}
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex flex-col gap-[6px]">
-          <h1 className="text-[20px] font-extrabold leading-tight text-[#0f172a] sm:text-[24px]">
+      <div className="flex flex-col gap-4 border-b border-slate-200/80 pb-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        <div className="flex min-w-0 flex-col gap-1">
+          <h1 className="text-[20px] font-bold tracking-tight text-slate-900 sm:text-[22px]">
             Phát thải carbon
           </h1>
-          <p className="text-[13px] leading-snug text-[#64748b] sm:text-[14px]">
+          <p className="text-[13px] leading-snug text-slate-500">
             Kiểm kê khí nhà kính theo GHG Protocol ·{" "}
             {PERIOD_LABEL[period].title} · Tổng{" "}
-            <b className="text-[#0f172a]">{fmt(total)} tấn CO2e</b>
+            <b className="font-semibold text-slate-900 tabular-nums">{fmt(total)} tấn CO2e</b>
           </p>
           {msg && (
-            <p className="text-[11px] font-semibold text-[#059669]">{msg}</p>
+            <p className="text-[11px] font-medium text-emerald-700">{msg}</p>
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <span className={LABEL}>
-            <CalendarRange size={13} strokeWidth={2.4} /> Mốc thời gian
-          </span>
+        <div className="flex flex-wrap items-center gap-2.5 sm:shrink-0">
           <PeriodFilter value={period} onChange={setPeriod} />
 
           <button type="button" onClick={handleExcel} disabled={busy} className={BTN_GHOST}>
             <FileSpreadsheet size={15} strokeWidth={2.4} />
-            Xuất dữ liệu Excel
+            Xuất Excel
           </button>
           <button type="button" onClick={handlePdf} disabled={busy} className={BTN_PRIMARY}>
             <Download size={15} strokeWidth={2.6} />
-            {busy ? "Đang kết xuất…" : "Tải báo cáo PDF"}
+            {busy ? "Đang kết xuất…" : "Tải PDF"}
           </button>
         </div>
       </div>

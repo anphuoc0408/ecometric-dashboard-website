@@ -37,9 +37,9 @@ export const AVATAR_FALLBACK = `data:image/svg+xml;charset=utf-8,${encodeURIComp
 export const AVATAR_URL =
   "https://ui-avatars.com/api/?name=Nguyen+Van+A&background=10b981&color=fff";
 
-export const PAGE_TITLE = "CANVAS MẪU THIẾT KẾ WEB ECOMETRIC";
+export const PAGE_TITLE = "Tổng quan Vận hành & Phát thải";
 export const PAGE_SUBTITLE =
-  "Bố cục tham khảo cho dashboard quản lý dữ liệu vận hành, phát thải và khuyến nghị tối ưu";
+  "Theo dõi chỉ số tiêu thụ năng lượng, lượng phát thải khí nhà kính và lộ trình tối ưu hoá chi phí";
 
 /* ── Điều hướng ─────────────────────────────────────────────────── */
 export const NAV_ITEMS = [

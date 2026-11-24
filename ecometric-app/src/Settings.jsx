@@ -56,25 +56,25 @@ const COLOR = {
   line: "#e2e8f0",
 };
 
-// Lớp bề mặt kính – dùng lại utility "glass" đã khai báo trong index.css
-const GLASS = "glass glass-press";
+// Lớp bề mặt B2B SaaS đồng bộ với OverviewPage
+const GLASS = "rounded-xl border border-slate-200/90 bg-white shadow-xs";
 const FOCUS =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#10b981]";
-const LABEL = "flex items-center gap-[6px] text-[12px] font-semibold text-[#64748b]";
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600";
+const LABEL = "flex items-center gap-[6px] text-[12px] font-semibold text-slate-600";
 
-// Ô nhập liệu kiểu iOS: kính mỏng, bo tròn, focus viền emerald
+// Ô nhập liệu B2B SaaS sắc nét, viền mảnh
 const FIELD =
-  "w-full rounded-[12px] border-white/70 bg-white/60 px-3 py-[10px] text-[13px] text-[#0f172a] " +
-  "placeholder:text-[#94a3b8] outline-none backdrop-blur-[12px] transition-shadow " +
-  "focus:border-[#10b981]/60 focus:bg-white/85 focus:shadow-[0_0_0_3px_rgba(16,185,129,0.18)]";
+  "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-[13px] text-slate-900 " +
+  "placeholder:text-slate-400 outline-none transition-colors " +
+  "hover:border-slate-300 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20";
 
-// Nút hành động chính (kính xanh đặc) & nút phụ (kính trong)
+// Nút hành động B2B SaaS
 const BTN_PRIMARY =
-  "inline-flex items-center justify-center gap-2 rounded-[12px] bg-[#10b981] px-4 py-[10px] " +
-  `text-[13px] font-semibold text-white transition-all hover:bg-[#0ea371] active:scale-[0.98] ${FOCUS}`;
+  "inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 " +
+  `text-[13px] font-semibold text-white shadow-xs transition-colors hover:bg-emerald-700 active:scale-[0.98] ${FOCUS}`;
 const BTN_GHOST =
-  "inline-flex items-center justify-center gap-2 rounded-[12px] border border-white/70 bg-white/60 px-4 py-[10px] " +
-  `text-[13px] font-semibold text-[#0f172a] backdrop-blur-[12px] transition-all hover:bg-white active:scale-[0.98] ${FOCUS}`;
+  "inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 " +
+  `text-[13px] font-medium text-slate-700 shadow-xs transition-colors hover:bg-slate-50 hover:text-slate-900 active:scale-[0.98] ${FOCUS}`;
 
 /* ────────────────────────────────
    2. DỮ LIỆU MẪU (thay bằng API sau này)
@@ -358,12 +358,12 @@ function CompanyCard({ company, onSaved }) {
     <form onSubmit={save} className={`${GLASS} flex flex-col gap-4 p-4 sm:gap-5 sm:p-5`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#10b981]/14">
-            <Building2 size={19} strokeWidth={2.2} color={COLOR.emeraldDark} />
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+            <Building2 size={18} strokeWidth={2.2} />
           </span>
-          <div className="flex flex-col gap-1">
-            <h2 className="text-[16px] font-bold text-[#0f172a]">Thông tin doanh nghiệp &amp; Nhà xưởng</h2>
-            <p className="text-[12px] text-[#64748b]">
+          <div className="flex flex-col gap-0.5">
+            <h2 className="text-[16px] font-bold text-slate-900">Thông tin doanh nghiệp &amp; Nhà xưởng</h2>
+            <p className="text-[12px] text-slate-500">
               Dùng để quy đổi phát thải, phân bổ dữ liệu và lập hồ sơ công bố
             </p>
           </div>
@@ -407,7 +407,7 @@ function CompanyCard({ company, onSaved }) {
             value={draft.name}
             onChange={set("name")}
             readOnly={!editing}
-            className={`${FIELD} ${!editing ? "cursor-default border-transparent bg-white/40" : ""}`}
+            className={`${FIELD} ${!editing ? "cursor-default border-slate-200 bg-slate-50/80 font-medium text-slate-700" : ""}`}
           />
         </label>
 
@@ -420,7 +420,7 @@ function CompanyCard({ company, onSaved }) {
             value={draft.taxCode}
             onChange={set("taxCode")}
             readOnly={!editing}
-            className={`${FIELD} ${!editing ? "cursor-default border-transparent bg-white/40" : ""}`}
+            className={`${FIELD} ${!editing ? "cursor-default border-slate-200 bg-slate-50/80 font-medium text-slate-700" : ""}`}
           />
         </label>
 
@@ -433,7 +433,7 @@ function CompanyCard({ company, onSaved }) {
             value={draft.industryCode}
             onChange={set("industryCode")}
             readOnly={!editing}
-            className={`${FIELD} ${!editing ? "cursor-default border-transparent bg-white/40" : ""}`}
+            className={`${FIELD} ${!editing ? "cursor-default border-slate-200 bg-slate-50/80 font-medium text-slate-700" : ""}`}
           />
         </label>
 
@@ -446,7 +446,7 @@ function CompanyCard({ company, onSaved }) {
             value={draft.address}
             onChange={set("address")}
             readOnly={!editing}
-            className={`${FIELD} ${!editing ? "cursor-default border-transparent bg-white/40" : ""}`}
+            className={`${FIELD} ${!editing ? "cursor-default border-slate-200 bg-slate-50/80 font-medium text-slate-700" : ""}`}
           />
         </label>
 
@@ -459,26 +459,26 @@ function CompanyCard({ company, onSaved }) {
             value={draft.founded}
             onChange={set("founded")}
             readOnly={!editing}
-            className={`${FIELD} ${!editing ? "cursor-default border-transparent bg-white/40" : ""}`}
+            className={`${FIELD} ${!editing ? "cursor-default border-slate-200 bg-slate-50/80 font-medium text-slate-700" : ""}`}
           />
         </label>
       </div>
 
       {/* Chứng nhận đang áp dụng */}
-      <div className="flex flex-wrap items-center gap-2 border-t border-white/60 pt-4">
+      <div className="flex flex-wrap items-center gap-2 border-t border-slate-200/80 pt-4">
         <span className={`${LABEL} mr-1`}>
           <BadgeCheck size={13} strokeWidth={2.4} /> Chứng nhận đang áp dụng
         </span>
         {company.certifications.map((c) => (
           <span
             key={c}
-            className="inline-flex items-center gap-[6px] rounded-full bg-[#10b981]/12 px-[12px] py-[5px] text-[11px] font-semibold text-[#059669]"
+            className="inline-flex items-center gap-1.5 rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700"
           >
             <Check size={12} strokeWidth={2.8} />
             {c}
           </span>
         ))}
-        <span className="text-[11px] text-[#94a3b8]">· {company.employees}</span>
+        <span className="text-[11px] text-slate-400">· {company.employees}</span>
       </div>
     </form>
   );
@@ -492,14 +492,14 @@ function SitesCard() {
     <section className={`${GLASS} flex flex-col gap-4 p-4 sm:p-5`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#10b981]/14">
-            <Factory size={19} strokeWidth={2.2} color={COLOR.emeraldDark} />
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+            <Factory size={18} strokeWidth={2.2} />
           </span>
-          <div className="flex flex-col gap-1">
-            <h2 className="text-[16px] font-bold text-[#0f172a]">Danh sách nhà xưởng &amp; địa điểm</h2>
-            <p className="text-[12px] text-[#64748b]">
+          <div className="flex flex-col gap-0.5">
+            <h2 className="text-[16px] font-bold text-slate-900">Danh sách nhà xưởng &amp; địa điểm</h2>
+            <p className="text-[12px] text-slate-500">
               {SITES.length} địa điểm · Tổng diện tích{" "}
-              <b className="text-[#0f172a]">{fmtInt(totalArea)} m²</b>
+              <b className="font-semibold text-slate-900">{fmtInt(totalArea)} m²</b>
             </p>
           </div>
         </div>
@@ -507,7 +507,7 @@ function SitesCard() {
         <div className="flex flex-wrap items-center gap-2">
           <span className={LABEL}>
             <Ruler size={13} strokeWidth={2.4} /> Tổng diện tích
-            <b className="ml-1 text-[13px] text-[#0f172a]">{(totalArea / 10_000).toFixed(1)} ha</b>
+            <b className="ml-1 text-[13px] text-slate-900">{(totalArea / 10_000).toFixed(1)} ha</b>
           </span>
           <button type="button" className={BTN_GHOST}>
             <Plus size={15} strokeWidth={2.6} />
@@ -520,45 +520,42 @@ function SitesCard() {
         {SITES.map(({ id, name, kind, location, area, icon: Icon, color }) => (
           <article
             key={id}
-            className="glass-press relative flex flex-col gap-3 overflow-hidden rounded-[18px] border border-white/70 bg-white/50 p-4"
+            className="group relative flex flex-col gap-3 rounded-xl border border-slate-200/90 bg-white p-4.5 shadow-xs transition-all hover:border-slate-300 hover:shadow-sm"
           >
-            <span className="absolute bottom-0 left-0 top-0 w-1" style={{ backgroundColor: color }} />
-
             <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5">
                 <span
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px]"
-                  style={{ backgroundColor: `${color}1f` }}
+                  className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-lg border border-slate-200/80 bg-slate-50"
                 >
-                  <Icon size={17} strokeWidth={2.2} color={color} />
+                  <Icon size={16} strokeWidth={2.2} color={color} />
                 </span>
                 <div className="flex min-w-0 flex-col">
-                  <span className="text-[13px] font-bold text-[#0f172a]">{name}</span>
-                  <span className="text-[11px] text-[#94a3b8]">{kind}</span>
+                  <span className="text-[13px] font-bold text-slate-900">{name}</span>
+                  <span className="text-[11px] text-slate-400">{kind}</span>
                 </div>
               </div>
               <button
                 type="button"
                 aria-label={`Chỉnh sửa ${name}`}
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-white/70 text-[#64748b] transition-all hover:bg-white hover:text-[#0f172a] ${FOCUS}`}
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900 ${FOCUS}`}
               >
-                <Pencil size={14} strokeWidth={2.4} />
+                <Pencil size={13} strokeWidth={2.2} />
               </button>
             </div>
 
-            <div className="flex items-start gap-2 text-[12px] text-[#64748b]">
-              <MapPin size={13} strokeWidth={2.4} color={COLOR.muted} className="mt-[2px] shrink-0" />
+            <div className="flex items-start gap-1.5 text-[12px] text-slate-500">
+              <MapPin size={13} strokeWidth={2.2} className="mt-[2px] shrink-0 text-slate-400" />
               {location}
             </div>
 
-            <div className="flex items-end justify-between gap-3 border-t border-white/60 pt-3">
-              <span className="flex flex-col gap-[2px]">
-                <span className="text-[10px] text-[#94a3b8]">Diện tích</span>
-                <span className="text-[15px] font-extrabold text-[#0f172a]">
-                  {fmtInt(area)} <span className="text-[11px] font-semibold text-[#64748b]">m²</span>
+            <div className="flex items-end justify-between gap-3 border-t border-slate-100 pt-3">
+              <span className="flex flex-col gap-0.5">
+                <span className="text-[10px] text-slate-400">Diện tích</span>
+                <span className="text-[15px] font-bold text-slate-900 tabular-nums">
+                  {fmtInt(area)} <span className="text-[11px] font-medium text-slate-500">m²</span>
                 </span>
               </span>
-              <span className="text-[11px] text-[#94a3b8]">
+              <span className="text-[11px] text-slate-400 tabular-nums">
                 {((area / totalArea) * 100).toFixed(1)}% tổng diện tích
               </span>
             </div>
@@ -597,12 +594,12 @@ function EmissionFactorsCard({ onSaved }) {
     <section className={`${GLASS} flex flex-col gap-4 p-4 sm:gap-5 sm:p-5`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#10b981]/14">
-            <Gauge size={19} strokeWidth={2.2} color={COLOR.emeraldDark} />
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+            <Gauge size={18} strokeWidth={2.2} />
           </span>
-          <div className="flex flex-col gap-1">
-            <h2 className="text-[16px] font-bold text-[#0f172a]">Cấu hình hệ số phát thải</h2>
-            <p className="text-[12px] text-[#64748b]">
+          <div className="flex flex-col gap-0.5">
+            <h2 className="text-[16px] font-bold text-slate-900">Cấu hình hệ số phát thải</h2>
+            <p className="text-[12px] text-slate-500">
               Tùy chỉnh hệ số quy đổi CO2e · áp dụng cho mọi bản ghi nhập liệu mới
             </p>
           </div>
@@ -610,8 +607,8 @@ function EmissionFactorsCard({ onSaved }) {
 
         <div className="flex flex-wrap items-center gap-2">
           <span
-            className={`inline-flex items-center gap-[6px] rounded-full px-[12px] py-[6px] text-[12px] font-semibold ${
-              changedCount > 0 ? "bg-[#fef3c7] text-[#b45309]" : "bg-[#10b981]/14 text-[#059669]"
+            className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[12px] font-semibold ${
+              changedCount > 0 ? "border border-amber-200 bg-amber-50 text-amber-700" : "border border-emerald-200 bg-emerald-50 text-emerald-700"
             }`}
           >
             {changedCount > 0 ? <TriangleAlert size={13} strokeWidth={2.6} /> : <Check size={13} strokeWidth={2.8} />}
@@ -624,7 +621,7 @@ function EmissionFactorsCard({ onSaved }) {
             type="button"
             onClick={save}
             disabled={!dirty}
-            className={`${BTN_PRIMARY} disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-[#10b981]`}
+            className={`${BTN_PRIMARY} disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-emerald-600`}
           >
             <Save size={15} strokeWidth={2.6} />
             Lưu cấu hình
@@ -641,34 +638,33 @@ function EmissionFactorsCard({ onSaved }) {
           return (
             <li
               key={id}
-              className="flex flex-col gap-4 rounded-[18px] border border-white/70 bg-white/50 p-4 xl:flex-row xl:items-center"
+              className="flex flex-col gap-4 rounded-xl border border-slate-200/90 bg-white p-4 shadow-xs xl:flex-row xl:items-center"
             >
               {/* Nhận diện */}
               <div className="flex min-w-0 flex-1 items-start gap-3">
                 <span
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px]"
-                  style={{ backgroundColor: `${color}1f` }}
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200/80 bg-slate-50"
                 >
-                  <Icon size={18} strokeWidth={2.2} color={color} />
+                  <Icon size={17} strokeWidth={2.2} color={color} />
                 </span>
-                <div className="flex min-w-0 flex-col gap-[3px]">
+                <div className="flex min-w-0 flex-col gap-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-[14px] font-bold text-[#0f172a]">{name}</span>
+                    <span className="text-[13px] font-bold text-slate-900">{name}</span>
                     <span
-                      className="rounded-full px-[9px] py-[3px] text-[10px] font-semibold"
-                      style={{ backgroundColor: `${color}1f`, color }}
+                      className="rounded-md border px-2 py-0.5 text-[10px] font-semibold"
+                      style={{ borderColor: `${color}40`, backgroundColor: `${color}10`, color }}
                     >
                       {scope}
                     </span>
                   </div>
-                  <p className="text-[11px] leading-[1.5] text-[#64748b]">{desc}</p>
-                  <span className="text-[11px] text-[#94a3b8]">Cơ sở: {basis}</span>
+                  <p className="text-[11px] leading-relaxed text-slate-500">{desc}</p>
+                  <span className="text-[11px] text-slate-400">Cơ sở: {basis}</span>
                 </div>
               </div>
 
               {/* Ô nhập hệ số */}
               <div className="flex shrink-0 flex-wrap items-end gap-3">
-                <label className="flex flex-col gap-[5px]">
+                <label className="flex flex-col gap-1">
                   <span className={LABEL}>Hệ số áp dụng</span>
                   <span className="flex items-center gap-2">
                     <input
@@ -677,27 +673,27 @@ function EmissionFactorsCard({ onSaved }) {
                       step={step}
                       value={ef}
                       onChange={(e) => update(id, e.target.value)}
-                      className={`${FIELD} w-[130px] text-right font-semibold`}
+                      className={`${FIELD} w-[130px] text-right font-semibold tabular-nums`}
                     />
-                    <span className="w-[110px] text-[11px] font-semibold text-[#64748b]">{unit}</span>
+                    <span className="w-[110px] text-[11px] font-semibold text-slate-500">{unit}</span>
                   </span>
                 </label>
 
-                <div className="flex flex-col gap-[5px]">
+                <div className="flex flex-col gap-1">
                   <span className={LABEL}>Tham chiếu</span>
-                  <span className="flex h-[41px] items-center gap-2 rounded-[12px] border border-transparent bg-white/40 px-3">
-                    <span className="w-[130px] text-right text-[13px] font-semibold text-[#94a3b8]">
+                  <span className="flex h-[38px] items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3">
+                    <span className="w-[130px] text-right text-[13px] font-semibold text-slate-500 tabular-nums">
                       {fmt(ref, 4)}
                     </span>
-                    <span className="w-[110px] text-[11px] text-[#94a3b8]">{unit}</span>
+                    <span className="w-[110px] text-[11px] text-slate-400">{unit}</span>
                   </span>
                 </div>
 
-                <div className="flex flex-col gap-[5px]">
+                <div className="flex flex-col gap-1">
                   <span className={LABEL}>Lệch</span>
                   <span
-                    className={`flex h-[41px] w-[92px] items-center justify-center rounded-[12px] text-[12px] font-bold ${
-                      changed ? "bg-[#fef3c7] text-[#b45309]" : "bg-[#10b981]/12 text-[#059669]"
+                    className={`flex h-[38px] w-[88px] items-center justify-center rounded-lg border text-[12px] font-bold tabular-nums ${
+                      changed ? "border-amber-200 bg-amber-50 text-amber-700" : "border-emerald-200 bg-emerald-50 text-emerald-700"
                     }`}
                   >
                     {delta > 0 ? "+" : ""}
@@ -710,7 +706,7 @@ function EmissionFactorsCard({ onSaved }) {
         })}
       </ul>
 
-      <p className="border-t border-white/60 pt-4 text-[11px] leading-[1.5] text-[#94a3b8]">
+      <p className="border-t border-slate-200/80 pt-4 text-[11px] leading-relaxed text-slate-400">
         Lưu ý: thay đổi hệ số chỉ áp dụng cho dữ liệu nhập mới, không tự tính lại các bản ghi và báo cáo đã công bố.
       </p>
     </section>
@@ -739,12 +735,12 @@ function ThresholdsCard({ onSaved }) {
     <section className={`${GLASS} flex flex-col gap-4 p-4 sm:gap-5 sm:p-5`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#fef3c7]">
-            <TriangleAlert size={19} strokeWidth={2.2} color="#b45309" />
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700">
+            <TriangleAlert size={18} strokeWidth={2.2} />
           </span>
-          <div className="flex flex-col gap-1">
-            <h2 className="text-[16px] font-bold text-[#0f172a]">Cảnh báo &amp; Ngưỡng</h2>
-            <p className="text-[12px] text-[#64748b]">
+          <div className="flex flex-col gap-0.5">
+            <h2 className="text-[16px] font-bold text-slate-900">Cảnh báo &amp; Ngưỡng</h2>
+            <p className="text-[12px] text-slate-500">
               Cảnh báo khi mức tiêu thụ vượt % so với trung bình 30 ngày gần nhất
             </p>
           </div>
@@ -766,7 +762,7 @@ function ThresholdsCard({ onSaved }) {
       {/* Ngưỡng theo loại tài nguyên */}
       <div className="overflow-x-auto">
         <div className="min-w-[720px]">
-          <div className="flex items-center gap-3 rounded-t-[14px] border border-white/60 bg-white/55 px-4 py-[10px] text-[12px] font-semibold text-[#64748b] backdrop-blur-[12px]">
+          <div className="flex items-center gap-3 rounded-t-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-[12px] font-semibold text-slate-600">
             <span className="min-w-[180px] flex-1">Loại tài nguyên</span>
             <span className="w-[180px] shrink-0">Ngưỡng cảnh báo</span>
             <span className="w-[180px] shrink-0">Ngưỡng nghiêm trọng</span>
@@ -776,20 +772,19 @@ function ThresholdsCard({ onSaved }) {
           {rows.map(({ id, name, unit, warn, critical, icon: Icon, color, enabled }, idx) => (
             <div
               key={id}
-              className={`flex items-center gap-3 border-x border-b border-white/60 px-4 py-[12px] transition-colors hover:bg-white/70 ${
-                idx === rows.length - 1 ? "rounded-b-[14px]" : ""
+              className={`flex items-center gap-3 border-x border-b border-slate-200 bg-white px-4 py-3 transition-colors hover:bg-slate-50/70 ${
+                idx === rows.length - 1 ? "rounded-b-lg" : ""
               } ${enabled ? "" : "opacity-55"}`}
             >
               <div className="flex min-w-[180px] flex-1 items-center gap-3">
                 <span
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px]"
-                  style={{ backgroundColor: `${color}1f` }}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200/80 bg-slate-50"
                 >
                   <Icon size={15} strokeWidth={2.2} color={color} />
                 </span>
                 <div className="flex min-w-0 flex-col">
-                  <span className="text-[13px] font-semibold text-[#0f172a]">{name}</span>
-                  <span className="text-[11px] text-[#94a3b8]">Đơn vị: {unit}</span>
+                  <span className="text-[13px] font-semibold text-slate-900">{name}</span>
+                  <span className="text-[11px] text-slate-400">Đơn vị: {unit}</span>
                 </div>
               </div>
 
@@ -801,9 +796,9 @@ function ThresholdsCard({ onSaved }) {
                   value={warn}
                   disabled={!enabled}
                   onChange={(e) => updateRow(id, "warn", e.target.value)}
-                  className={`${FIELD} w-[100px] text-right font-semibold disabled:cursor-not-allowed`}
+                  className={`${FIELD} w-[100px] text-right font-semibold tabular-nums disabled:cursor-not-allowed`}
                 />
-                <span className="text-[11px] font-semibold text-[#64748b]">% vượt</span>
+                <span className="text-[11px] font-semibold text-slate-500">% vượt</span>
               </label>
 
               <label className="flex w-[180px] shrink-0 items-center gap-2">
@@ -814,12 +809,12 @@ function ThresholdsCard({ onSaved }) {
                   value={critical}
                   disabled={!enabled}
                   onChange={(e) => updateRow(id, "critical", e.target.value)}
-                  className={`${FIELD} w-[100px] text-right font-semibold disabled:cursor-not-allowed`}
+                  className={`${FIELD} w-[100px] text-right font-semibold tabular-nums disabled:cursor-not-allowed`}
                 />
-                <span className="text-[11px] font-semibold text-[#64748b]">% vượt</span>
+                <span className="text-[11px] font-semibold text-slate-500">% vượt</span>
               </label>
 
-              {/* Công tắc kiểu iOS */}
+              {/* Công tắc kiểu SaaS */}
               <div className="flex w-[120px] shrink-0 justify-center">
                 <button
                   type="button"
@@ -827,13 +822,13 @@ function ThresholdsCard({ onSaved }) {
                   aria-checked={enabled}
                   aria-label={`Bật cảnh báo cho ${name}`}
                   onClick={() => toggleRow(id)}
-                  className={`relative h-[26px] w-[46px] shrink-0 rounded-full border transition-all ${FOCUS} ${
-                    enabled ? "border-transparent bg-[#10b981]" : "border-white/70 bg-white/60"
+                  className={`relative h-[24px] w-[44px] shrink-0 rounded-full border transition-all ${FOCUS} ${
+                    enabled ? "border-transparent bg-emerald-600" : "border-slate-300 bg-slate-200"
                   }`}
                 >
                   <span
-                    className={`absolute top-1/2 h-[20px] w-[20px] -translate-y-1/2 rounded-full bg-white shadow-[0_2px_5px_rgba(15,23,42,0.28)] transition-all ${
-                      enabled ? "left-[23px]" : "left-[3px]"
+                    className={`absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full bg-white shadow-xs transition-all ${
+                      enabled ? "left-[22px]" : "left-[3px]"
                     }`}
                   />
                 </button>
@@ -844,36 +839,36 @@ function ThresholdsCard({ onSaved }) {
       </div>
 
       {/* Ví dụ minh hoạ ngưỡng */}
-      <div className="flex flex-wrap items-center gap-3 rounded-[16px] bg-white/55 px-4 py-4">
+      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-slate-200/80 bg-slate-50/70 px-4 py-3 text-[12px]">
         <span className={LABEL}>
           <Gauge size={13} strokeWidth={2.4} /> Ví dụ với Điện năng
         </span>
-        <span className="text-[12px] text-[#64748b]">
-          Trung bình 30 ngày: <b className="text-[#0f172a]">14.200 kWh/ngày</b> → cảnh báo khi vượt{" "}
-          <b className="text-[#b45309]">{fmtInt(14_200 * (1 + rows[0].warn / 100))} kWh</b> (tăng {rows[0].warn}%), nghiêm
-          trọng khi vượt <b className="text-[#991b1b]">{fmtInt(14_200 * (1 + rows[0].critical / 100))} kWh</b> (tăng{" "}
+        <span className="text-[12px] text-slate-600">
+          Trung bình 30 ngày: <b className="font-semibold text-slate-900">14.200 kWh/ngày</b> → cảnh báo khi vượt{" "}
+          <b className="font-semibold text-amber-700">{fmtInt(14_200 * (1 + rows[0].warn / 100))} kWh</b> (tăng {rows[0].warn}%), nghiêm
+          trọng khi vượt <b className="font-semibold text-red-700">{fmtInt(14_200 * (1 + rows[0].critical / 100))} kWh</b> (tăng{" "}
           {rows[0].critical}%)
         </span>
-        <span className="ml-auto text-[11px] text-[#94a3b8]">{enabledCount}/{rows.length} loại đang bật cảnh báo</span>
+        <span className="ml-auto text-[11px] text-slate-400">{enabledCount}/{rows.length} loại đang bật cảnh báo</span>
       </div>
 
       {/* Kênh nhận cảnh báo */}
-      <div className="flex flex-col gap-3 border-t border-white/60 pt-4">
-        <h3 className="text-[13px] font-bold text-[#0f172a]">Kênh nhận cảnh báo</h3>
+      <div className="flex flex-col gap-3 border-t border-slate-200/80 pt-4">
+        <h3 className="text-[13px] font-bold text-slate-900">Kênh nhận cảnh báo</h3>
         <ul className="grid grid-cols-1 gap-3 md:grid-cols-3">
           {channels.map(({ id, label, desc, icon: Icon, enabled }) => (
             <li
               key={id}
-              className={`flex items-start gap-3 rounded-[16px] border border-white/70 px-4 py-3 transition-all ${
-                enabled ? "bg-white/60" : "bg-white/35"
+              className={`flex items-start gap-3 rounded-xl border p-3.5 shadow-xs transition-all ${
+                enabled ? "border-slate-200/90 bg-white" : "border-slate-200/60 bg-slate-50/60 opacity-60"
               }`}
             >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[#10b981]/12">
-                <Icon size={15} strokeWidth={2.2} color={COLOR.emeraldDark} />
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                <Icon size={15} strokeWidth={2.2} />
               </span>
-              <div className="flex min-w-0 flex-1 flex-col gap-[2px]">
-                <span className="text-[12px] font-semibold text-[#0f172a]">{label}</span>
-                <span className="text-[11px] leading-[1.45] text-[#64748b]">{desc}</span>
+              <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                <span className="text-[12px] font-semibold text-slate-900">{label}</span>
+                <span className="text-[11px] leading-relaxed text-slate-500">{desc}</span>
               </div>
               <button
                 type="button"
@@ -882,12 +877,12 @@ function ThresholdsCard({ onSaved }) {
                 aria-label={label}
                 onClick={() => toggleChannel(id)}
                 className={`relative mt-[2px] h-[22px] w-[40px] shrink-0 rounded-full border transition-all ${FOCUS} ${
-                  enabled ? "border-transparent bg-[#10b981]" : "border-white/70 bg-white/60"
+                  enabled ? "border-transparent bg-emerald-600" : "border-slate-300 bg-slate-200"
                 }`}
               >
                 <span
-                  className={`absolute top-1/2 h-[16px] w-[16px] -translate-y-1/2 rounded-full bg-white shadow-[0_2px_5px_rgba(15,23,42,0.28)] transition-all ${
-                    enabled ? "left-[21px]" : "left-[3px]"
+                  className={`absolute top-1/2 h-[16px] w-[16px] -translate-y-1/2 rounded-full bg-white shadow-xs transition-all ${
+                    enabled ? "left-[20px]" : "left-[3px]"
                   }`}
                 />
               </button>
@@ -927,12 +922,12 @@ function UsersCard({ onSaved }) {
     <section className={`${GLASS} flex flex-col gap-4 p-4 sm:p-5`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#10b981]/14">
-            <Users size={19} strokeWidth={2.2} color={COLOR.emeraldDark} />
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+            <Users size={18} strokeWidth={2.2} />
           </span>
-          <div className="flex flex-col gap-1">
-            <h2 className="text-[16px] font-bold text-[#0f172a]">Phân quyền &amp; Quản lý người dùng</h2>
-            <p className="text-[12px] text-[#64748b]">
+          <div className="flex flex-col gap-0.5">
+            <h2 className="text-[16px] font-bold text-slate-900">Phân quyền &amp; Quản lý người dùng</h2>
+            <p className="text-[12px] text-slate-500">
               {USERS.length} tài khoản · phân quyền theo vai trò và phạm vi nhà xưởng phụ trách
             </p>
           </div>
@@ -953,7 +948,7 @@ function UsersCard({ onSaved }) {
 
       {/* Bộ lọc vai trò + tìm kiếm */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="glass-press inline-flex flex-wrap items-center gap-1 rounded-full border border-white/60 bg-white/45 p-1">
+        <div className="inline-flex h-8.5 flex-wrap items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 text-[12px]">
           {tabs.map(({ id, label }) => {
             const active = id === roleFilter;
             return (
@@ -962,12 +957,12 @@ function UsersCard({ onSaved }) {
                 type="button"
                 onClick={() => setRoleFilter(id)}
                 aria-pressed={active}
-                className={`flex items-center gap-2 rounded-full px-[12px] py-[5px] text-[12px] font-semibold transition-all ${FOCUS} ${
-                  active ? "bg-white text-[#0f172a] shadow-[0_2px_6px_-2px_rgba(15,23,42,0.25)]" : "text-[#64748b] hover:text-[#0f172a]"
+                className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[12px] transition-all ${FOCUS} ${
+                  active ? "bg-white font-semibold text-slate-900 shadow-xs" : "font-medium text-slate-600 hover:text-slate-900"
                 }`}
               >
                 {label}
-                <span className={`rounded-full px-[6px] py-[1px] text-[10px] ${active ? "bg-[#f1f5f9] text-[#64748b]" : "bg-white/70 text-[#94a3b8]"}`}>
+                <span className={`rounded-full px-1.5 py-[1px] text-[10px] tabular-nums font-semibold ${active ? "bg-slate-100 text-slate-800" : "bg-slate-200/70 text-slate-600"}`}>
                   {roleCounts[id] ?? 0}
                 </span>
               </button>
@@ -976,15 +971,15 @@ function UsersCard({ onSaved }) {
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="whitespace-nowrap text-[12px] text-[#94a3b8]">{filtered.length} tài khoản</span>
-          <label className="flex items-center gap-2 rounded-[10px] border-white/70 bg-white/60 px-3 py-2 backdrop-blur-[12px] focus-within:border-[#10b981]/60">
-            <Search size={15} strokeWidth={2} color={COLOR.muted} className="shrink-0" />
+          <span className="whitespace-nowrap text-[12px] text-slate-500 tabular-nums">{filtered.length} tài khoản</span>
+          <label className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 shadow-xs transition-colors focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500/20">
+            <Search size={14} strokeWidth={2} className="shrink-0 text-slate-400" />
             <input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Tìm tên / email..."
-              className="h-4 w-[170px] min-w-0 bg-transparent text-[12px] text-[#0f172a] outline-none placeholder:text-[#94a3b8]"
+              className="h-4 w-[170px] min-w-0 bg-transparent text-[12px] text-slate-900 outline-none placeholder:text-slate-400"
             />
           </label>
         </div>
@@ -993,7 +988,7 @@ function UsersCard({ onSaved }) {
       {/* Danh sách tài khoản */}
       <div className="overflow-x-auto">
         <div className="min-w-[900px]">
-          <div className="flex items-center gap-3 rounded-t-[14px] border border-white/60 bg-white/55 px-4 py-[10px] text-[12px] font-semibold text-[#64748b] backdrop-blur-[12px]">
+          <div className="flex items-center gap-3 rounded-t-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-[12px] font-semibold text-slate-600">
             <span className="min-w-[220px] flex-1">Người dùng</span>
             <span className="w-[160px] shrink-0">Vai trò</span>
             <span className="min-w-[190px] flex-1">Phạm vi phụ trách</span>
@@ -1002,10 +997,10 @@ function UsersCard({ onSaved }) {
           </div>
 
           {filtered.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 border-x border-b border-white/60 bg-white/40 px-4 py-10 text-center">
-              <Users size={22} strokeWidth={2} color={COLOR.muted} />
-              <p className="text-[13px] font-semibold text-[#0f172a]">Không tìm thấy tài khoản phù hợp</p>
-              <p className="text-[12px] text-[#64748b]">Thử đổi vai trò hoặc xoá từ khoá tìm kiếm.</p>
+            <div className="flex flex-col items-center gap-2 border-x border-b border-slate-200 bg-slate-50/50 px-4 py-10 text-center">
+              <Users size={22} strokeWidth={2} className="text-slate-400" />
+              <p className="text-[13px] font-semibold text-slate-900">Không tìm thấy tài khoản phù hợp</p>
+              <p className="text-[12px] text-slate-500">Thử đổi vai trò hoặc xoá từ khoá tìm kiếm.</p>
             </div>
           ) : (
             filtered.map(({ id, name, email, role, site, status, lastActive, initials, color }, idx) => {
@@ -1016,29 +1011,29 @@ function UsersCard({ onSaved }) {
               return (
                 <div
                   key={id}
-                  className={`flex items-center gap-3 border-x border-b border-white/60 px-4 py-[12px] transition-colors hover:bg-white/70 ${
-                    idx === filtered.length - 1 ? "rounded-b-[14px]" : ""
+                  className={`flex items-center gap-3 border-x border-b border-slate-200 bg-white px-4 py-3 transition-colors hover:bg-slate-50/70 ${
+                    idx === filtered.length - 1 ? "rounded-b-lg" : ""
                   }`}
                 >
                   {/* Avatar + tên */}
                   <div className="flex min-w-[220px] flex-1 items-center gap-3">
                     <span
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[12px] font-bold text-white"
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[12px] font-bold text-white shadow-xs"
                       style={{ backgroundColor: color }}
                       aria-hidden="true"
                     >
                       {initials}
                     </span>
                     <div className="flex min-w-0 flex-col">
-                      <span className="truncate text-[13px] font-semibold text-[#0f172a]">{name}</span>
-                      <span className="truncate text-[11px] text-[#94a3b8]">{email}</span>
+                      <span className="truncate text-[13px] font-semibold text-slate-900">{name}</span>
+                      <span className="truncate text-[11px] text-slate-400">{email}</span>
                     </div>
                   </div>
 
                   {/* Vai trò */}
                   <div className="w-[160px] shrink-0">
                     <span
-                      className={`inline-flex items-center gap-[6px] rounded-full px-[10px] py-[4px] text-[11px] font-semibold ${roleMeta.bg} ${roleMeta.text}`}
+                      className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11px] font-semibold ${roleMeta.bg} ${roleMeta.text}`}
                     >
                       <RoleIcon size={12} strokeWidth={2.6} />
                       {roleMeta.label}
@@ -1046,15 +1041,15 @@ function UsersCard({ onSaved }) {
                   </div>
 
                   {/* Phạm vi */}
-                  <div className="flex min-w-[190px] flex-1 flex-col gap-[2px]">
-                    <span className="truncate text-[12px] text-[#0f172a]">{site}</span>
-                    <span className="text-[11px] text-[#94a3b8]">Truy cập: {lastActive}</span>
+                  <div className="flex min-w-[190px] flex-1 flex-col gap-0.5">
+                    <span className="truncate text-[12px] font-medium text-slate-900">{site}</span>
+                    <span className="text-[11px] text-slate-400">Truy cập: {lastActive}</span>
                   </div>
 
                   {/* Trạng thái */}
                   <div className="w-[150px] shrink-0">
                     <span
-                      className={`inline-flex items-center gap-[6px] rounded-full px-[10px] py-[4px] text-[11px] font-semibold ${statusMeta.bg} ${statusMeta.text}`}
+                      className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11px] font-semibold ${statusMeta.bg} ${statusMeta.text}`}
                     >
                       <StatusIcon size={12} strokeWidth={2.6} />
                       {statusMeta.label}
@@ -1062,18 +1057,18 @@ function UsersCard({ onSaved }) {
                   </div>
 
                   {/* Thao tác */}
-                  <div className="flex w-[90px] shrink-0 justify-end gap-1">
+                  <div className="flex w-[90px] shrink-0 justify-end gap-1.5">
                     <button
                       type="button"
                       aria-label={`Chỉnh sửa quyền của ${name}`}
-                      className={`flex h-8 w-8 items-center justify-center rounded-[10px] bg-white/70 text-[#64748b] transition-all hover:bg-white hover:text-[#0f172a] ${FOCUS}`}
+                      className={`flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900 ${FOCUS}`}
                     >
                       <UserCog size={14} strokeWidth={2.4} />
                     </button>
                     <button
                       type="button"
                       aria-label={`Xoá tài khoản ${name}`}
-                      className={`flex h-8 w-8 items-center justify-center rounded-[10px] bg-white/70 text-[#64748b] transition-all hover:bg-[#fee2e2] hover:text-[#991b1b] ${FOCUS}`}
+                      className={`flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-700 ${FOCUS}`}
                     >
                       <Trash2 size={14} strokeWidth={2.4} />
                     </button>
@@ -1086,27 +1081,26 @@ function UsersCard({ onSaved }) {
       </div>
 
       {/* Ma trận quyền theo vai trò */}
-      <div className="flex flex-col gap-3 border-t border-white/60 pt-4">
-        <h3 className="text-[13px] font-bold text-[#0f172a]">Ma trận quyền theo vai trò</h3>
+      <div className="flex flex-col gap-3 border-t border-slate-200/80 pt-4">
+        <h3 className="text-[13px] font-bold text-slate-900">Ma trận quyền theo vai trò</h3>
         <ul className="grid grid-cols-1 gap-3 md:grid-cols-3">
           {Object.entries(ROLES).map(([id, meta]) => {
             const Icon = meta.icon;
             return (
               <li
                 key={id}
-                className="flex items-start gap-3 rounded-[16px] border border-white/70 bg-white/55 px-4 py-3"
+                className="flex items-start gap-3 rounded-xl border border-slate-200/90 bg-white p-3.5 shadow-xs"
               >
                 <span
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px]"
-                  style={{ backgroundColor: `${meta.color}1f` }}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200/80 bg-slate-50"
                 >
                   <Icon size={15} strokeWidth={2.2} color={meta.color} />
                 </span>
-                <div className="flex min-w-0 flex-col gap-[2px]">
-                  <span className="text-[12px] font-bold text-[#0f172a]">
-                    {meta.label} · {roleCounts[id]} tài khoản
+                <div className="flex min-w-0 flex-col gap-0.5">
+                  <span className="text-[12px] font-bold text-slate-900">
+                    {meta.label} · <span className="text-slate-500 font-normal">{roleCounts[id]} tài khoản</span>
                   </span>
-                  <span className="text-[11px] leading-[1.45] text-[#64748b]">{meta.desc}</span>
+                  <span className="text-[11px] leading-relaxed text-slate-500">{meta.desc}</span>
                 </div>
               </li>
             );
@@ -1128,17 +1122,17 @@ export default function Settings() {
   return (
     <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
       {/* Tiêu đề trang + thông báo */}
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex flex-col gap-[6px]">
-          <h1 className="text-[20px] font-extrabold leading-tight text-[#0f172a] sm:text-[24px]">Cài đặt</h1>
-          <p className="text-[13px] leading-snug text-[#64748b] sm:text-[14px]">
+      <div className="flex flex-col gap-4 border-b border-slate-200/80 pb-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        <div className="flex min-w-0 flex-col gap-1">
+          <h1 className="text-[20px] font-bold tracking-tight text-slate-900 sm:text-[22px]">Cài đặt</h1>
+          <p className="text-[13px] leading-snug text-slate-500">
             Thông tin doanh nghiệp, hệ số phát thải, ngưỡng cảnh báo và phân quyền người dùng
           </p>
         </div>
 
         {toast && (
-          <span className="glass inline-flex items-center gap-2 px-4 py-[10px] text-[12px] font-semibold text-[#059669]">
-            <BadgeCheck size={15} strokeWidth={2.6} />
+          <span className="inline-flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[12px] font-semibold text-emerald-700 shadow-xs">
+            <BadgeCheck size={15} strokeWidth={2.4} />
             {toast.message}
           </span>
         )}

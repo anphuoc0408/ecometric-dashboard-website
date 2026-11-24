@@ -43,19 +43,18 @@ const COLOR = {
   line: "#e2e8f0",
 };
 
-// Lớp bề mặt kính – dùng lại utility "glass" đã khai báo trong index.css
-const GLASS = "glass glass-press";
+// Design tokens B2B SaaS đồng bộ với OverviewPage
 const FOCUS =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#10b981]";
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600";
 
-// Ô nhập liệu kiểu iOS: kính mỏng, bo tròn, đổ bóng nhẹ, focus viền emerald
+// Ô nhập liệu B2B SaaS sắc nét, viền mảnh
 const FIELD =
-  "w-full rounded-[12px] border-white/70 bg-white/60 px-3 py-[10px] text-[13px] text-[#0f172a] " +
-  "placeholder:text-[#94a3b8] outline-none backdrop-blur-[12px] transition-shadow " +
-  "focus:border-[#10b981]/60 focus:bg-white/85 focus:shadow-[0_0_0_3px_rgba(16,185,129,0.18)]";
-// Đệm trong thẻ kính: nhỏ hơn trên di động (rộng rãi cho nội dung), đủ thoáng từ sm.
-const GLASS_PAD_MD = `${GLASS} flex-col gap-4 p-4 sm:gap-5 sm:p-6`;
-const LABEL = "flex items-center gap-[6px] text-[12px] font-semibold text-[#64748b]";
+  "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-[13px] text-slate-900 " +
+  "placeholder:text-slate-400 outline-none transition-colors " +
+  "hover:border-slate-300 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20";
+
+const GLASS_PAD_MD = "rounded-xl border border-slate-200/90 bg-white shadow-xs flex flex-col gap-4 p-4 sm:gap-5 sm:p-6";
+const LABEL = "flex items-center gap-[6px] text-[12px] font-semibold text-slate-600";
 
 /* ────────────────────────────────
    2. DANH MỤC & DỮ LIỆU MẪU (thay bằng API sau này)
@@ -114,21 +113,21 @@ function TypePicker({ value, onChange }) {
             role="radio"
             aria-checked={active}
             onClick={() => onChange(id)}
-            className={`glass-press flex items-center gap-2 rounded-[12px] border px-3 py-[10px] text-left transition-all ${FOCUS} ${
+            className={`flex items-center gap-2.5 rounded-lg border px-3 py-2 text-left transition-colors ${FOCUS} ${
               active
-                ? "border-[#10b981]/60 bg-white/85 shadow-[0_0_0_3px_rgba(16,185,129,0.16)]"
-                : "border-white/60 bg-white/45 hover:bg-white/70"
+                ? "border-emerald-500 bg-emerald-50/70 shadow-xs"
+                : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
             }`}
           >
             <span
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px]"
-              style={{ backgroundColor: `${color}1f` }}
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md"
+              style={{ backgroundColor: `${color}14` }}
             >
               <Icon size={16} strokeWidth={2} color={color} />
             </span>
             <span className="flex min-w-0 flex-col">
-              <span className="truncate text-[13px] font-semibold text-[#0f172a]">{label}</span>
-              <span className="text-[11px] text-[#94a3b8]">{unit}</span>
+              <span className="truncate text-[13px] font-semibold text-slate-900">{label}</span>
+              <span className="text-[11px] text-slate-400">{unit}</span>
             </span>
           </button>
         );
@@ -160,31 +159,31 @@ function InvoiceDropzone({ fileName, onPick, onClear }) {
         setDragging(false);
         handleFiles(e.dataTransfer.files);
       }}
-      className={`glass-press flex-col items-center justify-center gap-3 rounded-[16px] border-dashed p-5 text-center transition-colors ${
-        dragging ? "border-[#10b981] bg-[#10b981]/10" : "border-[#10b981]/60 bg-white/45"
+      className={`flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-5 text-center transition-colors ${
+        dragging ? "border-emerald-500 bg-emerald-50/50" : "border-slate-300 bg-slate-50/60 hover:border-emerald-400 hover:bg-slate-50"
       }`}
     >
-      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#10b981]/12">
-        <CloudUpload size={22} strokeWidth={2} color={COLOR.emeraldDark} />
+      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
+        <CloudUpload size={22} strokeWidth={2} />
       </div>
 
       {fileName ? (
-        <div className="flex items-center gap-2 rounded-[10px] bg-white/70 px-3 py-[6px]">
-          <FileSpreadsheet size={15} strokeWidth={2} color={COLOR.emeraldDark} />
-          <span className="max-w-[220px] truncate text-[12px] font-semibold text-[#0f172a]">{fileName}</span>
+        <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 shadow-xs">
+          <FileSpreadsheet size={15} strokeWidth={2} className="text-emerald-700" />
+          <span className="max-w-[220px] truncate text-[12px] font-semibold text-slate-900">{fileName}</span>
           <button
             type="button"
             aria-label="Xoá tệp"
             onClick={onClear}
-            className={`text-[#94a3b8] transition-colors hover:text-[#ef4444] ${FOCUS}`}
+            className={`text-slate-400 transition-colors hover:text-rose-600 ${FOCUS}`}
           >
             <Trash2 size={14} strokeWidth={2} />
           </button>
         </div>
       ) : (
         <div className="flex flex-col gap-1">
-          <p className="text-[13px] font-semibold text-[#0f172a]">Hoá đơn / Chứng từ</p>
-          <p className="text-[11px] text-[#94a3b8]">Kéo thả hoặc chọn tệp (.PDF, .JPG, .PNG – tối đa 15MB)</p>
+          <p className="text-[13px] font-semibold text-slate-900">Hoá đơn / Chứng từ</p>
+          <p className="text-[11px] text-slate-400">Kéo thả hoặc chọn tệp (.PDF, .JPG, .PNG – tối đa 15MB)</p>
         </div>
       )}
 
@@ -198,7 +197,7 @@ function InvoiceDropzone({ fileName, onPick, onClear }) {
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className={`rounded-[10px] border-white/70 bg-white/70 px-4 py-[7px] text-[12px] font-semibold text-[#059669] transition-colors hover:bg-white ${FOCUS}`}
+        className={`rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-[12px] font-semibold text-emerald-700 shadow-xs transition-colors hover:bg-slate-50 ${FOCUS}`}
       >
         {fileName ? "Chọn tệp khác" : "Chọn tệp từ máy"}
       </button>
@@ -330,7 +329,7 @@ function ConsumptionForm({ onAdd }) {
             )}
             <button
               type="submit"
-              className={`rounded-[12px] bg-[#059669] px-6 py-[11px] text-[13px] font-semibold text-white transition-all hover:bg-[#047857] active:scale-[0.98] ${FOCUS}`}
+              className={`rounded-lg bg-emerald-600 px-6 py-2.5 text-[13px] font-semibold text-white shadow-xs transition-colors hover:bg-emerald-700 active:scale-[0.98] ${FOCUS}`}
             >
               + Thêm bản ghi
             </button>
@@ -341,7 +340,7 @@ function ConsumptionForm({ onAdd }) {
                 setFileName("");
                 setError("");
               }}
-              className={`rounded-[12px] border-white/70 bg-white/60 px-6 py-[11px] text-[13px] font-semibold text-[#64748b] transition-colors hover:bg-white ${FOCUS}`}
+              className={`rounded-lg border border-slate-200 bg-white px-6 py-2.5 text-[13px] font-medium text-slate-700 shadow-xs transition-colors hover:bg-slate-50 hover:text-slate-900 ${FOCUS}`}
             >
               Xoá trắng
             </button>
@@ -385,10 +384,10 @@ function FilterBar({ activeType, onTypeChange, query, onQueryChange, total }) {
               type="button"
               onClick={() => onTypeChange(id)}
               aria-pressed={active}
-              className={`glass-press rounded-full border px-[14px] py-[6px] text-[12px] font-semibold transition-all ${FOCUS} ${
+              className={`rounded-md border px-3 py-1 text-[12px] transition-colors ${FOCUS} ${
                 active
-                  ? "border-transparent bg-[#10b981] text-white shadow-[0_6px_16px_-6px_rgba(16,185,129,0.8)]"
-                  : "border-white/60 bg-white/50 text-[#64748b] hover:bg-white/80"
+                  ? "border-emerald-600 bg-emerald-50 text-emerald-700 font-semibold shadow-xs"
+                  : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium"
               }`}
             >
               {label}
@@ -398,15 +397,15 @@ function FilterBar({ activeType, onTypeChange, query, onQueryChange, total }) {
       </div>
 
       <div className="flex items-center gap-3">
-        <span className="whitespace-nowrap text-[12px] text-[#94a3b8]">{total} bản ghi</span>
-        <label className="flex items-center gap-2 rounded-[10px] border-white/70 bg-white/60 px-3 py-2 backdrop-blur-[12px] focus-within:border-[#10b981]/60">
-          <Search size={15} strokeWidth={2} color={COLOR.muted} className="shrink-0" />
+        <span className="whitespace-nowrap text-[12px] text-slate-400 tabular-nums">{total} bản ghi</span>
+        <label className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500/20">
+          <Search size={15} strokeWidth={2} className="shrink-0 text-slate-400" />
           <input
             type="search"
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
             placeholder="Tìm mã / nhà xưởng..."
-            className="h-4 w-[170px] min-w-0 bg-transparent text-[12px] text-[#0f172a] outline-none placeholder:text-[#94a3b8]"
+            className="h-4 w-[170px] min-w-0 bg-transparent text-[12px] text-slate-900 outline-none placeholder:text-slate-400"
           />
         </label>
       </div>
@@ -425,19 +424,19 @@ function Pagination({ page, totalPages, onPageChange }) {
   for (let p = Math.max(1, start); p <= end; p += 1) pages.push(p);
 
   const btn =
-    "flex h-8 min-w-8 items-center justify-center rounded-[9px] border text-[12px] font-semibold transition-all " +
+    "flex h-8 min-w-8 items-center justify-center rounded-lg border text-[12px] transition-colors " +
     FOCUS;
 
   return (
-    <nav className="flex items-center gap-2" aria-label="Phân trang">
+    <nav className="flex items-center gap-1.5" aria-label="Phân trang">
       <button
         type="button"
         onClick={() => onPageChange(page - 1)}
         disabled={page === 1}
         aria-label="Trang trước"
-        className={`${btn} border-white/60 bg-white/55 text-[#64748b] hover:bg-white disabled:cursor-not-allowed disabled:opacity-40`}
+        className={`${btn} border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40`}
       >
-        <ChevronLeft size={15} strokeWidth={2.4} />
+        <ChevronLeft size={14} strokeWidth={2.4} />
       </button>
 
       {pages[0] > 1 && (
@@ -445,11 +444,11 @@ function Pagination({ page, totalPages, onPageChange }) {
           <button
             type="button"
             onClick={() => onPageChange(1)}
-            className={`${btn} border-white/60 bg-white/55 px-[10px] text-[#64748b] hover:bg-white`}
+            className={`${btn} border-slate-200 bg-white px-2.5 font-medium text-slate-600 hover:bg-slate-50`}
           >
             1
           </button>
-          {pages[0] > 2 && <span className="text-[12px] text-[#94a3b8]">…</span>}
+          {pages[0] > 2 && <span className="text-[12px] text-slate-400">…</span>}
         </>
       )}
 
@@ -459,10 +458,10 @@ function Pagination({ page, totalPages, onPageChange }) {
           type="button"
           onClick={() => onPageChange(p)}
           aria-current={p === page ? "page" : undefined}
-          className={`${btn} px-[10px] ${
+          className={`${btn} px-2.5 tabular-nums ${
             p === page
-              ? "border-transparent bg-[#10b981] text-white shadow-[0_6px_16px_-6px_rgba(16,185,129,0.8)]"
-              : "border-white/60 bg-white/55 text-[#64748b] hover:bg-white"
+              ? "border-emerald-600 bg-emerald-50 text-emerald-700 font-semibold shadow-xs"
+              : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
           }`}
         >
           {p}
@@ -471,11 +470,11 @@ function Pagination({ page, totalPages, onPageChange }) {
 
       {pages[pages.length - 1] < totalPages && (
         <>
-          {pages[pages.length - 1] < totalPages - 1 && <span className="text-[12px] text-[#94a3b8]">…</span>}
+          {pages[pages.length - 1] < totalPages - 1 && <span className="text-[12px] text-slate-400">…</span>}
           <button
             type="button"
             onClick={() => onPageChange(totalPages)}
-            className={`${btn} border-white/60 bg-white/55 px-[10px] text-[#64748b] hover:bg-white`}
+            className={`${btn} border-slate-200 bg-white px-2.5 font-medium text-slate-600 hover:bg-slate-50`}
           >
             {totalPages}
           </button>
@@ -487,7 +486,7 @@ function Pagination({ page, totalPages, onPageChange }) {
         onClick={() => onPageChange(page + 1)}
         disabled={page === totalPages}
         aria-label="Trang sau"
-        className={`${btn} border-white/60 bg-white/55 text-[#64748b] hover:bg-white disabled:cursor-not-allowed disabled:opacity-40`}
+        className={`${btn} border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40`}
       >
         <ChevronRight size={15} strokeWidth={2.4} />
       </button>
@@ -546,7 +545,7 @@ function RecordsTable({ records }) {
         </div>
         <button
           type="button"
-          className={`flex items-center gap-2 rounded-[10px] bg-[#10b981] px-4 py-2 text-[13px] font-semibold text-white transition-all hover:bg-[#0ea371] active:scale-[0.98] ${FOCUS}`}
+          className={`flex items-center gap-2 rounded-lg bg-emerald-600 px-3.5 py-2 text-[13px] font-semibold text-white shadow-xs transition-colors hover:bg-emerald-700 active:scale-[0.98] ${FOCUS}`}
         >
           <Download size={15} strokeWidth={2.4} />
           Xuất dữ liệu
@@ -561,12 +560,12 @@ function RecordsTable({ records }) {
         total={filtered.length}
       />
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-lg border border-slate-200">
         <div className="min-w-[880px]" role="table" aria-label="Danh sách bản ghi dữ liệu vận hành">
           {/* Header */}
           <div
             role="row"
-            className="flex items-center gap-4 rounded-t-[12px] border-white/60 bg-white/55 px-4 py-[10px] text-[12px] font-semibold text-[#64748b] backdrop-blur-[12px]"
+            className="flex items-center gap-4 border-b border-slate-200 bg-slate-50/80 px-4 py-2.5 text-[12px] font-semibold text-slate-600"
           >
             {COLS.map((c) => (
               <span key={c.key} role="columnheader" className={c.cls}>
@@ -577,46 +576,46 @@ function RecordsTable({ records }) {
 
           {/* Rows */}
           {pageRows.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 rounded-b-[12px] border-t-0 border-white/60 bg-white/40 px-4 py-12 text-center">
-              <Search size={22} strokeWidth={2} color={COLOR.muted} />
-              <p className="text-[13px] font-semibold text-[#64748b]">Không tìm thấy bản ghi phù hợp</p>
-              <p className="text-[12px] text-[#94a3b8]">Thử đổi bộ lọc loại tài nguyên hoặc từ khoá tìm kiếm.</p>
+            <div className="flex flex-col items-center gap-2 bg-white px-4 py-12 text-center">
+              <Search size={22} strokeWidth={2} className="text-slate-400" />
+              <p className="text-[13px] font-semibold text-slate-700">Không tìm thấy bản ghi phù hợp</p>
+              <p className="text-[12px] text-slate-400">Thử đổi bộ lọc loại tài nguyên hoặc từ khoá tìm kiếm.</p>
             </div>
           ) : (
             pageRows.map((r, idx) => (
               <div
                 key={r.id}
                 role="row"
-                className={`flex items-center gap-4 border-t-0 border-white/60 px-4 py-3 text-[13px] transition-colors hover:bg-white/70 ${
-                  idx === pageRows.length - 1 ? "rounded-b-[12px]" : ""
-                } ${idx % 2 === 1 ? "bg-white/30" : "bg-white/45"}`}
+                className={`flex items-center gap-4 border-b border-slate-100 px-4 py-3 text-[13px] transition-colors hover:bg-slate-50/70 ${
+                  idx === pageRows.length - 1 ? "border-b-0" : ""
+                } ${idx % 2 === 1 ? "bg-slate-50/30" : "bg-white"}`}
               >
-                <span role="cell" className={`${COLS[0].cls} font-semibold text-[#0f172a]`}>
+                <span role="cell" className={`${COLS[0].cls} font-semibold text-slate-900 tabular-nums`}>
                   {r.id}
                 </span>
                 <span role="cell" className={COLS[1].cls}>
                   <TypeBadge typeId={r.typeId} />
                 </span>
-                <span role="cell" className={`${COLS[2].cls} truncate text-[#0f172a]`}>
+                <span role="cell" className={`${COLS[2].cls} truncate text-slate-900`}>
                   {r.factory}
                 </span>
-                <span role="cell" className={`${COLS[3].cls} font-semibold text-[#0f172a]`}>
+                <span role="cell" className={`${COLS[3].cls} font-semibold text-slate-900 tabular-nums`}>
                   {r.quantity.toLocaleString("vi-VN")} {r.unit}
                 </span>
-                <span role="cell" className={`${COLS[4].cls} text-[#64748b]`}>
+                <span role="cell" className={`${COLS[4].cls} text-slate-500 tabular-nums`}>
                   {r.date}
                 </span>
                 <span role="cell" className={COLS[5].cls}>
                   {r.invoice ? (
                     <button
                       type="button"
-                      className={`inline-flex items-center gap-[6px] text-[12px] font-semibold text-[#059669] hover:underline ${FOCUS}`}
+                      className={`inline-flex items-center gap-1.5 text-[12px] font-semibold text-emerald-700 hover:underline ${FOCUS}`}
                     >
                       <FileSpreadsheet size={13} strokeWidth={2.4} />
                       Xem tệp
                     </button>
                   ) : (
-                    <span className="text-[12px] text-[#94a3b8]">Chưa có</span>
+                    <span className="text-[12px] text-slate-400">Chưa có</span>
                   )}
                 </span>
               </div>
@@ -627,12 +626,12 @@ function RecordsTable({ records }) {
 
       {/* Phân trang */}
       <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-        <span className="text-[12px] text-[#64748b]">
+        <span className="text-[12px] text-slate-500">
           Hiển thị{" "}
-          <b className="text-[#0f172a]">
+          <b className="font-semibold text-slate-900 tabular-nums">
             {filtered.length === 0 ? 0 : (current - 1) * pageSize + 1}–{Math.min(current * pageSize, filtered.length)}
           </b>{" "}
-          trên <b className="text-[#0f172a]">{filtered.length}</b> bản ghi
+          trên <b className="font-semibold text-slate-900 tabular-nums">{filtered.length}</b> bản ghi
         </span>
         <Pagination page={current} totalPages={totalPages} onPageChange={setPage} />
       </div>
@@ -667,9 +666,9 @@ export default function DataInput() {
   return (
     <main className="flex min-h-[calc(100vh-73px)] min-w-0 flex-1 flex-col gap-5 p-4 pb-24 sm:gap-6 sm:p-6 lg:pb-6">
       {/* Tiêu đề trang */}
-      <div className="flex flex-col gap-[6px]">
-        <h1 className="text-[20px] font-extrabold leading-tight text-[#0f172a] sm:text-[24px]">Dữ liệu vận hành</h1>
-        <p className="text-[13px] leading-snug text-[#64748b] sm:text-[14px]">
+      <div className="flex flex-col gap-1 border-b border-slate-200/80 pb-4">
+        <h1 className="text-[20px] font-bold tracking-tight text-slate-900 sm:text-[22px]">Dữ liệu vận hành</h1>
+        <p className="text-[13px] leading-snug text-slate-500">
           Nhập liệu tiêu thụ năng lượng, nước, nhiên liệu và nguyên liệu theo nhà xưởng
         </p>
       </div>

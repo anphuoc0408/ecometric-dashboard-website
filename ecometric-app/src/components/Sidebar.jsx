@@ -35,9 +35,9 @@ export default function Sidebar({ active, onChange }) {
   return (
     <aside
       aria-label="Điều hướng chính"
-      className={`fixed left-0 top-[73px] z-20 hidden h-[calc(100vh-73px)] shrink-0 flex-col border-r border-[#e2e8f0] bg-white/95 px-2 py-3 backdrop-blur-xl transition-[width] duration-300 ease-in-out lg:flex ${
+      className={`fixed left-0 top-[73px] z-20 hidden h-[calc(100vh-73px)] shrink-0 flex-col border-r border-slate-200/80 bg-white/95 px-2 py-3 backdrop-blur-md transition-[width] duration-300 ease-in-out lg:flex ${
         isExpanded
-          ? "w-64 shadow-[12px_0_32px_-24px_rgba(15,23,42,0.45)]"
+          ? "w-64 shadow-[8px_0_24px_-16px_rgba(15,23,42,0.2)]"
           : "w-20"
       }`}
     >
@@ -49,30 +49,30 @@ export default function Sidebar({ active, onChange }) {
         aria-controls="sidebar-nav"
         aria-label={isExpanded ? "Thu gọn thanh điều hướng" : "Mở rộng thanh điều hướng"}
         title={isExpanded ? "Thu gọn" : "Mở rộng"}
-        className={`absolute -right-3 top-4 z-30 flex h-6 w-6 items-center justify-center rounded-full border border-[#e2e8f0] bg-white text-[#64748b] shadow-[0_2px_8px_-2px_rgba(15,23,42,0.25)] transition-all duration-200 hover:border-[#10b981]/40 hover:bg-[#10b981]/10 hover:text-[#059669] active:scale-90 ${FOCUS}`}
+        className={`absolute -right-2.5 top-3.5 z-30 flex h-5 w-5 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-xs transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 active:scale-95 ${FOCUS}`}
       >
         {isExpanded ? (
-          <ChevronLeft size={14} strokeWidth={2.6} />
+          <ChevronLeft size={13} strokeWidth={2.4} />
         ) : (
-          <ChevronRight size={14} strokeWidth={2.6} />
+          <ChevronRight size={13} strokeWidth={2.4} />
         )}
       </button>
 
-      {/* ── Logo: tròn gọn khi thu, đầy đủ khi mở rộng ─────────────── */}
-      <div className="flex h-12 shrink-0 items-center gap-3 overflow-hidden px-1">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#10b981] to-[#059669] shadow-[0_6px_16px_-6px_rgba(16,185,129,0.8)] ring-4 ring-[#10b981]/10">
-          <Leaf size={20} strokeWidth={2.4} color="#ffffff" />
+      {/* ── Icon thương hiệu EcoMetric đồng bộ với Topbar ─────────────── */}
+      <div className="flex h-10 shrink-0 items-center gap-2.5 overflow-hidden px-1.5 py-1">
+        <div className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-lg border border-emerald-100 bg-emerald-50 text-emerald-700">
+          <Leaf size={17} strokeWidth={2.2} />
         </div>
         <div
           className={`flex min-w-0 flex-col whitespace-nowrap transition-opacity duration-200 ${
             isExpanded ? "opacity-100" : "pointer-events-none opacity-0"
           }`}
         >
-          <span className="text-[15px] font-extrabold leading-tight text-[#0f172a]">
+          <span className="text-[13px] font-bold tracking-tight text-slate-900">
             EcoMetric
           </span>
-          <span className="text-[10px] font-medium text-[#94a3b8]">
-            Bền vững &amp; Tối ưu
+          <span className="text-[10px] text-slate-400">
+            Cơ sở sản xuất
           </span>
         </div>
       </div>
@@ -80,7 +80,7 @@ export default function Sidebar({ active, onChange }) {
       {/* ── Danh sách mục điều hướng ──────────────────────────────── */}
       <nav
         id="sidebar-nav"
-        className="mt-4 flex w-full flex-1 flex-col gap-1 overflow-y-auto overflow-x-hidden py-1"
+        className="mt-3 flex w-full flex-1 flex-col gap-1 overflow-y-auto overflow-x-hidden py-1"
       >
         {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
           const isActive = id === active;
@@ -93,31 +93,31 @@ export default function Sidebar({ active, onChange }) {
                 onClick={() => onChange(id)}
                 aria-current={isActive ? "page" : undefined}
                 aria-label={label}
-                className={`relative flex h-11 w-full items-center gap-3 overflow-hidden rounded-xl px-3 transition-all duration-200 ease-out active:scale-[0.98] ${FOCUS} ${
+                className={`relative flex h-10 w-full items-center gap-3 overflow-hidden rounded-lg px-2.5 transition-colors ${FOCUS} ${
                   isActive
-                    ? "bg-[#10b981]/12 text-[#059669] shadow-[0_6px_18px_-10px_rgba(16,185,129,0.9)]"
-                    : "text-[#94a3b8] hover:bg-[#f1f5f9] hover:text-[#475569]"
+                    ? "bg-emerald-50 text-emerald-700 font-semibold"
+                    : "text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 font-medium"
                 }`}
               >
                 {/* Thanh chỉ báo emerald ở mép trái */}
                 <span
                   aria-hidden="true"
-                  className={`absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-r-full bg-[#10b981] transition-all duration-200 ${
+                  className={`absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-sm bg-emerald-600 transition-all duration-200 ${
                     isActive ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0"
                   }`}
                 />
 
                 <Icon
-                  size={20}
-                  strokeWidth={isActive ? 2.4 : 2}
-                  className="shrink-0 transition-transform duration-200 group-hover/item:scale-110"
+                  size={19}
+                  strokeWidth={isActive ? 2.4 : 1.9}
+                  className="shrink-0 transition-transform duration-150 group-hover/item:scale-105"
                 />
 
                 {/* Nhãn đầy đủ – chỉ hiện khi Sidebar mở rộng */}
                 <span
-                  className={`min-w-0 flex-1 truncate whitespace-nowrap text-left text-[13.5px] transition-opacity duration-200 ${
+                  className={`min-w-0 flex-1 truncate whitespace-nowrap text-left text-[13px] transition-opacity duration-200 ${
                     isExpanded ? "opacity-100" : "pointer-events-none opacity-0"
-                  } ${isActive ? "font-semibold" : "font-medium"}`}
+                  }`}
                 >
                   {label}
                 </span>
@@ -125,12 +125,12 @@ export default function Sidebar({ active, onChange }) {
                 {/* Huy hiệu đếm */}
                 {badge ? (
                   <span
-                    className={`shrink-0 rounded-full px-1.5 py-[1px] text-[10px] font-bold leading-4 transition-opacity duration-200 ${
+                    className={`shrink-0 rounded-full px-1.5 py-[1px] text-[10px] font-semibold leading-4 transition-opacity duration-200 ${
                       isExpanded ? "opacity-100" : "pointer-events-none opacity-0"
                     } ${
                       isActive
-                        ? "bg-[#10b981] text-white"
-                        : "bg-[#e2e8f0] text-[#475569]"
+                        ? "bg-emerald-100 text-emerald-800"
+                        : "bg-slate-100 text-slate-600"
                     }`}
                   >
                     {badge}
@@ -142,7 +142,7 @@ export default function Sidebar({ active, onChange }) {
               {!isExpanded && (
                 <span
                   role="tooltip"
-                  className="pointer-events-none absolute left-full top-1/2 z-30 ml-3 -translate-y-1/2 translate-x-[-4px] whitespace-nowrap rounded-lg bg-[#0f172a] px-2.5 py-1.5 text-[11px] font-semibold text-white opacity-0 shadow-lg transition-all duration-150 group-hover/item:translate-x-0 group-hover/item:opacity-100"
+                  className="pointer-events-none absolute left-full top-1/2 z-30 ml-2.5 -translate-y-1/2 translate-x-[-4px] whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-[11px] font-medium text-white opacity-0 shadow-md transition-all duration-150 group-hover/item:translate-x-0 group-hover/item:opacity-100"
                 >
                   {label}
                 </span>
