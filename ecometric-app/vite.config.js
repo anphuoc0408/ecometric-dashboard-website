@@ -7,4 +7,7 @@ import { defineConfig } from 'vite'
 // (hoặc @tailwindcss/postcss). Thiếu nó → toàn bộ class Tailwind bị bỏ qua → layout vỡ.
 export default defineConfig({
   plugins: [tailwindcss(), react()],
+  server: {
+    host: true, // Lắng nghe trên mọi interface (0.0.0.0) bao gồm IP LAN để camera điện thoại truy cập được
+  },
 })

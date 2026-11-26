@@ -22,7 +22,7 @@
  *   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
  *   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
  */
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 
 import DataInput from "./DataInput.jsx";
 import CarbonEmissions from "./CarbonEmissions.jsx";
@@ -42,7 +42,6 @@ import UploadCard from "./components/UploadCard.jsx";
 import AiSuggestionsCard from "./components/AiSuggestionsCard.jsx";
 import RecentReportsList from "./components/RecentReportsList.jsx";
 import ActionPlanModal from "./components/ActionPlanModal.jsx";
-import PairingConfirmModal from "./components/PairingConfirmModal.jsx";
 
 import {
   ACTIONABLE_PRIORITIES,
@@ -228,37 +227,27 @@ function OverviewPage({ onGoToAI }) {
 export default function App() {
   const [activeNav, setActiveNav] = useState("overview");
 
-  // Kiểm tra query parameter ?pair_session=... trên URL khi khởi tạo app
-  const [pairSession, setPairSession] = useState(() => {
-    if (typeof window === "undefined") return null;
-    const params = new URLSearchParams(window.location.search);
-    return params.get("pair_session");
-  });
-
-  // Đóng modal và xóa query ?pair_session khỏi URL bằng window.history.replaceState
-  const handleDismissPairSession = useCallback(() => {
-    setPairSession(null);
-    if (typeof window !== "undefined") {
+  // Khi mở link trực tiếp hoặc từ mã QR có ?pair_session=..., vào thẳng trang web
+  // và tự động xóa param đó khỏi thanh địa chỉ bằng window.history.replaceState để URL luôn sạch.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
       const url = new URL(window.location.href);
-      url.searchParams.delete("pair_session");
-      window.history.replaceState(
-        {},
-        document.title,
-        url.pathname + (url.search ? url.search : "") + url.hash,
-      );
+      if (url.searchParams.has("pair_session")) {
+        url.searchParams.delete("pair_session");
+        window.history.replaceState(
+          {},
+          document.title,
+          url.pathname + (url.search ? url.search : "") + url.hash,
+        );
+      }
+    } catch {
+      /* ignore */
     }
   }, []);
 
   return (
     <div className="min-h-screen bg-[#f8fafc] font-['Inter',ui-sans-serif,system-ui,sans-serif] leading-[normal] text-[#0f172a] antialiased">
-      {/* Modal xác nhận ghép nối thiết bị khi mở link ?pair_session=... từ camera quét QR */}
-      {pairSession && (
-        <PairingConfirmModal
-          pairSession={pairSession}
-          onDismiss={handleDismissPairSession}
-        />
-      )}
-
       <Topbar />
 
       {/* Sidebar nằm NGOÀI container để `fixed top-[73px] h-[calc(100vh-73px)]` luôn đúng. */}
