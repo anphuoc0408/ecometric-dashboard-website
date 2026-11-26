@@ -382,6 +382,6 @@ Dự án được phát triển cho mục đích quản trị nội bộ và tr�
 
 <div align="center">
 
-**EcoMetric** — Đo lường chuẩn xác hôm nay, kiến tạo tương lai phát thải ròng bằng không. 🌱
+**EcoMetric** — Đo lường chuẩn xác hôm nay, kiến tạo tương lai. 🌱
 
 </div>
